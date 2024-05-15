@@ -81,15 +81,15 @@ def validate():
         g.sec_details = jwtlib.sec_details
         g.consent_time = ''
         consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
-        # if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
-        #     consent_status, consent_code = esign_consent_get()
-        #     # if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
-        #     #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-        #     try:
-        #         datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
-        #     except Exception:
-        #         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-        #     g.consent_time = consent_status.get('consent_time')
+        if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
+            consent_status, consent_code = esign_consent_get()
+            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            try:
+                datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+            except Exception:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            g.consent_time = consent_status.get('consent_time')
             
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
