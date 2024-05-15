@@ -1,0 +1,14 @@
+FROM entity-auth:base-1.7
+MAINTAINER DigiLocker
+LABEL version="1.0"
+ENV TZ="Asia/Kolkata"
+WORKDIR /opt/entity_auth-py
+
+COPY src_code /opt/entity_auth-py/
+COPY config_local/appconfig/.env /opt/entity_auth-py/
+COPY config_local/appconfig/config.ini /opt/entity_auth-py/
+#COPY config_local/appconfig/server.py /usr/local/lib/python3.11/http/
+COPY config_local/rconfig /opt/entity_auth-py/
+
+CMD [ "python", "app.py" ]
+EXPOSE 5000

@@ -1,0 +1,18 @@
+FROM python:slim
+MAINTAINER DigiLocker
+LABEL version="1.0"
+ENV TZ="Asia/Kolkata"
+
+RUN apt-get update
+RUN apt-get install -y supervisor net-tools procps
+RUN python -m pip install --upgrade pip
+
+RUN pip install -U boto3 flask flask-cors pyjwt pycryptodome python-dotenv redis-py-cluster pika requests bcrypt uuid thefuzz php xmltodict pillow elasticsearch pypdf2 cryptography nltk textblob pdf2image pytesseract geopy pymongo
+RUN python -m textblob.download_corpora nltk.downloader stopwords
+RUN pip install -U captcha gTTS
+
+RUN mkdir -p /etc/supervisord.d
+RUN mkdir -p /opt/enc_temp/
+
+EXPOSE 5000
+CMD ["/usr/bin/supervisord", "-n"]
