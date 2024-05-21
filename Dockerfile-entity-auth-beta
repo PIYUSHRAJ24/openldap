@@ -16,7 +16,6 @@ COPY src_code/ /opt/entity_auth-py
 COPY config_beta/appconfig/.env /opt/entity_auth-py/
 COPY config_beta/ /opt/entity_auth-py/config
 COPY config_beta/appconfig/server.py /usr/local/lib/python3.11/http/
-COPY config_beta/rconfig/consent_key_private.pem /opt/entity_auth-py/rconfig/consent_key_private.pem
 
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
