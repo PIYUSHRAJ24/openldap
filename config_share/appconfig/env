@@ -1,0 +1,6 @@
+allowed_origin = ['localhost']
+port = '5000'
+host = '0.0.0.0'
+debug_mode = 'True'
+environment = 'PROD'
+config_path = 'config/appconfig/config.ini'

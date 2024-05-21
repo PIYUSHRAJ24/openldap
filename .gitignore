@@ -4,6 +4,7 @@ config.ini
 config
 config_prod
 config_beta
+config_stage
 config_local
 rconfig
 

@@ -13,10 +13,10 @@ COPY config_share/dockerconfig/services.conf /etc/supervisord.d/services.conf
 
 WORKDIR /opt/entity_auth-py
 COPY src_code/ /opt/entity_auth-py
-COPY config_beta/appconfig/.env /opt/entity_auth-py/
-COPY config_beta/ /opt/entity_auth-py/config
-COPY config_beta/appconfig/server.py /usr/local/lib/python3.11/http/
-COPY config_beta/rconfig/consent_key_private.pem /opt/entity_auth-py/rconfig/consent_key_private.pem
+COPY config_stage/appconfig/.env /opt/entity_auth-py/
+COPY config_stage/ /opt/entity_auth-py/config
+COPY config_stage/appconfig/server.py /usr/local/lib/python3.11/http/
+COPY config_stage/rconfig/consent_key_private.pem /opt/entity_auth-py/rconfig/consent_key_private.pem
 
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]

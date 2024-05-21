@@ -1,25 +1,42 @@
-aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 816586121361.dkr.ecr.ap-south-1.amazonaws.com
+# ENTITY AUTH
 
-## Running
+## BASE Image
 
-#BASE Image
-docker build . -f Dockerfile-entity-auth-base -t entity-auth:base-1.7
-docker tag dl-entity-auth:base-1.7 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:base-1.7
-docker push 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:base-1.7
+```bash
+docker build . -f Dockerfile-entity-auth-base -t entity-auth:base-v1.0
+docker tag entity-auth:base-v1.0 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:base-v1.0
+```
 
-#LOCAL Image
+## BETA Image
+
+```bash
+docker build . -f Dockerfile-entity-auth-beta -t entity-auth:beta
+docker tag entity-auth:beta 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:beta
+```
+
+## STAGE Image
+
+```bash
+docker build . -f Dockerfile-entity-auth-stage -t entity-auth:stage
+docker tag entity-auth:stage 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:stage
+```
+
+## PROD Image
+
+```bash
+docker build . -f Dockerfile-entity-auth-prod -t entity-auth:prod
+docker tag entity-auth:prod 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:prod
+```
+
+## LOCAL Image
+
+```bash
 docker build . -f Dockerfile-entity-auth-local -t entity-auth:local
-docker run -dit -p 5002:5000 --restart=always -v D:\DIC\entity_auth\src_code:/opt/entity-auth-py --name entity-auth entity-auth:local
-docker network connect diginet dl-entity-auth
-docker network connect diginet dl-entity-auth
-docker network connect diginet dl-entity-auth
+docker run -dit -p 5025:5000 -v D:\Work\DIC\Projects\Git\entity_auth\src_code --name entity-auth entity-auth:local
+```
 
-#BETA/STAGE Image
-docker build . -f Dockerfile-entity-auth-beta -t dl-entity-auth:beta
-docker tag dl-entity-auth:beta 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:beta
-docker push 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:beta
+* Connect to network:
 
-#PROD Image
-docker build . -f Dockerfile-entity-auth-prod -t dl-entity-auth:prod
-docker tag dl-entity-auth:prod 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:prod
-docker push 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:prod
+```bash
+docker network connect diginetwork dl-entity-auth
+```
