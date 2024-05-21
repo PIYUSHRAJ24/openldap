@@ -3,8 +3,7 @@ MAINTAINER DigiLocker
 LABEL version="1.0"
 ENV TZ="Asia/Kolkata"
 
-RUN apt-get update
-RUN apt-get install -y supervisor net-tools procps
+RUN apt-get update && apt-get install -y libssl-dev libcurl4-openssl-dev python3-dev supervisor net-tools procps
 RUN python -m pip install --upgrade pip
 
 RUN pip install -U boto3 flask flask-cors pyjwt pycryptodome python-dotenv redis-py-cluster pika requests bcrypt uuid thefuzz php xmltodict pillow elasticsearch pypdf2 cryptography nltk textblob pdf2image pytesseract geopy pymongo
