@@ -4,7 +4,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
 from werkzeug.serving import WSGIRequestHandler
 
@@ -31,12 +31,7 @@ def add_security_headers(response):
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
-    # if referring_domain in allowed_domains:
-    #     response.headers['Access-Control-Allow-Origin'] = referring_domain
-    # else:
-    #     response.headers['Access-Control-Allow-Origin'] = ''
     return response
-
 
 from api.filelock import bp as filelock_bp
 # importing APIs
@@ -47,7 +42,7 @@ from api.metadata import bp as metadata_bp
 from api.name_match import bp as name_match_bp
 from api.org import bp as org_bp
 from api.org_activity import bp as org_activity_bp
-from api.share import bp as share_bp
+from api.otpservices import bp as otpservices_bp
 
 # calling the APIs
 app.register_blueprint(healthcheck_bp, url_prefix='/healthcheck')
@@ -58,7 +53,7 @@ app.register_blueprint(org_bp, url_prefix='/org')
 app.register_blueprint(filelock_bp, url_prefix='/filelock')
 app.register_blueprint(metadata_bp, url_prefix='/metadata')
 app.register_blueprint(lockpdf_bp, url_prefix='/lockpdf')
-app.register_blueprint(share_bp, url_prefix ='/share')
+app.register_blueprint(otpservices_bp, url_prefix='/aadhaar')
 
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
