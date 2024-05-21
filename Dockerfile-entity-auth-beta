@@ -1,4 +1,4 @@
-FROM 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:base-1.7
+FROM 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity-auth:base-v1.0
 MAINTAINER DigiLocker
 LABEL version="1.0"
 ENV TZ="Asia/Kolkata"
