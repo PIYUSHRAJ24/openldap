@@ -32,7 +32,7 @@ docker tag entity-auth:prod 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity
 
 ```bash
 docker build . -f Dockerfile-entity-auth-local -t entity-auth:local
-docker run -dit -p 5025:5000 -v D:\Work\DIC\Projects\Git\entity_auth\src_code --name entity-auth entity-auth:local
+docker run -dit -p 5025:5000 -v D:\Work\DIC\Projects\Git\entity_auth\src_code:/opt/entity_auth-py --name entity-auth entity-auth:beta
 ```
 
 * Connect to network:
