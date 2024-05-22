@@ -12,6 +12,12 @@ app = Flask(__name__)
 cors = CORS(app, origins=os.getenv('allowed_origin'))
 app.config['SERVER_NAME'] = None
 
+
+@app.route('/healthcheck', methods=['GET'])
+def healthcheck():
+    return {"status": "success"}, 200
+
+
 @app.after_request
 def add_security_headers(response): 
     # referring_domain = request.referrer
@@ -35,7 +41,6 @@ def add_security_headers(response):
 
 from api.filelock import bp as filelock_bp
 # importing APIs
-from api.healthcheck import bp as healthcheck_bp
 from api.image import bp as image_bp
 from api.lockpdf import bp as lockpdf_bp
 from api.metadata import bp as metadata_bp
@@ -45,7 +50,6 @@ from api.org_activity import bp as org_activity_bp
 from api.otpservices import bp as otpservices_bp
 
 # calling the APIs
-app.register_blueprint(healthcheck_bp, url_prefix='/healthcheck')
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
 app.register_blueprint(image_bp, url_prefix='/image')
 app.register_blueprint(org_activity_bp, url_prefix='/org_activity')
