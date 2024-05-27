@@ -403,7 +403,7 @@ class CommonLib:
                 'hmac': hmac,
                 'resident_photo': "yes"
             }
-            res = requests.post(CONFIG['acsapi']['url']+url_for('accounts_profile.v1'), post_data)
+            res = requests.post(CONFIG['acsapi']['url']+'/profile/1.0', post_data)
             try:
                 resp = json.loads(res.text)
                 if res.status_code >= 200 and res.status_code < 300:

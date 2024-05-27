@@ -17,6 +17,7 @@ jwt_config = CONFIG['jwt']
 
 class DriveJwt:
     def __init__(self, request, conf):
+        self.rs = {}
         self.config = conf
         self.jwt_secret = self.config.get("JWT_SECRET")
         self.aes_secret = bytes(self.config.get("JWT_SECRET"), 'utf-8')
@@ -100,12 +101,12 @@ class DriveJwt:
             sec, code = self.get_sec_detail()
             if code != 200:
                 return sec, code
-            dept1, code = self.get_dept_info()
-            if code != 200:
-                return dept1, code
-            sec1, code = self.get_sec_info()
-            if code != 200:
-                return sec1, code
+            # dept1, code = self.get_dept_info()
+            # if code != 200:
+            #     return dept1, code
+            # sec1, code = self.get_sec_info()
+            # if code != 200:
+            #     return sec1, code
             return path, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_206'), RESPONSE: 'DriveJwt:jwt_login_org:: ' + str(e)}, 401
@@ -146,40 +147,40 @@ class DriveJwt:
     
     def get_dept_info(self):
         if self.org_id:
-                res = self.rs.get(self.org_id+'_org_structure_dept')
-                if res:
-                    return json.loads(res)
-                query = {'org_id': self.org_id}
-                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept"], query, {"dept_id":1,"name":1,"description":1}, limit=500)
+            res = self.rs.get(self.org_id+'_org_structure_dept')
+            if res:
+                return json.loads(res)
+            query = {'org_id': self.org_id}
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept"], query, {"dept_id":1,"name":1,"description":1}, limit=500)
 
-                try:
-                    res = json.loads(res.text)
-                    if res.status_code >= 200 and res.status_code < 300:
-                        res = {d["dept_id"]:d for d in res[RESPONSE] }
-                        self.rs.set(self.org_id+'_org_structure_dept', json.dumps(res))
-                        self.dept_details = res
-                        return self.dept_details, 200
-                    # else: return CommonLib.get_profile_name(x)   // call database to fetch record
-                except Exception:
-                    pass
+            try:
+                res = json.loads(res.text)
+                if res.status_code >= 200 and res.status_code < 300:
+                    res = {d["dept_id"]:d for d in res[RESPONSE] }
+                    self.rs.set(self.org_id+'_org_structure_dept', json.dumps(res))
+                    self.dept_details = res
+                    return self.dept_details, 200
+                # else: return CommonLib.get_profile_name(x)   // call database to fetch record
+            except Exception:
+                pass
             # return CommonLib.get_profile_name(x)
     
     def get_sec_info(self):
         if self.org_id:
-                res = self.rs.get(self.org_id+'_org_structure_section')
-                if res:
-                    return json.loads(res)
-                query = {'org_id': self.org_id}
-                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept_sec"], query, {"dept_id":1,"name":1,"description":1}, limit=500)
+            res = self.rs.get(self.org_id+'_org_structure_section')
+            if res:
+                return json.loads(res)
+            query = {'org_id': self.org_id}
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept_sec"], query, {"dept_id":1,"name":1,"description":1}, limit=500)
 
-                try:
-                    res = json.loads(res.text)
-                    if res.status_code >= 200 and res.status_code < 300:
-                        res = {d["sec_id"]:d for d in res[RESPONSE]}
-                        self.rs.set(self.org_id+'_org_structure_sections', json.dumps(res))
-                        self.sec_details = res
-                        return self.sec_details, 200
-                    # else: return CommonLib.get_profile_name(x)   // call database to fetch record
-                except Exception:
-                    pass
-            # return CommonLib.get_profile_name(x)
+            try:
+                res = json.loads(res.text)
+                if res.status_code >= 200 and res.status_code < 300:
+                    res = {d["sec_id"]:d for d in res[RESPONSE]}
+                    self.rs.set(self.org_id+'_org_structure_sections', json.dumps(res))
+                    self.sec_details = res
+                    return self.sec_details, 200
+                # else: return CommonLib.get_profile_name(x)   // call database to fetch record
+            except Exception:
+                pass
+        # return CommonLib.get_profile_name(x)
