@@ -122,8 +122,6 @@ def validate():
 def healthcheck():
     return {STATUS: SUCCESS}
 
-
-# To set the pin
 @bp.route("/set_pin", methods=["POST"])
 def set_pin():
 
@@ -140,23 +138,12 @@ def set_pin():
     if digilockerid is None:
         return {"status": "error", "response": "DigiLocker ID not provided"}, 400
 
-    # Convert PIN to bytes
     password = pin.encode("utf-8")
-
-    # Generate a salt
     salt = bcrypt.gensalt()
-
-    # Hash the password or PIN with the salt
     hashed_password = bcrypt.hashpw(password, salt)
-
-    # Get current date_time in UTC
     date_time = datetime.now().strftime(D_FORMAT)
-
-    # Create a unique authentication ID using org_id and digilockerid
     plain_txt = f"{org_id}{digilockerid}"
     auth_id = hashlib.sha256(plain_txt.encode()).hexdigest()
-
-    # Prepare data for storage
     data = {
         "auth_id": auth_id,
         "org_id": org_id,
@@ -192,7 +179,6 @@ def set_pin():
     return {"status": "success", "response": "PIN set successfully"}, 200
 
 
-# To verify the pin
 @bp.route("/verify_pin", methods=["POST"])
 def verify_pin():
     org_id = request.form.get("org_id")
@@ -208,15 +194,11 @@ def verify_pin():
     if provided_pin is None:
         return {"status": "error", "response": "PIN not provided"}, 400
 
-    # Create a unique authentication ID using org_id and digilockerid
     plain_txt = f"{org_id}{digilockerid}"
     auth_id = hashlib.sha256(plain_txt.encode()).hexdigest()
-
-    # Retrieve hashed PIN from the database based on org_id and digilockerid
     query = {"auth_id": auth_id}
-    fields = {"pin": 1}  # Fields to include in the result
+    fields = {"pin": 1}  
     stored_pin_res, status_code = MONGOLIB.org_eve("org_auth", query, fields, limit=1)
-
     if status_code != 200:
         return stored_pin_res, status_code
 
@@ -228,7 +210,6 @@ def verify_pin():
             "response": "PIN not found for the provided organization and Digilocker IDs",
         }, 404
 
-    # Hash the provided PIN with the salt used during PIN setting
     provided_pin_bytes = provided_pin.encode("utf-8")
     stored_pin_hash_bytes = stored_pin_hash.encode("utf-8")
 
@@ -236,7 +217,6 @@ def verify_pin():
         return {"status": "success", "response": "PIN verified successfully"}, 200
     else:
         return {"status": "error", "response": "Incorrect PIN"}, 401
-
 
 def get_pin_from_response(response):
     try:
