@@ -1,4 +1,4 @@
-import hashlib ,random ,uuid, bcrypt, requests, os
+import hashlib, random, uuid, bcrypt, requests, os
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, render_template, jsonify
 from lib.constants import *
@@ -126,57 +126,126 @@ def healthcheck():
 # To set the pin
 @bp.route("/set_pin", methods=["POST"])
 def set_pin():
-  
+
     pin = request.form.get("pin")
     org_id = request.form.get("org_id")
     digilockerid = request.form.get("digilockerid")
 
     if pin is None:
         return {"status": "error", "response": "PIN not provided"}, 400
-    
+
     if org_id is None:
         return {"status": "error", "response": "Organization ID not provided"}, 400
-    
+
     if digilockerid is None:
         return {"status": "error", "response": "DigiLocker ID not provided"}, 400
-    
+
     # Convert PIN to bytes
-    password = pin.encode('utf-8')
- 
+    password = pin.encode("utf-8")
+
     # Generate a salt
     salt = bcrypt.gensalt()
-    
+
     # Hash the password or PIN with the salt
     hashed_password = bcrypt.hashpw(password, salt)
-    
+
     # Get current date_time in UTC
     date_time = datetime.now().strftime(D_FORMAT)
-    
+
     # Create a unique authentication ID using org_id and digilockerid
     plain_txt = f"{org_id}{digilockerid}"
     auth_id = hashlib.sha256(plain_txt.encode()).hexdigest()
-    
+
     # Prepare data for storage
     data = {
         "auth_id": auth_id,
         "org_id": org_id,
         "digilockerid": digilockerid,
-        "pin": hashed_password.decode('utf-8'), 
+        "pin": hashed_password.decode("utf-8"),
         "created_on": date_time,
         "updated_on": date_time,
-        }
-    
-    res, status_code = MONGOLIB.org_eve_post("org_auth", data)
+    }
+
+    try:
+        res, status_code = MONGOLIB.org_eve_post("org_auth", data)
+    except Exception as e:
+        if "duplicate key error" in str(e).lower():
+            return {
+                "status": "error",
+                "error_description": "Duplicate entry",
+                "response": str(e),
+            }, 400
+        else:
+            return {
+                "status": "error",
+                "error_description": "Technical error",
+                "response": str(e),
+            }, 400
+
     if status_code != 200:
         logarray.update({"response": res})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "pin/set_pin")
         return res, status_code
-    
+
     pin_res = RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_pin")
     logarray.update({"response": {"org_pin": res, "pin_update": pin_res}})
-    return {"status": "success", "response": "PIN set successfully"}, 200 
+    return {"status": "success", "response": "PIN set successfully"}, 200
 
 
+# To verify the pin
+@bp.route("/verify_pin", methods=["POST"])
+def verify_pin():
+    org_id = request.form.get("org_id")
+    digilockerid = request.form.get("digilockerid")
+    provided_pin = request.form.get("pin")
+
+    if org_id is None:
+        return {"status": "error", "response": "Organization ID not provided"}, 400
+
+    if digilockerid is None:
+        return {"status": "error", "response": "DigiLocker ID not provided"}, 400
+
+    if provided_pin is None:
+        return {"status": "error", "response": "PIN not provided"}, 400
+
+    # Create a unique authentication ID using org_id and digilockerid
+    plain_txt = f"{org_id}{digilockerid}"
+    auth_id = hashlib.sha256(plain_txt.encode()).hexdigest()
+
+    # Retrieve hashed PIN from the database based on org_id and digilockerid
+    query = {"auth_id": auth_id}
+    fields = {"pin": 1}  # Fields to include in the result
+    stored_pin_res, status_code = MONGOLIB.org_eve("org_auth", query, fields, limit=1)
+
+    if status_code != 200:
+        return stored_pin_res, status_code
+
+    stored_pin_hash = get_pin_from_response(stored_pin_res)
+
+    if stored_pin_hash is None:
+        return {
+            "status": "error",
+            "response": "PIN not found for the provided organization and Digilocker IDs",
+        }, 404
+
+    # Hash the provided PIN with the salt used during PIN setting
+    provided_pin_bytes = provided_pin.encode("utf-8")
+    stored_pin_hash_bytes = stored_pin_hash.encode("utf-8")
+
+    if bcrypt.checkpw(provided_pin_bytes, stored_pin_hash_bytes):
+        return {"status": "success", "response": "PIN verified successfully"}, 200
+    else:
+        return {"status": "error", "response": "Incorrect PIN"}, 401
 
 
-
+def get_pin_from_response(response):
+    try:
+        if response.get("status") == "success" and "response" in response:
+            pin_data = response["response"]
+            if isinstance(pin_data, list) and pin_data:
+                pin_entry = pin_data[0]
+                if isinstance(pin_entry, dict) and "pin" in pin_entry:
+                    return pin_entry["pin"]
+    except Exception as e:
+        print(f"Error extracting PIN: {str(e)}")
+    return None
