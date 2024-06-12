@@ -48,6 +48,7 @@ from api.name_match import bp as name_match_bp
 from api.org import bp as org_bp
 from api.org_activity import bp as org_activity_bp
 from api.otpservices import bp as otpservices_bp
+from api.pin import bp as pin_bp
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
@@ -58,6 +59,7 @@ app.register_blueprint(filelock_bp, url_prefix='/filelock')
 app.register_blueprint(metadata_bp, url_prefix='/metadata')
 app.register_blueprint(lockpdf_bp, url_prefix='/lockpdf')
 app.register_blueprint(otpservices_bp, url_prefix='/aadhaar')
+app.register_blueprint(pin_bp, url_prefix='/pin')
 
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
