@@ -1,4 +1,4 @@
-import hashlib, random, uuid, bcrypt, requests, os
+import hashlib, random, uuid, bcrypt, requests, os, re
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, render_template, jsonify
 from lib.constants import *
@@ -25,6 +25,8 @@ bp = Blueprint("pin", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
+MIN_AGE = 0  # minimum age in years
+MAX_AGE = 130  # maximum age in years
 
 try:
     CONFIG["JWT_SECRET"] = secrets.get("aes_secret", os.getenv("JWT_SECRET"))
@@ -40,7 +42,13 @@ def validate():
     try:
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = ("healthcheck", "get_count", "set_pin", "verify_pin")
+        bypass_urls = (
+            "healthcheck",
+            "get_count",
+            "set_pin",
+            "verify_pin",
+            "verify_dob",
+        )
         if (
             request.path.split("/")[1] in bypass_urls
             or request.path.split("/")[-1] in bypass_urls
@@ -122,6 +130,7 @@ def validate():
 def healthcheck():
     return {STATUS: SUCCESS}
 
+
 @bp.route("/set_pin", methods=["POST"])
 def set_pin():
 
@@ -197,7 +206,7 @@ def verify_pin():
     plain_txt = f"{org_id}{digilockerid}"
     auth_id = hashlib.sha256(plain_txt.encode()).hexdigest()
     query = {"auth_id": auth_id}
-    fields = {"pin": 1}  
+    fields = {"pin": 1}
     stored_pin_res, status_code = MONGOLIB.org_eve("org_auth", query, fields, limit=1)
     if status_code != 200:
         return stored_pin_res, status_code
@@ -218,6 +227,7 @@ def verify_pin():
     else:
         return {"status": "error", "response": "Incorrect PIN"}, 401
 
+
 def get_pin_from_response(response):
     try:
         if response.get("status") == "success" and "response" in response:
@@ -229,3 +239,82 @@ def get_pin_from_response(response):
     except Exception as e:
         print(f"Error extracting PIN: {str(e)}")
     return None
+
+
+@bp.route("/verify_dob", methods=["POST"])
+def verify_dob():
+    digilockerid = request.form.get("digilockerid")
+    dob = request.form.get("dob")
+
+    date_pattern = r"\b\d{4}-\d{2}-\d{2}\b"
+    pattern = re.compile(date_pattern)
+
+    if not digilockerid or not dob:
+        return {
+            "status": "error",
+            "response": "Missing digilockerid or date of birth",
+        }, 400
+
+    if not pattern.fullmatch(dob):
+        return {
+            "status": "error",
+            "response": "Date pattern does not match",
+        }, 400
+
+    try:
+
+        date_of_birth = datetime.strptime(dob, "%Y-%m-%d").date()
+        
+        if date_of_birth > datetime.today().date():
+            return {
+                "status": "error",
+                "response": "Date of birth cannot be in the future",
+            }, 400
+
+        today = datetime.today().date()
+        age_years = today.year - date_of_birth.year
+        if (today.month, today.day) < (date_of_birth.month, date_of_birth.day):
+            age_years -= 1
+
+        if age_years <= MIN_AGE:
+            return {
+                "status": "error",
+                "response": f"Age must be greater than {MIN_AGE} years",
+            }, 400
+
+        if age_years > MAX_AGE:
+            return {
+                "status": "error",
+                "response": f"Age must be less than {MAX_AGE} years",
+            }, 400
+
+        query = {"digilockerid": digilockerid}
+        fields = {"date_of_birth": 1}
+        res, status_code = MONGOLIB.org_eve("users_profile", query, fields, limit=1)
+
+        if status_code != 200:
+            return res, status_code
+
+        stored_date_of_birth_str = res.get("response", [{}])[0].get("date_of_birth")
+
+        stored_date_of_birth = datetime.strptime(
+            stored_date_of_birth_str, "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+        stored_date = stored_date_of_birth.date()
+
+        if date_of_birth == stored_date:
+            return {
+                "status": "success",
+                "response": "Date of birth verified successfully",
+            }, 200
+        else:
+            return {"status": "error", "response": "Date of birth does not match"}, 404
+
+    except ValueError:
+        return {"status": "error", "response": "Invalid date format"}, 400
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "response": f"An error occurred while querying the database: {str(e)}",
+        }, 500
