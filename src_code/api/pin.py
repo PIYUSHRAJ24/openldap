@@ -1,4 +1,4 @@
-import hashlib, random, uuid, bcrypt, requests, os, re
+import hashlib, random, uuid, bcrypt, requests, time, os, re
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, render_template, jsonify
 from lib.constants import *
@@ -264,7 +264,7 @@ def verify_dob():
     try:
 
         date_of_birth = datetime.strptime(dob, "%Y-%m-%d").date()
-        
+
         if date_of_birth > datetime.today().date():
             return {
                 "status": "error",
@@ -288,18 +288,13 @@ def verify_dob():
                 "response": f"Age must be less than {MAX_AGE} years",
             }, 400
 
-        query = {"digilockerid": digilockerid}
-        fields = {"date_of_birth": 1}
-        res, status_code = MONGOLIB.org_eve("users_profile", query, fields, limit=1)
-
-        if status_code != 200:
-            return res, status_code
-
-        stored_date_of_birth_str = res.get("response", [{}])[0].get("date_of_birth")
+        user_dob = get_profile_info(digilockerid)
+        stored_date_of_birth_str = user_dob.get("response", {}).get("date_of_birth", "")
 
         stored_date_of_birth = datetime.strptime(
             stored_date_of_birth_str, "%Y-%m-%dT%H:%M:%S.%fZ"
         )
+
         stored_date = stored_date_of_birth.date()
 
         if date_of_birth == stored_date:
@@ -318,3 +313,37 @@ def verify_dob():
             "status": "error",
             "response": f"An error occurred while querying the database: {str(e)}",
         }, 500
+
+
+def get_profile_info(digilockerid):
+    try:
+        client_id = CONFIG["acsapi"]["client_id"]
+        ts = str(int(time.time()))
+        plain_text_key_created = (
+            CONFIG["credentials"].get(client_id, "") + client_id + digilockerid + ts
+        )
+        hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+        post_data = {
+            "clientid": client_id,
+            "ts": ts,
+            "user": digilockerid,
+            "hmac": hmac,
+            "resident_photo": "yes",
+        }
+
+        response = requests.post(
+            CONFIG["acsapi"]["url"] + "/profile/1.2", data=post_data
+        )
+        response.raise_for_status()
+
+        if response.status_code == 404:
+            return {"status": "error", "response": "Record not found", "code": 404}
+
+        return {"status": "success", "response": response.json(), "code": 200}
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "response": f"An error occurred: {str(e)}",
+            "code": 500,
+        }
