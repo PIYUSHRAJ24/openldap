@@ -61,6 +61,5 @@ app.register_blueprint(lockpdf_bp, url_prefix='/lockpdf')
 app.register_blueprint(otpservices_bp, url_prefix='/aadhaar')
 app.register_blueprint(pin_bp, url_prefix='/pin')
 
-
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
 app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug= os.getenv('debug_mode','').lower() == 'true')
