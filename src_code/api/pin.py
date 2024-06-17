@@ -136,8 +136,8 @@ def set_pin():
     org_id = request.form.get("org_id")
     digilockerid = request.form.get("digilockerid")
 
-    pin = re.match(pin_pattern, pin)
-    if not pin:
+    pin_validate = re.match(pin_pattern, pin)
+    if not pin_validate:
         return {
             "status": "error",
             "response": "Please enter valid PIN, pattern not match",
