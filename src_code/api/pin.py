@@ -184,12 +184,12 @@ def set_pin():
 
     if status_code != 200:
         logarray.update({"response": res})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "pin/set_pin")
+       # RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "pin/set_pin")
         return res, status_code
 
     pin_res = RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_auth_update_")
     logarray.update({"response": {"org_auth": res, "pin_update": pin_res}})
-    RABBITMQ_LOGSTASH.log_stash_logger(logarray, logs_queue, "reset_pin")
+   # RABBITMQ_LOGSTASH.log_stash_logger(logarray, logs_queue, "reset_pin")
     return {"status": "success", "response": "PIN set successfully"}, 200
 
 
@@ -405,13 +405,13 @@ def reset_pin():
 
     if status_code != 200:
         logarray.update({"response": res})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "set_pin")
+       # RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "set_pin")
         return res, status_code
 
     pin_res = RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_auth_update_")
     logarray = {"response": {"org_auth": res, "pin_update": pin_res}}
     logarray.update({"response": {"org_auth": res, "pin_update": pin_res}})
-    RABBITMQ_LOGSTASH.log_stash_logger(logarray, logs_queue, "reset_pin")
+    # RABBITMQ_LOGSTASH.log_stash_logger(logarray, logs_queue, "reset_pin")
     return {"status": "success", "response": "PIN set successfully"}, 200
 
 def get_profile_info(digilockerid):
