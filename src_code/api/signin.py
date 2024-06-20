@@ -7,14 +7,14 @@ from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
 from api.org_activity import activity_insert
 from lib.commonlib import CommonLib
-from lib.redislib import RedisLib
+# from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
-REDISLIB = RedisLib()
+# REDISLIB = RedisLib()
 
 logs_queue = "org_sighin_user_"
 bp = Blueprint("signin", __name__)
@@ -122,27 +122,25 @@ def healthcheck():
 
 @bp.route("/get_multiuser_clients", methods=["GET"])
 def get_multiuser_clients():
-    # Get aadhar and mobile_no from the request form
-    aadhar = request.form.get("aadhar")
-    mobile_no = request.form.get("mobile_no")
-
-    # Validate input
-    if not aadhar and not mobile_no:
-        return {
-            "status": "error",
-            "response": "Please enter a valid mobile number, aadhar number, username",
-        }, 400
-
-    if aadhar and not re.match(r"^\d{12}$", aadhar):
-        return {"status": "error", "response": "Invalid Aadhar number"}, 400
-
-    if mobile_no and not re.match(r"^\d{10}$", mobile_no):
-        return {"status": "error", "response": "Invalid mobile number"}, 400
-
     try:
-        # Fetch users based on aadhar or mobile number
+        
+        aadhar = request.form.get("aadhar")
+        mobile_no = request.form.get("mobile_no")
+
+        if not aadhar and not mobile_no:
+            return {
+                "status": "error",
+                "response": "Please enter a valid mobile number or aadhar number",
+            }, 400
+
+        if aadhar and not re.match(r"^\d{12}$", aadhar):
+            return {"status": "error", "response": "Invalid Aadhar number"}, 400
+
+        if mobile_no and not re.match(r"^\d{10}$", mobile_no):
+            return {"status": "error", "response": "Invalid mobile number"}, 400
+
         if aadhar:
-            users = get_users(aadhar, 'other')
+            users, status_code = get_users(aadhar, 'other')
         else:
             query = {"mobile_no": mobile_no}
             fields = {}
@@ -153,7 +151,7 @@ def get_multiuser_clients():
 
         # Filter the user data
         filtered_data = filter_data(users)
-        
+
     except Exception as e:
         return {
             "status": "error",
@@ -220,17 +218,17 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         return {"status": "success", "response": response.json(), "code": 200}
 
     except Exception as e:
-        return {"status": "error", "error_description": str(e)}
+        return {"status": "error", "response": str(e)}
 
 # Function to get users based on str_value and user_type
 def get_users(str_value, user_type):
-    if str_value is None or str_value == '':
-        return False
+    if not str_value:
+        return {"status": "error", "response": "No value provided"}, 400
 
     query = {"mobile_no": str_value}
     fields = {}
 
-    if user_type and user_type == 'other':
+    if user_type == 'other':
         token_data = CommonLib.getAccessToken(str_value)
         token_json_data = json.loads(token_data)
         if 'token' in token_json_data:
@@ -270,9 +268,9 @@ def get_users(str_value, user_type):
 
         final_data = list(mynw_grouping.values())
     else:
-        final_data = False
+        final_data = []
 
-    return final_data
+    return final_data, 200
 
 # Function to get profile names based on objList
 def get_profilename(objList):
@@ -288,4 +286,4 @@ def get_profilename(objList):
                 'name': profile.get('name', '')
             })
         return data
-    return False
+    return []
