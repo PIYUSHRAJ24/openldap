@@ -847,4 +847,15 @@ class CommonLib:
                 return {'status': 'error', 'error_description': 'Failed to connect to server.', 'response': response.text, 'code': response.status_code}, 400
         except Exception as e:
             return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
+    
+    def getAccessToken(payload_id):
+        post_data = {
+            'payload_id': payload_id
+        }
+        headers = {
+            'clientid': CONFIG["adv"]["ADV_API_CID"]
+        }
+        end_point = f"{CONFIG["adv"]["ADV_API_URL"]}"+"gettoken"
+        response = requests.post(end_point , data=post_data, headers=headers)
         
+        return response.text    

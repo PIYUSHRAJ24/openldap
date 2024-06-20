@@ -37,7 +37,7 @@ def validate():
     try:
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = "healthcheck, get_org_users"
+        bypass_urls = "healthcheck, get_multiuser_clients"
         if (
             request.path.split("/")[1] in bypass_urls
             or request.path.split("/")[-1] in bypass_urls
@@ -120,16 +120,17 @@ def healthcheck():
     return {STATUS: SUCCESS}
 
 
-@bp.route("/get_org_users", methods=["GET"])
-def get_org_users():
-    
+@bp.route("/get_multiuser_clients", methods=["GET"])
+def get_multiuser_clients():
+    # Get aadhar and mobile_no from the request form
     aadhar = request.form.get("aadhar")
     mobile_no = request.form.get("mobile_no")
-    
+
+    # Validate input
     if not aadhar and not mobile_no:
         return {
             "status": "error",
-            "response": "Please enter a valid mobile number or aadhar number",
+            "response": "Please enter a valid mobile number, aadhar number, username",
         }, 400
 
     if aadhar and not re.match(r"^\d{12}$", aadhar):
@@ -138,37 +139,153 @@ def get_org_users():
     if mobile_no and not re.match(r"^\d{10}$", mobile_no):
         return {"status": "error", "response": "Invalid mobile number"}, 400
 
-    if aadhar :
-        mobile_uid = aadhar
-    else :    
-        mobile_uid = mobile_no
+    try:
+        # Fetch users based on aadhar or mobile number
+        if aadhar:
+            users = get_users(aadhar, 'other')
+        else:
+            query = {"mobile_no": mobile_no}
+            fields = {}
+            users, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
+
+        if status_code != 200:
+            return users, status_code
+
+        # Filter the user data
+        filtered_data = filter_data(users)
         
+    except Exception as e:
+        return {
+            "status": "error",
+            "response": f"An error occurred: {str(e)}",
+        }, 500
 
+    return {"status": "success", "response": filtered_data}, 200
 
-    #     try:
-    #         res, status_code = MONGOLIB.org_eve_post("org_auth", data)
-    #     except Exception as e:
-    #         if "duplicate key error" in str(e).lower():
-    #             return {
-    #                 "status": "error",
-    #                 "error_description": "Duplicate entry",
-    #                 "response": str(e),
-    #             }, 400
-    #         else:
-    #             return {
-    #                 "status": "error",
-    #                 "error_description": "Technical error",
-    #                 "response": str(e),
-    #             }, 400
+# Function to filter user data
+def filter_data(users):
+    filtered_data = []
+    for user in users["response"]:
+        if "org_id" in user and user["org_id"]:
+            for org_id in user["org_id"]:
+                is_valid_organization = check_for_organization(user["digilockerid"], org_id)
+                if is_valid_organization is not None:
+                    data_as_per_org = user.copy()
+                    data_as_per_org["digilockerid"] = CommonLib.aes_encryption(user["digilockerid"])
+                    data_as_per_org["user_id"] = CommonLib.aes_encryption(user["user_id"])
+                    data_as_per_org["orgs"] = [is_valid_organization]
+                    del data_as_per_org["org_id"]
+                    filtered_data.append(data_as_per_org)
 
-    #     if status_code != 200:
-    #         logarray.update({"response": res})
-    #        # RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, "pin/set_pin")
-    #         return res, status_code
+    if filtered_data:
+        unique_mobile_numbers = set(user["mobile_no"] for user in users["response"])
+        return {
+            "data": filtered_data,
+            "response": list(unique_mobile_numbers),
+        }
+    else:
+        return []
 
-    #     pin_res = RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_auth_update_")
-    #     logarray.update({"response": {"org_auth": res, "pin_update": pin_res}})
-    #    # RABBITMQ_LOGSTASH.log_stash_logger(logarray, logs_queue, "reset_pin")
+# Function to check organization details
+def check_for_organization(lockerid, org_id):
+    res = get_org_details_based_on_lockerid(lockerid, org_id)
+    
+    if res["status"] == "success" and res["response"]:
+        if res["response"][0] and res["response"][0]["is_active"] == "Y":
+            data = res["response"][0]
+            return {
+                "org_id": data["org_id"],
+                "org_name": data.get("org_name", data["org_id"]),
+            }
 
-    # Assuming additional code here to handle the valid input case
-    return {"status": "success", "response": "Valid input received"}, 200
+    return None
+
+# Function to get organization details based on locker ID and org ID
+def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
+    client_secret = CONFIG["org_signin_api"]["client_secret"]
+    client_id = CONFIG["org_signin_api"]["client_id"]
+    url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
+    ts = str(int(time.time()))
+    hmac = hashlib.sha256(f"{client_secret}{client_id}{ts}".encode()).hexdigest()
+    
+    headers = {"client_id": client_id, "ts": ts, "hmac": hmac}
+    params = {"digilockerid": lockerid, "org_id": org_id}
+    
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        
+        if response.status_code != 200:
+            return {"status": "error", "response": "Record not found", "code": 404}
+
+        return {"status": "success", "response": response.json(), "code": 200}
+
+    except Exception as e:
+        return {"status": "error", "error_description": str(e)}
+
+# Function to get users based on str_value and user_type
+def get_users(str_value, user_type):
+    if str_value is None or str_value == '':
+        return False
+
+    query = {"mobile_no": str_value}
+    fields = {}
+
+    if user_type and user_type == 'other':
+        token_data = CommonLib.getAccessToken(str_value)
+        token_json_data = json.loads(token_data)
+        if 'token' in token_json_data:
+            str_value = token_json_data['token']
+        query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
+
+    userData = MONGOLIB.accounts_eve("users", query, fields)
+
+    if userData and 'documents' in userData and len(userData['documents']) >= 1:
+        objList = []
+        users_details = []
+
+        for user in userData['documents']:
+            objList.append(user['digilockerid'])
+            users_details.append({
+                'digilockerid': user['digilockerid'],
+                'user_type': user['user_type'],
+                'user_id': user['user_id'],
+                'org_id_exists': user.get('org_id', False)
+            })
+
+        profile_data = {}
+        profiles = get_profilename(objList)
+
+        for v in profiles:
+            digilockerid = v['digilockerid']
+            profile_data[digilockerid] = {'name': v['name']}
+
+        mynw_grouping = {}
+        for v1 in users_details:
+            lockerid = v1['digilockerid']
+            if lockerid in mynw_grouping:
+                mynw_grouping[lockerid] = v1
+            else:
+                mynw_grouping[lockerid] = v1
+                mynw_grouping[lockerid]['name'] = profile_data.get(lockerid, {}).get('name', v1['user_id'])
+
+        final_data = list(mynw_grouping.values())
+    else:
+        final_data = False
+
+    return final_data
+
+# Function to get profile names based on objList
+def get_profilename(objList):
+    query = {"digilockerid": {"$in": objList}}
+    fields = {}
+    userData = MONGOLIB.accounts_eve("users_profile", query, fields)
+
+    if userData and 'documents' in userData and len(userData['documents']) >= 1:
+        data = []
+        for profile in userData['documents']:
+            data.append({
+                'digilockerid': profile.get('digilockerid', ''),
+                'name': profile.get('name', '')
+            })
+        return data
+    return False
