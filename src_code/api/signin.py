@@ -163,7 +163,7 @@ def get_multiuser_clients():
 # Function to filter user data
 def filter_data(users):
     filtered_data = []
-    for user in users["response"]:
+    for user in users:
         if "org_id" in user and user["org_id"]:
             for org_id in user["org_id"]:
                 is_valid_organization = check_for_organization(user["digilockerid"], org_id)
@@ -234,14 +234,16 @@ def get_users(str_value, user_type):
         if 'token' in token_json_data:
             str_value = token_json_data['token']
         query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
+    
+    # str_value = 'd8ee4c9c-66d5-5cd8-9205-b91c436b5cce'
+    # query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
 
-    userData = MONGOLIB.accounts_eve("users", query, fields)
-
-    if userData and 'documents' in userData and len(userData['documents']) >= 1:
+    response = MONGOLIB.accounts_eve("users", query, fields)
+    userData = response[0]
+    if userData and 'response' in userData and len(userData['response']) > 0:
         objList = []
         users_details = []
-
-        for user in userData['documents']:
+        for user in userData['response']:
             objList.append(user['digilockerid'])
             users_details.append({
                 'digilockerid': user['digilockerid'],
@@ -249,14 +251,13 @@ def get_users(str_value, user_type):
                 'user_id': user['user_id'],
                 'org_id_exists': user.get('org_id', False)
             })
-
+   
         profile_data = {}
         profiles = get_profilename(objList)
-
         for v in profiles:
             digilockerid = v['digilockerid']
             profile_data[digilockerid] = {'name': v['name']}
-
+        
         mynw_grouping = {}
         for v1 in users_details:
             lockerid = v1['digilockerid']
@@ -276,14 +277,15 @@ def get_users(str_value, user_type):
 def get_profilename(objList):
     query = {"digilockerid": {"$in": objList}}
     fields = {}
-    userData = MONGOLIB.accounts_eve("users_profile", query, fields)
-
-    if userData and 'documents' in userData and len(userData['documents']) >= 1:
+    response = MONGOLIB.accounts_eve("users_profile", query, fields)
+    userData = response[0]
+    if userData and 'response' in userData and len(userData['response']) >= 1:
         data = []
-        for profile in userData['documents']:
+        for profile in userData['response']:
             data.append({
                 'digilockerid': profile.get('digilockerid', ''),
                 'name': profile.get('name', '')
             })
         return data
+  
     return []
