@@ -79,8 +79,8 @@ def healthcheck():
 @bp.route('/users_list', methods=['GET'])
 def list_department():
     try:
-        
-        query = {"mobile_no": '9389856738'}
+        query = request.form.get("mobile_no")
+        # query = {"mobile_no": '9389856738'}
         fields = {}
         resp, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
 
