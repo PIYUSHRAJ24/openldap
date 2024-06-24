@@ -78,7 +78,7 @@ def validate():
         else:
             return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT45): " + str(e)}, 401
 
 @bp.route('/send_otp',methods =['POST'])
 def send_otp():
