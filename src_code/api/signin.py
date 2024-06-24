@@ -242,19 +242,20 @@ def get_users(str_value, user_type):
     query = {"mobile_no": str_value}
     fields = {}
 
-    # if user_type == 'other':
-    #     token_data = CommonLib.getAccessToken(str_value)
-    #     token_json_data = json.loads(token_data)
-    #     if 'token' in token_json_data:
-    #         str_value = token_json_data['token']
-    #     query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
+    if user_type == 'other':
+        token_data = CommonLib.getAccessToken(str_value)
+        token_json_data = json.loads(token_data)
+        if 'token' in token_json_data:
+            str_value = token_json_data['token']
+        query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
 
-    str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
-    query = {
-        "$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]
-    }
+    # str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
+    # query = {
+    #     "$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]
+    # }
 
     response = MONGOLIB.accounts_eve("users", query, fields)
+    return {"status": "success", "response": response.json()}, 400
     userData = response[0]
     if userData and "response" in userData and len(userData["response"]) > 0:
         objList = []
