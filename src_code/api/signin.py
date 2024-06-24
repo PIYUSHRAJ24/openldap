@@ -241,7 +241,7 @@ def get_users(str_value, user_type):
 
     query = {"mobile_no": str_value}
     fields = {}
-
+    return {"status": "success", "response": "here" }, 400
     if user_type == 'other':
         token_data = CommonLib.getAccessToken(str_value)
         token_json_data = json.loads(token_data)
@@ -255,7 +255,6 @@ def get_users(str_value, user_type):
     # }
 
     response = MONGOLIB.accounts_eve("users", query, fields)
-    return {"status": "success", "response": response.json()}, 400
     userData = response[0]
     if userData and "response" in userData and len(userData["response"]) > 0:
         objList = []
