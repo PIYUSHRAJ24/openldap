@@ -36,7 +36,6 @@ def validate_user():
     JWT Authentication
     """
     try:
-        return {"status": "success", "description": "OPTIONS OK"},200
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
         bypass_urls = "healthcheck"
