@@ -38,7 +38,7 @@ def validate_user():
         else:
             return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT 2): " + str(e)}, 401
 
 
 @bp.route('/v1', methods=['POST'])
