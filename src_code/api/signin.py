@@ -36,7 +36,6 @@ def validate_user():
     JWT Authentication
     """
     try:
-        return {"status": "success", "ok": "OPTIONS OK"}
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
         bypass_urls = "healthcheck"
@@ -70,7 +69,7 @@ def validate_user():
         # g.sec_details = jwtlib.sec_details
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT 1): " + str(e)}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
