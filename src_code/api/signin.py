@@ -163,7 +163,8 @@ def filter_data(users):
                     filtered_data.append(data_as_per_org)
 
     if filtered_data:
-        unique_mobile_numbers = set(user["mobile_no"] for user in users["response"])
+        # unique_mobile_numbers = set(user["mobile_no"] for user in users["response"])
+        unique_mobile_numbers = set(user["mobile_no"] for user in users)
         return {
             "data": filtered_data,
             "response": list(unique_mobile_numbers),
