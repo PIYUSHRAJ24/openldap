@@ -76,6 +76,26 @@ def validate_user():
 def healthcheck():
     return {STATUS: SUCCESS}
 
+@bp.route('/user_list', methods=['POST'])
+def list_department():
+    try:      
+        query = {}
+        fields = {}
+        resp, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=50)
+        
+        if status_code != 200:
+            return resp, status_code
+        
+        data = []
+
+        for d in resp[RESPONSE]:
+            
+                data.append(d)
+
+        return {STATUS: SUCCESS, RESPONSE: data}, 200
+    except Exception as e:
+        res = {STATUS: ERROR, ERROR_DES: "users: " + str(e)}
+        return res, 400
 
 @bp.route("/get_multiuser_clients", methods=["GET"])
 def get_multiuser_clients():
