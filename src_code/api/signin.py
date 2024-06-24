@@ -119,7 +119,7 @@ def get_multiuser_clients():
             return {"status": "error", "response": "Invalid mobile number"}, 400
 
         if aadhar:
-            return {"status": "success", "response": aadhar }, 400
+            # return {"status": "success", "response": aadhar }, 400
             users, status_code = get_users(aadhar, "other")
         else:
             query = {"mobile_no": mobile_no}
