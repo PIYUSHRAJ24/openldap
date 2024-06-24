@@ -378,8 +378,6 @@ def verify_pin():
 @bp.route('/send_mobile_otp', methods=['POST'])
 def send_otp_v1():
     try:
-        print("kkkk")
-        exit()
         res, status_code = VALIDATIONS.send_otp_v1(request)
        
         if status_code != 200:
