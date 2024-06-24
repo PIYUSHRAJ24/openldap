@@ -76,12 +76,14 @@ def validate_user():
 def healthcheck():
     return {STATUS: SUCCESS}
 
-@bp.route('/user_list', methods=['GET'])
+@bp.route('/user_list', methods=['POST'])
 def list_department():
-    try:      
-        query = {}
+    try:
+        
+        query = {"mobile_no": '9389856738'}
         fields = {}
-        resp, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=50)
+        resp, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
+
         
         if status_code != 200:
             return resp, status_code
