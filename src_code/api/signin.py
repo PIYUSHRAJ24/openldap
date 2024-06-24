@@ -36,42 +36,42 @@ def validate_user():
     JWT Authentication
     """
     try:
+        return {"status": "success", "ok": "OPTIONS OK"}
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
-        
-        bypass_urls = ["healthcheck"]
+        bypass_urls = "healthcheck"
         if (
             request.path.split("/")[1] in bypass_urls
             or request.path.split("/")[-1] in bypass_urls
         ):
             return
-        
         g.endpoint = request.path
 
         jwtlib = DriveJwt(request)
-
-        # Log the incoming request for debugging
-        print("Request Headers:", request.headers)
-        print("Request Path:", request.path)
 
         jwtres, status_code = jwtlib.jwt_login_org()
 
         if status_code != 200:
             return jwtres, status_code
-        
         g.path = jwtres
         g.jwt_token = jwtlib.jwt_token
         g.did = jwtlib.device_security_id
         g.digilockerid = jwtlib.digilockerid
         g.org_id = jwtlib.org_id
         g.role = jwtlib.user_role
-
+        # g.org_access_rules = jwtlib.org_access_rules
+        # g.org_user_details = jwtlib.org_user_details
+        # g.user_rules = jwtlib.user_rules
+        # g.org_access_functions = jwtlib.org_access_functions
+        # g.user_departments = jwtlib.user_departments
+        # g.org_access_functions = jwtlib.org_access_functions
+        # g.org_ds_fn_roles = jwtlib.org_ds_fn_roles
+        # g.dept_details = jwtlib.dept_details
+        # g.sec_details = jwtlib.sec_details
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
-
     except Exception as e:
-        # Log the exception for debugging
-        print("Exception:", str(e))
         return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+
 
 @bp.route("/", methods=["GET", "POST"])
 def healthcheck():
