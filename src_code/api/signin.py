@@ -119,7 +119,6 @@ def get_multiuser_clients():
             return {"status": "error", "response": "Invalid mobile number"}, 400
 
         if aadhar:
-            # return {"status": "success", "response": aadhar }, 400
             users, status_code = get_users(aadhar, "other")
         else:
             query = {"mobile_no": mobile_no}
@@ -223,10 +222,6 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     try:
         response = requests.request("GET", url, headers=headers, data=params)
-        # print(response.json())
-        # print("========cdddddddddddddddd==========")
-        # exit()
-
         if response.status_code != 200:
             return {"status": "error", "response": response.json(), "code": 404}
 
