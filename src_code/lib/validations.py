@@ -564,6 +564,37 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:org_doc_count:: ' + str(e)}, 400
 
+    def hmac_authentication(self, request):
+        ''' Validate hmac details received over http request '''
+        
+        client_id = CommonLib.filter_input(request.headers.get("client_id"))
+        ts = CommonLib.filter_input(request.headers.get("ts"))
+        hmac = CommonLib.filter_input(request.headers.get("hmac"))
+        try:
+            if client_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "client_id", RESPONSE: client_id[0]}, 400
+            elif not client_id[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid client_id"}, 400
+            if ts[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "ts", RESPONSE: ts[0]}, 400
+            elif not ts[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid ts"}, 400
+            if hmac[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "hmac", RESPONSE: hmac[0]}, 400
+            elif not hmac[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid hmac"}, 400
+            # creating hmac on server side stored secret
+            plain_text_key_created = CONFIG['credentials'].get(client_id[0], '') + client_id[0] + ts[0]
+            key_created = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+            if hmac[0] == key_created:
+                return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
+            else:
+                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access'}, 401
+
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authentication:' + str(e)}, 400
+
+
     def validate_org_details(self, request):
         org_alias = CommonLib.filter_input(request.json.get('org_alias'))
         org_type = CommonLib.filter_input(request.json.get('org_type'))
