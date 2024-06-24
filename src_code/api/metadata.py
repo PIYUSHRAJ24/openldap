@@ -10,7 +10,7 @@ from flask import request, Blueprint, g
 from lib.connectors3 import Connectors3
 from lib.constants import *
 from lib.drivejwt import DriveJwt
-from lib.elasticlib import ElasticLib
+# from lib.elasticlib import ElasticLib
 # from lib.extractor import Extractor
 from lib.mongolib import MongoLib
 from api.org_activity  import activity_insert

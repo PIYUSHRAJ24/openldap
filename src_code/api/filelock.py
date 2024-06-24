@@ -1,7 +1,7 @@
 from flask import request, Blueprint, g
 from lib.constants import *
 from lib.validations import Validations
-from lib.elasticlib import ElasticLib
+# from lib.elasticlib import ElasticLib
 from lib.mongolib import MongoLib
 from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
@@ -22,7 +22,7 @@ except Exception as s:
     CONFIG['JWT_SECRET'] = os.getenv('JWT_SECRET') #for local
 
 VALIDATIONS = Validations()
-ELASTICLIB = ElasticLib()
+# ELASTICLIB = ElasticLib()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 CONNECTORS3 =Connectors3()
