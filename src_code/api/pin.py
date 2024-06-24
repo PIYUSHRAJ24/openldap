@@ -120,7 +120,7 @@ def validate():
 
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT 4): " + str(e)}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])

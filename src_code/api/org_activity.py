@@ -65,7 +65,7 @@ def validate():
             else:
                 return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT 3): " + str(e)+' [#001]'}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)+' [#001]'}, 401
 
 
 

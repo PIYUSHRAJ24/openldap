@@ -69,7 +69,7 @@ def validate_user():
         # g.sec_details = jwtlib.sec_details
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT 5): " + str(e)}, 401
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
