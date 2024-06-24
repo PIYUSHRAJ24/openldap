@@ -76,7 +76,7 @@ def validate_user():
 def healthcheck():
     return {STATUS: SUCCESS}
 
-@bp.route('/user_list', methods=['GET'])
+@bp.route('/users_list', methods=['GET'])
 def list_department():
     try:
         
