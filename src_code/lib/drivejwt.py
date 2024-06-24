@@ -108,9 +108,9 @@ class DriveJwt:
                 return path, code
             if not self.digilockerid or not VALIDATIONS.is_valid_did(self.digilockerid):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 401
-            # role, code = self.get_role()
-            # if code != 200:
-            #     return role, code
+            role, code = self.get_role()
+            if code != 200:
+                return role, code
             # prmsion, code = self.get_permission()
             # if code != 200:
             #     return prmsion, code
@@ -133,33 +133,33 @@ class DriveJwt:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:jwt_login_org:: ' + str(e)}, 401
 
-    # def get_role(self):
+    def get_role(self):
         
-    #     query = {'org_id':self.org_id}
-    #     res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_rules"], query, {}, limit=500)
+        query = {'org_id':self.org_id}
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_rules"], query, {}, limit=500)
         
-    #     if status_code == 400:
-    #         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_185')}, 401
-    #     if status_code != 200 or type(res[RESPONSE]) != type([]):
-    #         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_164')}, 401
-    #     self.org_access_rules = res[RESPONSE]
+        if status_code == 400:
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_185')}, 401
+        if status_code != 200 or type(res[RESPONSE]) != type([]):
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_164')}, 401
+        self.org_access_rules = res[RESPONSE]
 
-    #     default_access_id = hashlib.md5((self.org_id+self.digilockerid).encode()).hexdigest()
-    #     for u in self.org_access_rules:
-    #         if u.get('digilockerid') == self.digilockerid:
-    #             if u.get('access_id') == default_access_id:
-    #                 if u.get('is_active') != "Y":
-    #                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_180')}, 401
-    #                 self.user_role = u.get('rule_id')
-    #                 self.org_user_details = u
-    #             if u.get("is_active") == "Y" and u.get("dept_id") and not u.get('sec_id'):
-    #                 self.user_departments.append(u['dept_id'])
-    #             if u.get("is_active") == "Y" and u.get("sec_id"):
-    #                 self.user_sections.append(u['sec_id'])
-    #             self.user_rules.append(u)
-    #     if not self.user_role:
-    #         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_161')}, 401
-    #     return self.org_user_details, 200 #type: ignore
+        default_access_id = hashlib.md5((self.org_id+self.digilockerid).encode()).hexdigest()
+        for u in self.org_access_rules:
+            if u.get('digilockerid') == self.digilockerid:
+                if u.get('access_id') == default_access_id:
+                    if u.get('is_active') != "Y":
+                        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_180')}, 401
+                    self.user_role = u.get('rule_id')
+                    self.org_user_details = u
+                if u.get("is_active") == "Y" and u.get("dept_id") and not u.get('sec_id'):
+                    self.user_departments.append(u['dept_id'])
+                if u.get("is_active") == "Y" and u.get("sec_id"):
+                    self.user_sections.append(u['sec_id'])
+                self.user_rules.append(u)
+        if not self.user_role:
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_161')}, 401
+        return self.org_user_details, 200 #type: ignore
     
     # def get_permission(self):
 

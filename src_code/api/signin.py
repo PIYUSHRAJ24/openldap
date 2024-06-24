@@ -57,7 +57,7 @@ def validate_user():
         g.did = jwtlib.device_security_id
         g.digilockerid = jwtlib.digilockerid
         g.org_id = jwtlib.org_id
-        # g.role = jwtlib.user_role
+        g.role = jwtlib.user_role
         # g.org_access_rules = jwtlib.org_access_rules
         # g.org_user_details = jwtlib.org_user_details
         # g.user_rules = jwtlib.user_rules
