@@ -143,6 +143,7 @@ def get_multiuser_clients():
 # Function to filter user data
 def filter_data(users):
     filtered_data = []
+    client_secret = CONFIG["org_signin_api"]["client_secret"]
     for user in users:
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
@@ -152,10 +153,10 @@ def filter_data(users):
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
                     data_as_per_org["digilockerid"] = CommonLib.aes_encryption(
-                        user["digilockerid"]
+                        user["digilockerid"],client_secret
                     )
                     data_as_per_org["user_id"] = CommonLib.aes_encryption(
-                        user["user_id"]
+                        user["user_id"],client_secret
                     )
                     data_as_per_org["orgs"] = [is_valid_organization]
                     del data_as_per_org["org_id"]
