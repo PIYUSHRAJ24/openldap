@@ -119,12 +119,13 @@ def get_multiuser_clients():
             return {"status": "error", "response": "Invalid mobile number"}, 400
 
         if aadhar:
+            return {"status": "success", "response": aadhar }, 400
             users, status_code = get_users(aadhar, "other")
         else:
             query = {"mobile_no": mobile_no}
             fields = {}
             users, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
-
+        
         if status_code != 200:
             return users, status_code
 
@@ -241,7 +242,6 @@ def get_users(str_value, user_type):
 
     query = {"mobile_no": str_value}
     fields = {}
-    return {"status": "success", "response": "here" }, 400
     if user_type == 'other':
         token_data = CommonLib.getAccessToken(str_value)
         token_json_data = json.loads(token_data)
