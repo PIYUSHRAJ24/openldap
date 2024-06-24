@@ -21,7 +21,7 @@ from lib.secretsmanager import SecretManager
 import re
 
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
-from api.org import esign_consent_get
+# from api.org import esign_consent_get
 rmq = RabbitMQTaskClientLogstash()
 
 CONFIG = {}
@@ -70,9 +70,9 @@ def validate():
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_123')}, 401
             if not g.digilockerid and not VALIDATIONS.is_valid_did(g.digilockerid):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 401
-            consent_status, consent_code = esign_consent_get()
-            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            # consent_status, consent_code = esign_consent_get()
+            # if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
         else:
             return jwtres, status_code
     except Exception as e:

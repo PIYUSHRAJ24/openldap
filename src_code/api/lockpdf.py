@@ -14,7 +14,7 @@ import hashlib
 import os
 from base64 import b64encode
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
-from api.org import esign_consent_get
+# from api.org import esign_consent_get
 rmq = RabbitMQTaskClientLogstash()
 
 VALIDATIONS = Validations()
@@ -62,10 +62,9 @@ def validate():
             g.org_id = jwtlib.org_id
             g.role = jwtlib.user_role
             
-            consent_status, consent_code = esign_consent_get()
-            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            
+            # consent_status, consent_code = esign_consent_get()
+            # if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
         else:
             return jwtres, status_code
     except Exception as e:
