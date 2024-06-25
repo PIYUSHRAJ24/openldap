@@ -108,9 +108,9 @@ class DriveJwt:
                 return path, code
             if not self.digilockerid or not VALIDATIONS.is_valid_did(self.digilockerid):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 401
-            role, code = self.get_role()
-            if code != 200:
-                return role, code
+            # role, code = self.get_role()
+            # if code != 200:
+            #     return role, code
             # prmsion, code = self.get_permission()
             # if code != 200:
             #     return prmsion, code

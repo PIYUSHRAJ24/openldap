@@ -57,7 +57,7 @@ def validate_user():
         g.did = jwtlib.device_security_id
         g.digilockerid = jwtlib.digilockerid
         g.org_id = jwtlib.org_id
-        g.role = jwtlib.user_role
+        # g.role = jwtlib.user_role
         # g.org_access_rules = jwtlib.org_access_rules
         # g.org_user_details = jwtlib.org_user_details
         # g.user_rules = jwtlib.user_rules
@@ -127,7 +127,7 @@ def get_multiuser_clients():
         
         if status_code != 200:
             return users, status_code
-        return {"status": "success", "response": users}, 200
+
         # Filter the user data
         filtered_data = filter_data(users)
 
@@ -189,17 +189,8 @@ def check_for_organization(lockerid, org_id):
 
 # Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
-    # client_secret = CONFIG["org_signin_api"]["client_secret"]
-    # client_id = CONFIG["org_signin_api"]["client_id"]
-    # url = (
-    #     CONFIG["org_signin_api"]["url"]
-    #     + "org/get_access_rules?digilockerid="
-    #     + lockerid
-    #     + "&org_id="
-    #     + org_id
-    # )
+  
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
-
     url = "https://dl-org-api.dl6.in/org/get_access_rules"
     headers = {
     'device-security-id': g.did,
