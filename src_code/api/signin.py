@@ -127,7 +127,7 @@ def get_multiuser_clients():
         
         if status_code != 200:
             return users, status_code
-
+        return {"status": "success", "response": users}, 200
         # Filter the user data
         filtered_data = filter_data(users)
 
