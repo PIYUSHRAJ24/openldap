@@ -262,7 +262,7 @@ def get_users(str_value, user_type):
                 mynw_grouping[lockerid]["name"] = profile_data.get(lockerid, {}).get(
                     "name", v1["user_id"]
                 )
-
+        return {"status": "success", "response": final_data}, 200
         final_data = list(mynw_grouping.values())
     else:
         final_data = []
