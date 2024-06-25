@@ -189,35 +189,23 @@ def check_for_organization(lockerid, org_id):
 
 # Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
-    client_secret = CONFIG["org_signin_api"]["client_secret"]
-    client_id = CONFIG["org_signin_api"]["client_id"]
-    url = (
-        CONFIG["org_signin_api"]["url"]
-        + "org/get_access_rules?digilockerid="
-        + lockerid
-        + "&org_id="
-        + org_id
-    )
+    # client_secret = CONFIG["org_signin_api"]["client_secret"]
+    # client_id = CONFIG["org_signin_api"]["client_id"]
+    # url = (
+    #     CONFIG["org_signin_api"]["url"]
+    #     + "org/get_access_rules?digilockerid="
+    #     + lockerid
+    #     + "&org_id="
+    #     + org_id
+    # )
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
-    ts = str(int(time.time()))
-    plain_text = client_secret + client_id + ts
-    hmac = hashlib.sha256(plain_text.encode()).hexdigest()
 
+    url = "https://dl-org-api.dl6.in/org/get_access_rules"
     headers = {
     'device-security-id': g.did,
-    'client_id': client_id,
-    'ts': ts,
-    'hmac': hmac,
     'Authorization': 'Bearer '+ g.jwt_token,
     'Content-Type': 'application/x-www-form-urlencoded'
     }
-    
-    # headers = {
-    # 'client_id': client_id,
-    # 'ts': ts,
-    # 'hmac': hmac,
-    # }
-
 
     params = {"digilockerid": lockerid, "org_id": org_id}
 
