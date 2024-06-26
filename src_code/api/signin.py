@@ -104,6 +104,10 @@ def get_multiuser_clients():
             responce, status_code = MONGOLIB.accounts_eve(
                 "users", query, fields, limit=1
             )
+            return {
+                "status": "Success",
+                "response": responce,
+            }, status_code
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -132,10 +136,6 @@ def get_multiuser_clients():
         if aadhar:
             filtered_data = filter_data(users)
         else :
-            return {
-                "status": "Success",
-                "response": usr,
-            }, 200
             filtered_data = filter_data(usr)
             
     except Exception as e:
