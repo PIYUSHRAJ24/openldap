@@ -361,7 +361,7 @@ def get_users(str_value, user_type):
         #     query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
 
         str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
-        return {"status": "error", "response": "test"}, 400
+        
 
         query = {
             "$or": [
@@ -372,6 +372,7 @@ def get_users(str_value, user_type):
         }
 
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
+        return {"status": "errorsss", "response": response}, status_code
         if status_code != 200:
             return response, status_code
 
