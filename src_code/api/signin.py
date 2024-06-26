@@ -104,10 +104,9 @@ def get_multiuser_clients():
             responce, status_code = MONGOLIB.accounts_eve(
                 "users", query, fields, limit=1
             )
-            return {
-                "status": "Success",
-                "response": responce,
-            }, status_code
+            if status_code != 200:
+                return {"status": "error", "response ": f"{mobile_no} Not Found" }, status_code
+
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -380,7 +379,7 @@ def get_users(str_value, user_type):
 
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
         if status_code != 200:
-            return {"status": "error", "response ": "Not Found" }, status_code
+            return {"status": "error", "response ": f"{str_value} Not Found" }, status_code
 
         if (
             response["response"]
