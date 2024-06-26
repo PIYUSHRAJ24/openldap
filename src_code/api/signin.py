@@ -76,28 +76,6 @@ def validate_user():
 def healthcheck():
     return {STATUS: SUCCESS}
 
-@bp.route('/users_list', methods=['GET'])
-def list_department():
-    try:
-        mno = request.form.get("mobile_no")
-        query = {"mobile_no": mno}
-        fields = {}
-        resp, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
-
-        
-        if status_code != 200:
-            return resp, status_code
-        
-        data = []
-
-        for d in resp[RESPONSE]:
-            
-                data.append(d)
-
-        return {STATUS: SUCCESS, RESPONSE: data}, 200
-    except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "users: " + str(e)}
-        return res, 400
 
 @bp.route("/get_multiuser_clients", methods=["GET"])
 def get_multiuser_clients():
@@ -123,21 +101,40 @@ def get_multiuser_clients():
         else:
             query = {"mobile_no": mobile_no}
             fields = {}
-            users, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
-        
+            responce, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
+            users = []
+            
+            if responce['status'] == 'success':
+                user_info = responce['response'][0]
+                if user_info['digilockerid']:  
+                    digilockerid = user_info['digilockerid']
+                    user_type = user_info['user_type']
+                    user_id = user_info['user_id']
+                    org_ids = user_info['org_id']
+                    
+                    output_dict = {
+                        'digilockerid': digilockerid,
+                        'name' : get_user_name(digilockerid),
+                        'user_type': user_type,
+                        'user_id': user_id,
+                        'org_id_exists': org_ids
+                    }
+                    
+                users.append(output_dict)
+               
         if status_code != 200:
             return users, status_code
 
         # Filter the user data
         filtered_data = filter_data(users)
-
+    
     except Exception as e:
         return {
             "status": "error",
             "response": f"An error occurred: {str(e)}",
         }, 500
 
-    return {"status": "success", "response": filtered_data}, 200
+    return filtered_data, 200
 
 
 # Function to filter user data
@@ -145,37 +142,171 @@ def filter_data(users):
     filtered_data = []
     client_secret = CONFIG["org_signin_api"]["client_secret"]
     for user in users:
+        
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
+                
                 is_valid_organization = check_for_organization(
                     user["digilockerid"], org_id
                 )
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
-                    data_as_per_org["digilockerid"] = CommonLib.aes_encryption(
-                        user["digilockerid"],client_secret
+                    data_as_per_org["digilockerid"] = CommonLib.aes_encryption_v3(
+                        user["digilockerid"], client_secret
                     )
+                    
                     data_as_per_org["user_id"] = CommonLib.aes_encryption(
-                        user["user_id"],client_secret
+                        user["user_id"], client_secret
                     )
+
                     data_as_per_org["orgs"] = [is_valid_organization]
-                    del data_as_per_org["org_id"]
+                    if "org_id" in data_as_per_org:
+                        del data_as_per_org["org_id"]
                     filtered_data.append(data_as_per_org)
+                    # if not any(d["digilockerid"] == data_as_per_org["digilockerid"] for d in filtered_data):
+                    #     filtered_data.append(data_as_per_org)              
 
     if filtered_data:
-        # unique_mobile_numbers = set(user["mobile_no"] for user in users["response"])
-        unique_mobile_numbers = set(user["mobile_no"] for user in users)
-        return {
-            "data": filtered_data,
-            "response": list(unique_mobile_numbers),
-        }
+        return { "status" : "success","data": filtered_data }
     else:
-        return []
+        unique_mobile_numbers = {user.get("mobile_no", "") for user in users}
+        return {
+            "status" : "success",
+            "data": list(unique_mobile_numbers),
+        }
 
 
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
+    # res = {
+    #     "status": "success",
+    #     "response": [
+    #         {
+    #             "access_id": "cd111bc3651bb6bc817116eb38d9e3c5",
+    #             "designation": "director",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "f62b0e41-342d-4f13-a34f-22f7b7d2d35a",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-02-05T10:39:51.959000Z",
+    #         },
+    #         {
+    #             "access_id": "ec60fac8fb5ae1c3c0fc155f52670e16",
+    #             "designation": "director",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "N",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-06-07T13:28:08.829000Z",
+    #         },
+    #         {
+    #             "access_id": "09cf6262136d538cf672ad920efc3c51",
+    #             "dept_id": "58cac91f93f251681fb7f56699d70c8b",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-29T15:31:13.600000Z",
+    #         },
+    #         {
+    #             "access_id": "be09083a951c339bb78e1fc08266b408",
+    #             "dept_id": "9564913c0fd37ed5148d16f5788d0e99",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-29T15:31:16.326000Z",
+    #         },
+    #         {
+    #             "access_id": "f91ff73c7db23c0757a40c73d8530f71",
+    #             "dept_id": "d7d2a46f95e26c001daaadf7f40612ea",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-29T15:53:01.549000Z",
+    #         },
+    #         {
+    #             "access_id": "3963681e252904f9722631825c0538a1",
+    #             "dept_id": "73de10b1afaaf6baf158622c19840faf",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-29T17:07:59.992000Z",
+    #         },
+    #         {
+    #             "access_id": "c547d4d04453b3273daa93c7a52fa014",
+    #             "dept_id": "fcee10e260817ad6777f09dfcde076fb",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-29T17:08:04.661000Z",
+    #         },
+    #         {
+    #             "access_id": "b7227b8ed2d60476b9b2750060456751",
+    #             "dept_id": "f6c36a89c17e43ad35f69b06a21484ab",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "f62b0e41-342d-4f13-a34f-22f7b7d2d35a",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-05-31T09:50:49.384000Z",
+    #         },
+    #         {
+    #             "access_id": "0b5e2447f7cb7c39800b9847ba1059cd",
+    #             "dept_id": "fcee10e260817ad6777f09dfcde076fb",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "sec_id": "9d26be25aa4fc9133e24255361120aea",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-06-03T15:33:59.332000Z",
+    #         },
+    #         {
+    #             "access_id": "0c1960d9622ce516ff9482e08d77da7a",
+    #             "dept_id": "fcee10e260817ad6777f09dfcde076fb",
+    #             "digilockerid": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "is_active": "Y",
+    #             "org_id": "697b41cb-07b1-4be4-935b-76572dbd9476",
+    #             "org_name": "GKS ACCOUNTANTS PRIVATE LIMITED ",
+    #             "rule_desc": "Has full access to Digilocker Organization Account.",
+    #             "rule_name": "admin",
+    #             "sec_id": "9d26be25aa4fc9133e24255361120aea",
+    #             "updated_by": "dc5d4ce6-fcc4-4adf-bd90-b668beb75269",
+    #             "updated_on": "2024-06-03T15:33:47.857000Z",
+    #         },
+    #     ],
+    # }
+
     if res["status"] == "success" and res["response"]:
         if res["response"][0] and res["response"][0]["is_active"] == "Y":
             data = res["response"][0]
@@ -189,13 +320,13 @@ def check_for_organization(lockerid, org_id):
 
 # Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
-  
+
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
     url = "https://dl-org-api.dl6.in/org/get_access_rules"
     headers = {
-    'device-security-id': g.did,
-    'Authorization': 'Bearer '+ g.jwt_token,
-    'Content-Type': 'application/x-www-form-urlencoded'
+        "device-security-id": g.did,
+        "Authorization": "Bearer " + g.jwt_token,
+        "Content-Type": "application/x-www-form-urlencoded",
     }
 
     params = {"digilockerid": lockerid, "org_id": org_id}
@@ -262,7 +393,7 @@ def get_users(str_value, user_type):
                 mynw_grouping[lockerid]["name"] = profile_data.get(lockerid, {}).get(
                     "name", v1["user_id"]
                 )
-        return {"status": "success", "response": final_data}, 200
+
         final_data = list(mynw_grouping.values())
     else:
         final_data = []
@@ -288,3 +419,13 @@ def get_profilename(objList):
         return data
 
     return []
+
+def get_user_name(digilockerid):
+    data = {"digilockerid": digilockerid}
+    resp, status_code = MONGOLIB.accounts_eve('users_profile', data, {"name":1})
+    name = None
+    if status_code == 200 and resp['status'] == 'success':
+        user_info = resp['response'][0]
+        if 'name' in user_info:
+            name = user_info['name']
+    return name

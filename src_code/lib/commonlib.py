@@ -36,8 +36,46 @@ class CommonLib:
             padded_plain_text = pad(plain_text.encode('utf-8'), AES.block_size)
             cipher_text = cipher.encrypt(padded_plain_text)
             return base64.b64encode(cipher_text).decode('utf-8')
-        except Exception:
+        except Exception as e:
             return ''
+        
+    @staticmethod    
+    def aes_encryption_v3(plain_text, secret):
+        ''' This method introduced to encrypt using iv '''
+        try:
+            # Generate a 16-byte secret key using MD5 hash
+            secret_key = hashlib.md5(secret.encode("utf-8")).digest()
+            # Generate a 16-byte IV using MD5 hash
+            iv = hashlib.md5(secret.encode('utf-8')).digest()
+            
+            aes_obj = AES.new(secret_key, AES.MODE_CBC, iv)
+            padded_plain_text = pad(plain_text.encode('utf-8'), AES.block_size)
+            cipher_text = aes_obj.encrypt(padded_plain_text)
+            encoded_cipher_text = base64.b64encode(cipher_text).decode('utf-8')
+            filtered_cipher_text = encoded_cipher_text.replace('+', '---')
+            return filtered_cipher_text
+        except Exception as e:
+            print(f"Error during encryption: {e}")
+            return None
+     
+    @staticmethod   
+    def aes_decryption_v3(cipher_text, secret):
+        ''' This method introduced to decrypt using iv '''
+        try:
+            filtered_cipher_text = cipher_text.replace('---', '+')
+            # Generate a 16-byte secret key using MD5 hash
+            secret_key = hashlib.md5(secret.encode("utf-8")).digest()
+            # Generate a 16-byte IV using MD5 hash
+            iv = hashlib.md5(secret.encode('utf-8')).digest()
+            
+            encoded_cipher = base64.b64decode(filtered_cipher_text)
+            aes_obj = AES.new(secret_key, AES.MODE_CBC, iv)
+            decrypted_padded_text = aes_obj.decrypt(encoded_cipher)
+            plain_text = unpad(decrypted_padded_text, AES.block_size).decode('utf-8')
+            return plain_text
+        except Exception as e:
+            print(f"Error during decryption: {e}")
+            return None   
         
     @staticmethod
     def filter_cbse_input(field):
