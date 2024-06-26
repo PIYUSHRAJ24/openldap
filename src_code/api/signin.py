@@ -372,12 +372,10 @@ def get_users(str_value, user_type):
         }
 
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
-        
-        if status_code != 200:
-            return {"status": "error", "response": "Not Fund" }, status_code
-
         return {"status": "error", "response": "test", "status_code" : status_code}, 400
-        
+        if status_code != 200:
+            return response, status_code
+
         if (
             response["response"]
             and isinstance(response["response"], list)
