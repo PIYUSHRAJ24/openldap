@@ -372,7 +372,7 @@ def get_users(str_value, user_type):
         }
 
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
-        return {"status": "errors", "response": "code :- "+status_code}, 400
+        # return {"status": "errors", "response": "code :- "+status_code}, 400
         if status_code != 200:
             return response, status_code
 
