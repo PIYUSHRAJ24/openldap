@@ -101,33 +101,36 @@ def get_multiuser_clients():
         else:
             query = {"mobile_no": mobile_no}
             fields = {}
-            responce, status_code = MONGOLIB.accounts_eve("users", query, fields, limit=1)
-            users = []
+            responce, status_code = MONGOLIB.accounts_eve(
+                "users", query, fields, limit=1
+            )
             
-            if responce['status'] == 'success':
-                user_info = responce['response'][0]
-                if user_info['digilockerid']:  
-                    digilockerid = user_info['digilockerid']
-                    user_type = user_info['user_type']
-                    user_id = user_info['user_id']
-                    org_ids = user_info['org_id']
-                    
+            if status_code != 200:
+                return responce, status_code
+            
+            users = []
+
+            if responce["status"] == "success":
+                user_info = responce["response"][0]
+                if user_info["digilockerid"]:
+                    digilockerid = user_info["digilockerid"]
+                    user_type = user_info["user_type"]
+                    user_id = user_info["user_id"]
+                    org_ids = user_info["org_id"]
+
                     output_dict = {
-                        'digilockerid': digilockerid,
-                        'name' : get_user_name(digilockerid),
-                        'user_type': user_type,
-                        'user_id': user_id,
-                        'org_id_exists': org_ids
+                        "digilockerid": digilockerid,
+                        "name": get_user_name(digilockerid),
+                        "user_type": user_type,
+                        "user_id": user_id,
+                        "org_id_exists": org_ids,
                     }
-                    
+
                 users.append(output_dict)
-               
-        if status_code != 200:
-            return users, status_code
 
         # Filter the user data
         filtered_data = filter_data(users)
-    
+
     except Exception as e:
         return {
             "status": "error",
@@ -141,11 +144,11 @@ def get_multiuser_clients():
 def filter_data(users):
     filtered_data = []
     client_secret = CONFIG["org_signin_api"]["client_secret"]
-    for user in users:
-        
+
+    for user in users["response"]:
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
-                
+
                 is_valid_organization = check_for_organization(
                     user["digilockerid"], org_id
                 )
@@ -154,7 +157,7 @@ def filter_data(users):
                     data_as_per_org["digilockerid"] = CommonLib.aes_encryption_v3(
                         user["digilockerid"], client_secret
                     )
-                    
+
                     data_as_per_org["user_id"] = CommonLib.aes_encryption_v3(
                         user["user_id"], client_secret
                     )
@@ -163,15 +166,18 @@ def filter_data(users):
                     if "org_id" in data_as_per_org:
                         del data_as_per_org["org_id"]
                     # filtered_data.append(data_as_per_org)
-                    if not any(d["digilockerid"] == data_as_per_org["digilockerid"] for d in filtered_data):
-                        filtered_data.append(data_as_per_org)              
+                    if not any(
+                        d["digilockerid"] == data_as_per_org["digilockerid"]
+                        for d in filtered_data
+                    ):
+                        filtered_data.append(data_as_per_org)
 
     if filtered_data:
-        return { "status" : "success","data": filtered_data }
+        return {"status": "success", "data": filtered_data}
     else:
         unique_mobile_numbers = {user.get("mobile_no", "") for user in users}
         return {
-            "status" : "success",
+            "status": "success",
             "data": list(unique_mobile_numbers),
         }
 
@@ -341,63 +347,79 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         return {"status": "error", "response": str(e)}
 
 
-# Function to get users based on str_value and user_type
 def get_users(str_value, user_type):
-    if not str_value:
-        return {"status": "error", "response": "No value provided"}, 400
+    try:
+        if not str_value:
+            return {"status": "error", "response": "No value provided"}, 400
 
-    query = {"mobile_no": str_value}
-    fields = {}
-    # if user_type == 'other':
-    #     token_data = CommonLib.getAccessToken(str_value)
-    #     token_json_data = json.loads(token_data)
-    #     if 'token' in token_json_data:
-    #         str_value = token_json_data['token']
-    #     query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
+        query = {"mobile_no": str_value}
+        fields = {}
+        # if user_type == 'other':
+        #     token_data = CommonLib.getAccessToken(str_value)
+        #     token_json_data = json.loads(token_data)
+        #     if 'token' in token_json_data:
+        #         str_value = token_json_data['token']
+        #     query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
 
-    str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
-    query = {
-        "$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]
-    }
+        str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
+        query = {
+            "$or": [
+                {"vt": str_value},
+                {"user_alias": str_value},
+                {"user_id": str_value},
+            ]
+        }
 
-    response = MONGOLIB.accounts_eve("users", query, fields)
-    userData = response[0]
-    if userData and "response" in userData and len(userData["response"]) > 0:
-        objList = []
-        users_details = []
-        for user in userData["response"]:
-            objList.append(user["digilockerid"])
-            users_details.append(
-                {
-                    "digilockerid": user["digilockerid"],
-                    "user_type": user["user_type"],
-                    "user_id": user["user_id"],
-                    "org_id_exists": user.get("org_id", False),
-                }
-            )
+        response, status_code = MONGOLIB.accounts_eve("users", query, fields)
+        if status_code != 200:
+            return response, status_code
 
-        profile_data = {}
-        profiles = get_profilename(objList)
-        for v in profiles:
-            digilockerid = v["digilockerid"]
-            profile_data[digilockerid] = {"name": v["name"]}
+        if (
+            response["response"]
+            and isinstance(response["response"], list)
+            and len(response["response"]) > 0
+        ):
+            userData = response["response"]
 
-        mynw_grouping = {}
-        for v1 in users_details:
-            lockerid = v1["digilockerid"]
-            if lockerid in mynw_grouping:
-                mynw_grouping[lockerid] = v1
-            else:
-                mynw_grouping[lockerid] = v1
-                mynw_grouping[lockerid]["name"] = profile_data.get(lockerid, {}).get(
-                    "name", v1["user_id"]
+            objList = []
+            users_details = []
+
+            for user in userData:
+                objList.append(user["digilockerid"])
+                users_details.append(
+                    {
+                        "digilockerid": user["digilockerid"],
+                        "user_type": user["user_type"],
+                        "user_id": user["user_id"],
+                        "org_id_exists": user.get("org_id", ""),
+                    }
                 )
 
-        final_data = list(mynw_grouping.values())
-    else:
-        final_data = []
+            profile_data = {}
+            profiles = get_profilename(objList)
 
-    return final_data, 200
+            for v in profiles:
+                digilockerid = v["digilockerid"]
+                profile_data[digilockerid] = {"name": v["name"]}
+
+            mynw_grouping = {}
+            for v1 in users_details:
+                lockerid = v1["digilockerid"]
+                if lockerid in mynw_grouping:
+                    mynw_grouping[lockerid] = v1
+                else:
+                    mynw_grouping[lockerid] = v1
+                    mynw_grouping[lockerid]["name"] = profile_data.get(lockerid).get(
+                        "name", v1["user_id"]
+                    )
+
+            final_data = list(mynw_grouping.values())
+            return {"status": "success", "response": final_data}, 200
+        else:
+            return {"status": "error", "response": "No user data found"}, 404
+
+    except Exception as e:
+        return {"status": "error", "response": str(e)}, 500
 
 
 # Function to get profile names based on objList
@@ -419,12 +441,13 @@ def get_profilename(objList):
 
     return []
 
+
 def get_user_name(digilockerid):
     data = {"digilockerid": digilockerid}
-    resp, status_code = MONGOLIB.accounts_eve('users_profile', data, {"name":1})
+    resp, status_code = MONGOLIB.accounts_eve("users_profile", data, {"name": 1})
     name = None
-    if status_code == 200 and resp['status'] == 'success':
-        user_info = resp['response'][0]
-        if 'name' in user_info:
-            name = user_info['name']
+    if status_code == 200 and resp["status"] == "success":
+        user_info = resp["response"][0]
+        if "name" in user_info:
+            name = user_info["name"]
     return name

@@ -567,7 +567,7 @@ class Validations:
     def hmac_authentication(self, request):
         ''' Validate hmac details received over http request '''
         
-        client_id = CommonLib.filter_input(request.headers.get("client_id"))
+        client_id = CommonLib.filter_input(request.headers.get("clientid"))
         ts = CommonLib.filter_input(request.headers.get("ts"))
         hmac = CommonLib.filter_input(request.headers.get("hmac"))
         try:
