@@ -130,9 +130,12 @@ def get_multiuser_clients():
             return users, status_code
         
         if aadhar:
-            # Filter the user data
             filtered_data = filter_data(users)
         else :
+            return {
+                "status": "Success",
+                "response": usr,
+            }, 200
             filtered_data = filter_data(usr)
             
     except Exception as e:
