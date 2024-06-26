@@ -80,7 +80,8 @@ def healthcheck():
 @bp.route("/get_multiuser_clients", methods=["GET"])
 def get_multiuser_clients():
     try:
-
+        # print(accounts_eve['collection_usr'])
+        # exit()
         aadhar = request.form.get("aadhar")
         mobile_no = request.form.get("mobile_no")
 
@@ -102,7 +103,7 @@ def get_multiuser_clients():
             query = {"mobile_no": mobile_no}
             fields = {}
             responce, status_code = MONGOLIB.accounts_eve(
-                "users", query, fields, limit=1
+                accounts_eve['collection_usr'], query, fields, limit=1
             )
             if status_code != 200:
                 return {"status": "error", "response ": f"{mobile_no} Not Found" }, status_code
@@ -377,7 +378,7 @@ def get_users(str_value, user_type):
         #     ]
         # }
 
-        response, status_code = MONGOLIB.accounts_eve("users", query, fields)
+        response, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr'], query, fields)
         if status_code != 200:
             return {"status": "error", "response ": f"{str_value} Not Found" }, status_code
 
@@ -433,7 +434,7 @@ def get_users(str_value, user_type):
 def get_profilename(objList):
     query = {"digilockerid": {"$in": objList}}
     fields = {}
-    response = MONGOLIB.accounts_eve("users_profile", query, fields)
+    response = MONGOLIB.accounts_eve(accounts_eve['collection_usr_profile'], query, fields)
     userData = response[0]
     if userData and "response" in userData and len(userData["response"]) >= 1:
         data = []
@@ -451,7 +452,7 @@ def get_profilename(objList):
 
 def get_user_name(digilockerid):
     data = {"digilockerid": digilockerid}
-    resp, status_code = MONGOLIB.accounts_eve("users_profile", data, {"name": 1})
+    resp, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr_profile'], data, {"name": 1})
     name = None
     if status_code == 200 and resp["status"] == "success":
         user_info = resp["response"][0]
