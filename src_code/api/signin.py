@@ -369,7 +369,7 @@ def get_users(str_value, user_type):
                 {"user_id": str_value},
             ]
         }
-
+        return {"status": "error", "response": "TEST"}, 400
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
         if status_code != 200:
             return response, status_code
@@ -426,18 +426,20 @@ def get_users(str_value, user_type):
 def get_profilename(objList):
     query = {"digilockerid": {"$in": objList}}
     fields = {}
-    response = MONGOLIB.accounts_eve("users_profile", query, fields)
-    userData = response[0]
-    if userData and "response" in userData and len(userData["response"]) >= 1:
-        data = []
-        for profile in userData["response"]:
-            data.append(
-                {
-                    "digilockerid": profile.get("digilockerid", ""),
-                    "name": profile.get("name", ""),
-                }
-            )
-        return data
+    response,status_code = MONGOLIB.accounts_eve("users_profile", query, fields)
+    
+    if status_code == 200 and response["status"] == "success":
+        userData = response[0]
+        if userData and "response" in userData and len(userData["response"]) >= 1:
+            data = []
+            for profile in userData["response"]:
+                data.append(
+                    {
+                        "digilockerid": profile.get("digilockerid", ""),
+                        "name": profile.get("name", ""),
+                    }
+                )
+            return data
 
     return []
 
