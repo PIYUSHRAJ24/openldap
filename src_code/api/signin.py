@@ -108,6 +108,11 @@ def get_multiuser_clients():
                     "status": "error",
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
+                
+            return {
+                "status": "success",
+                "response ": responce
+            }, status_code    
 
             users = []
             if responce["status"] == "success":
