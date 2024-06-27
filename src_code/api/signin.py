@@ -186,7 +186,7 @@ def filter_data(response):
 
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
-    res = get_org_details_based_on_lockerid(lockerid, org_id)
+    res = get_org_details_based_on_lockerid(lockerid)
     if res.get("status") == "success" and res.get("response"):
         for org in res["response"]:
             if org["org_id"] == org_id and org["is_active"] == "Y":
@@ -196,19 +196,9 @@ def check_for_organization(lockerid, org_id):
                 }
     return None
 
-# def check_for_organization(lockerid, org_id):
-#     res = get_org_details_based_on_lockerid(lockerid, org_id)
-#     if res.get("status") == "success" and res.get("response"):
-#         for org in res["response"]:
-#             if org["org_id"] == org_id and org["is_active"] == "Y":
-#                 return {
-#                     "org_id": org["org_id"],
-#                     "org_name": org.get("org_name", org["org_id"]),
-#                 }
-#     return None
 
 # Function to get organization details based on locker ID and org ID
-def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
+def get_org_details_based_on_lockerid(lockerid=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"+lockerid
     url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
