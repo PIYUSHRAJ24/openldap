@@ -222,15 +222,16 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
     hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
     
     headers = {
-        "client_id": 'EA98DD7F33',
-        "ts":ts,
-        "hmac":hmac,
+        # "client_id": 'EA98DD7F33',
+        # "ts":ts,
+        # "hmac":hmac,
         "device-security-id": g.did,
         "Authorization": "Bearer " + g.jwt_token,
         "Content-Type": "application/x-www-form-urlencoded",
     }
+    
 
-    params = {"digilockerid": lockerid, "org_id": org_id}
+    params = {}
 
     try:
         response = requests.request("GET", url, headers=headers, data=params)
