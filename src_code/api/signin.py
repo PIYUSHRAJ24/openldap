@@ -146,7 +146,6 @@ def get_multiuser_clients():
 
     return filtered_data, 200
 
-
 # Function to filter user data
 def filter_data(response):
     filtered_data = []
