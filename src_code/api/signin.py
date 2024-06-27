@@ -152,14 +152,13 @@ def filter_data(response):
     client_secret = CONFIG["org_signin_api"]["client_secret"]
 
     for user in response["response"]:
-        return {"status": "success", "data": user}
-        exit()
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
                 is_valid_organization = check_for_organization(
                     user.get("digilockerid", ""), org_id
                 )
-
+                return {"status": "success", "data": is_valid_organization, 'dlid': user.get("digilockerid", ""),'org_id': org_id}
+                exit()
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
 
