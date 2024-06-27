@@ -104,7 +104,27 @@ def get_multiuser_clients():
                 "users", query, fields, limit=1
             )
             if status_code != 200:
-                return {"status": "error", "response ": f"{mobile_no} Not Found" }, status_code
+                return {
+                    "status": "error",
+                    "response ": f"{mobile_no} Not Found",
+                }, status_code
+
+            # responce = {
+            #     "response": [
+            #         {
+            #             "digilockerid": "6d139d59-df59-4303-b264-ea643f6486dd",
+            #             "name": "Kshitiz Singh",
+            #             "org_id_exists": [
+            #                 "697b41cb-07b1-4be4-935b-76572dbd9476",
+            #                 "607483c6-4ef2-498c-8b7a-b8a2e1e2cf73",
+            #                 "d9510b7d-f664-42e5-bf1c-be81e57be088",
+            #             ],
+            #             "user_id": "6d139d59-df59-4303-b264-ea643f6486dd",
+            #             "user_type": "aadhaar",
+            #         }
+            #     ],
+            #     "status": "success",
+            # }
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -112,7 +132,7 @@ def get_multiuser_clients():
                     digilockerid = user_info["digilockerid"]
                     user_type = user_info["user_type"]
                     user_id = user_info["user_id"]
-                    org_ids = user_info["org_id"]
+                    org_ids = user_info["org_id_exists"]
 
                     output_dict = {
                         "digilockerid": digilockerid,
@@ -125,17 +145,15 @@ def get_multiuser_clients():
                 users.append(output_dict)
                 responce["response"] = users
                 usr = responce
-                
-        return {"status": "sucess", "response": usr}, 200
-    
+
         if status_code != 200:
             return users, status_code
-        
+
         if aadhar:
             filtered_data = filter_data(users)
-        else :
+        else:
             filtered_data = filter_data(usr)
-            
+
     except Exception as e:
         return {
             "status": "error",
@@ -146,21 +164,22 @@ def get_multiuser_clients():
 
 
 # Function to filter user data
-def filter_data(users):
+def filter_data(response):
     filtered_data = []
     client_secret = CONFIG["org_signin_api"]["client_secret"]
 
-    for user in users["response"]:
+    for user in response["response"]:
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
-
                 is_valid_organization = check_for_organization(
-                    user["digilockerid"], org_id
+                    user.get("digilockerid", ""), org_id
                 )
+
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
+
                     data_as_per_org["digilockerid"] = CommonLib.aes_encryption_v3(
-                        user["digilockerid"], client_secret
+                        user.get("digilockerid", ""), client_secret
                     )
 
                     data_as_per_org["user_id"] = CommonLib.aes_encryption_v3(
@@ -171,16 +190,13 @@ def filter_data(users):
                     if "org_id" in data_as_per_org:
                         del data_as_per_org["org_id"]
                     filtered_data.append(data_as_per_org)
-                    # if not any(
-                    #     d["digilockerid"] == data_as_per_org["digilockerid"]
-                    #     for d in filtered_data
-                    # ):
-                        # filtered_data.append(data_as_per_org)
 
     if filtered_data:
         return {"status": "success", "data": filtered_data}
     else:
-        unique_mobile_numbers = {user.get("mobile_no", "") for user in users}
+        unique_mobile_numbers = {
+            user.get("mobile_no", "") for user in response["response"]
+        }
         return {
             "status": "success",
             "data": list(unique_mobile_numbers),
@@ -360,12 +376,18 @@ def get_users(str_value, user_type):
 
         query = {"mobile_no": str_value}
         fields = {}
-        if user_type == 'other':
+        if user_type == "other":
             token_data = CommonLib.getAccessToken(str_value)
             token_json_data = json.loads(token_data)
-            if 'token' in token_json_data:
-                str_value = token_json_data['token']
-                query = {"$or": [{"vt": str_value}, {"user_alias": str_value}, {"user_id": str_value}]}
+            if "token" in token_json_data:
+                str_value = token_json_data["token"]
+                query = {
+                    "$or": [
+                        {"vt": str_value},
+                        {"user_alias": str_value},
+                        {"user_id": str_value},
+                    ]
+                }
 
         # str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
         # query = {
@@ -378,7 +400,10 @@ def get_users(str_value, user_type):
 
         response, status_code = MONGOLIB.accounts_eve("users", query, fields)
         if status_code != 200:
-            return {"status": "error", "response ": f"{str_value} Not Found" }, status_code
+            return {
+                "status": "error",
+                "response ": f"{str_value} Not Found",
+            }, status_code
 
         if (
             response["response"]
