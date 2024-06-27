@@ -200,7 +200,7 @@ def check_for_organization(lockerid, org_id):
 # Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
-    # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
+    # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"+lockerid
     url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
 
     payload = {}
