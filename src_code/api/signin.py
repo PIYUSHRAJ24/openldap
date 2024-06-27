@@ -127,6 +127,10 @@ def get_multiuser_clients():
                 responce["response"] = users
                 usr = responce
                 
+        return {
+            "status": "sucess",
+            "response": usr,
+        }, 200
         
         if status_code != 200:
             return users, status_code
