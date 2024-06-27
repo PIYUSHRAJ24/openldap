@@ -187,7 +187,7 @@ def filter_data(response):
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
-    return res["response"]
+    return res
  
     # if res["status"] == "success" and res["response"]:
     #     if res["response"][0] and res["response"][0]["is_active"] == "Y":
@@ -234,9 +234,9 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
     try:
         response = requests.request("GET", url, headers=headers, data=payload, files=files)
         if response.status_code != 200:
-            return {"status": "error", "response": response.json(), "code": 404}
+            return None
 
-        return {"status": "success", "response": response.json(), "code": 200}
+        return response.json()
 
     except Exception as e:
         return {"status": "error", "response": str(e)}
