@@ -150,7 +150,6 @@ def get_multiuser_clients():
 def filter_data(response):
     filtered_data = []
     client_secret = CONFIG["org_signin_api"]["client_secret"]
-
     for user in response["response"]:
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
@@ -159,6 +158,7 @@ def filter_data(response):
                 )
                 return {"status": "success", "data": is_valid_organization, 'dlid': user.get("digilockerid", ""),'org_id': org_id}
                 exit()
+                
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
 
