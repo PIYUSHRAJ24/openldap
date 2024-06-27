@@ -212,7 +212,8 @@ def check_for_organization(lockerid, org_id):
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
-    url = "https://dl-org-api.dl6.in/org/get_access_rules"
+    # url = "https://dl-org-api.dl6.in/org/get_access_rules"
+    url = "https://acsapi-beta.dl6.in/org/get_access_rules"
     
     ts = str(int(time.time()))
     client_id = CONFIG["org_signin_api"]["client_id"]
