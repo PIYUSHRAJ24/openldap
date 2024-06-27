@@ -153,6 +153,7 @@ def filter_data(response):
 
     for user in response["response"]:
         return {"status": "success", "data": user}
+        exit()
         if "org_id_exists" in user and user["org_id_exists"]:
             for org_id in user["org_id_exists"]:
                 is_valid_organization = check_for_organization(
