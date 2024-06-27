@@ -212,23 +212,25 @@ def check_for_organization(lockerid, org_id):
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
-    # url = "https://dl-org-api.dl6.in/org/get_access_rules"
-    url = "https://acsapi-beta.dl6.in/org/get_access_rules"
+    url = "https://dl-org-api.dl6.in/org/get_access_rules"
+    # url = "https://acsapi-beta.dl6.in/org/get_access_rules"
     
     ts = str(int(time.time()))
     client_id = CONFIG["org_signin_api"]["client_id"]
     client_secret = CONFIG["org_signin_api"]["client_secret"]
 
-    plain_txt = f"{client_id}{client_secret}{ts}"
-    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
     
+    ts = str(int(time.time()))
+    client_id = 'EA98DD7F33'
+    client_secret = '825a1a80a90a64842a8a'
+    key = client_secret + client_id + ts
+    hash_object = hashlib.sha256(key.encode())
+    hmac = hash_object.hexdigest()
+
     headers = {
-        # "client_id": 'EA98DD7F33',
-        # "ts":ts,
-        # "hmac":hmac,
-        "device-security-id": g.did,
-        "Authorization": "Bearer " + g.jwt_token,
-        "Content-Type": "application/x-www-form-urlencoded",
+        'client-id': client_id,
+        'ts': ts,
+        'hmac': hmac
     }
     
 
