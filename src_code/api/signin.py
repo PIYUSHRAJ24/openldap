@@ -174,8 +174,8 @@ def filter_data(response):
 
     if filtered_data:
         return {"status": "success", "data": filtered_data}, 200
-    else:
-        return {"status": "success", "data": "Not found"}, 200
+    # else:
+    #     return {"status": "success", "data": "Not found"}, 200
 
 
 # Function to check organization details
@@ -189,7 +189,6 @@ def check_for_organization(lockerid, org_id):
                     "org_id": org["org_id"],
                     "org_name": org.get("org_name", org["org_id"]),
                 }
-
     return None
 
 
