@@ -105,10 +105,6 @@ def get_multiuser_clients():
             )
             if status_code != 200:
                 return {"status": "error", "response ": f"{mobile_no} Not Found" }, status_code
-            return {
-                "status": "sucess",
-                "response": responce,
-            }, 200
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -127,8 +123,8 @@ def get_multiuser_clients():
                     }
 
                 users.append(output_dict)
-                responce["response"] = users
-                usr = responce
+                # responce["response"] = users
+                # usr = responce
                 
         
         if status_code != 200:
@@ -137,7 +133,7 @@ def get_multiuser_clients():
         if aadhar:
             filtered_data = filter_data(users)
         else :
-            filtered_data = filter_data(usr)
+            filtered_data = filter_data(users)
             
     except Exception as e:
         return {
