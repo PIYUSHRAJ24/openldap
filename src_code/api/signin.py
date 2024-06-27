@@ -213,7 +213,16 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
     url = "https://dl-org-api.dl6.in/org/get_access_rules"
+    
+    ts = str(int(time.time()))
+    client_secret = CONFIG["org_signin_api"]["client_secret"]
+    client_id = CONFIG["org_signin_api"]["client_id"]
+    hmac = hashlib.sha256((client_secret + client_id + ts).encode()).hexdigest()
+    
     headers = {
+        'client_id': client_id,
+        'ts': ts,
+        'hmac': hmac,
         "device-security-id": g.did,
         "Authorization": "Bearer " + g.jwt_token,
         "Content-Type": "application/x-www-form-urlencoded",
