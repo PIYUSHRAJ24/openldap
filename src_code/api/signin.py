@@ -118,7 +118,7 @@ def get_multiuser_clients():
                     return {
                         "status": "success",
                         "response :- ": "Not linked any organization",
-                    }, status_code
+                    } , status_code
                     
                 if user_info["digilockerid"]:
                     digilockerid = user_info["digilockerid"]
