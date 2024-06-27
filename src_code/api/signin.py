@@ -113,10 +113,13 @@ def get_multiuser_clients():
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
-                return {
-                    "status": "success",
-                    "response 1 :- ": user_info,
-                }, status_code
+                
+                if "org_id" in user_info:
+                    return {
+                        "status": "success",
+                        "response :- ": "Not linked any organization",
+                    }, status_code
+                    
                 if user_info["digilockerid"]:
                     digilockerid = user_info["digilockerid"]
                     user_type = user_info["user_type"]
