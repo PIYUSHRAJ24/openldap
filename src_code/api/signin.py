@@ -225,7 +225,7 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         "client_id": 'EA98DD7F33',
         "ts":ts,
         "hmac":hmac,
-        # "device-security-id": g.did,
+        "device-security-id": g.did,
         "Authorization": "Bearer " + g.jwt_token,
         # "Content-Type": "application/x-www-form-urlencoded",
     }
