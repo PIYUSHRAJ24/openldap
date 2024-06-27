@@ -194,13 +194,10 @@ def filter_data(response):
     if filtered_data:
         return {"status": "success", "data": filtered_data}
     else:
-        unique_mobile_numbers = {
-            user.get("mobile_no", "") for user in response["response"]
-        }
-        return {
-            "status": "success",
-            "data": list(unique_mobile_numbers),
-        }
+        # unique_mobile_numbers = {
+        #     user.get("mobile_no", "") for user in response["response"]
+        # }
+        return {"status": "success", "data": filtered_data}
 
 
 # Function to check organization details
