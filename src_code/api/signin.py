@@ -213,12 +213,10 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
     url = "https://dl-org-api.dl6.in/org/get_access_rules"
-    # url = "https://acsapi-beta.dl6.in/org/get_access_rules"
     
     ts = str(int(time.time()))
     client_id = CONFIG["org_signin_api"]["client_id"]
     client_secret = CONFIG["org_signin_api"]["client_secret"]
-
     
     ts = str(int(time.time()))
     client_id = 'EA98DD7F33'
@@ -232,9 +230,8 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         'ts': ts,
         'hmac': hmac
     }
-    
 
-    params = {}
+    params = {"digilockerid": lockerid, "org_id": org_id}
 
     try:
         response = requests.request("GET", url, headers=headers, data=params)
