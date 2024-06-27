@@ -182,7 +182,6 @@ def filter_data(response):
         return {"status": "success", "data": filtered_data}
 
 
-
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
