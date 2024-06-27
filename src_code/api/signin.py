@@ -196,7 +196,6 @@ def check_for_organization(lockerid, org_id):
                 }
     return None
 
-
 # Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
