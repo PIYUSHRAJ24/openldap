@@ -109,10 +109,12 @@ def get_multiuser_clients():
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
                 
-            return {
-                "status": "success",
-                "response ": responce
-            }, status_code    
+            if 'response' in users and all('org_id' not in item for item in users['response']):
+                return {
+                    "status": "error",
+                    "response ": "Not linked to any organization",
+                }, status_code
+     
 
             users = []
             if responce["status"] == "success":
