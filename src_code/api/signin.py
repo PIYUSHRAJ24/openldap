@@ -109,22 +109,11 @@ def get_multiuser_clients():
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
 
-            # responce = {
-            #     "response": [
-            #         {
-            #             "digilockerid": "6d139d59-df59-4303-b264-ea643f6486dd",
-            #             "name": "Kshitiz Singh",
-            #             "org_id_exists": [
-            #                 "697b41cb-07b1-4be4-935b-76572dbd9476",
-            #                 "607483c6-4ef2-498c-8b7a-b8a2e1e2cf73",
-            #                 "d9510b7d-f664-42e5-bf1c-be81e57be088",
-            #             ],
-            #             "user_id": "6d139d59-df59-4303-b264-ea643f6486dd",
-            #             "user_type": "aadhaar",
-            #         }
-            #     ],
-            #     "status": "success",
-            # }
+            return {
+                    "status": "success",
+                    "response 1 ": users,
+                }, status_code
+            
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
