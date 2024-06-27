@@ -221,7 +221,7 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     
     headers = {
-        "clientid": client_id,
+        "client_id": client_id,
         "ts":ts,
         "device-security-id": g.did,
         "Authorization": "Bearer " + g.jwt_token,
