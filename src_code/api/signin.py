@@ -214,18 +214,12 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
     url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
 
-    # client_id = CONFIG["org_signin_api"]["client_id"]
-    # client_secret = CONFIG["org_signin_api"]["client_secret"]
-    # url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid=6d139d59-df59-4303-b264-ea643f6486dd"
-
     payload = {}
     files={}
     headers = {}
 
-
-
     ts = str(int(time.time()))
-    client_id = 'EA98DD7F33'
+    client_id = CONFIG["org_signin_api"]["client_id"]
     client_secret = CONFIG["org_signin_api"]["client_secret"]
     key = client_secret + client_id + ts
     hash_object = hashlib.sha256(key.encode())
@@ -236,8 +230,6 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         'ts': ts,
         'hmac': hmac
     }
-
-
 
     try:
         response = requests.request("GET", url, headers=headers, data=payload, files=files)
