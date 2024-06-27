@@ -110,10 +110,9 @@ def get_multiuser_clients():
                 }, status_code
 
             return {
-                    "status": "success",
-                    "response 1 ": users,
-                }, status_code
-            
+                    "status": "error",
+                    "response 2": responce,
+                }, 200
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
