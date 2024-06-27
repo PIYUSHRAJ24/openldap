@@ -212,13 +212,18 @@ def check_for_organization(lockerid, org_id):
 def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"
-    # url = "https://dl-org-api.dl6.in/org/get_access_rules"
-    url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
-    
-    ts = str(int(time.time()))
+    # url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
+
     # client_id = CONFIG["org_signin_api"]["client_id"]
     # client_secret = CONFIG["org_signin_api"]["client_secret"]
-    
+    url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid=6d139d59-df59-4303-b264-ea643f6486dd"
+
+    payload = {}
+    files={}
+    headers = {}
+
+
+
     ts = str(int(time.time()))
     client_id = 'EA98DD7F33'
     client_secret = '825a1a80a90a64842a8a'
@@ -231,13 +236,11 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         'ts': ts,
         'hmac': hmac
     }
-    
-    params = {}
-    
-    # params = {"digilockerid": lockerid, "org_id": org_id}
+
+
 
     try:
-        response = requests.request("GET", url, headers=headers, data=params)
+        response = requests.request("GET", url, headers=headers, data=payload, files=files)
         if response.status_code != 200:
             return {"status": "error", "response": response.json(), "code": 404}
 
