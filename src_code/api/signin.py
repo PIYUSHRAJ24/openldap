@@ -121,6 +121,7 @@ def get_multiuser_clients():
                     "data" : user_info
                 } , status_code
                     
+                    
                 if user_info["digilockerid"]:
                     digilockerid = user_info["digilockerid"]
                     user_type = user_info["user_type"]
