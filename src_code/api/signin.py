@@ -108,7 +108,6 @@ def get_multiuser_clients():
                     "status": "error",
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
-            return {"status": "success", "response": "done"}, 200
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -146,6 +145,7 @@ def get_multiuser_clients():
 
     return filtered_data, 200
 
+
 # Function to filter user data
 def filter_data(response):
     filtered_data = []
@@ -173,18 +173,15 @@ def filter_data(response):
                     filtered_data.append(data_as_per_org)
 
     if filtered_data:
-        return {"status": "success", "data": filtered_data}
-    # else:
-    #     unique_mobile_numbers = {
-    #         user.get("mobile_no", "") for user in response["response"]
-    #     }
-    #     return {"status": "success", "data": filtered_data}
+        return {"status": "success", "data": filtered_data}, 200
+    else:
+        return {"status": "success", "data": "Not found"}, 200
 
 
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
-    
+
     if res["status"] == "success" and res["response"]:
         for org in res["response"]:
             if org["org_id"] == org_id and org["is_active"] == "Y":
@@ -192,7 +189,7 @@ def check_for_organization(lockerid, org_id):
                     "org_id": org["org_id"],
                     "org_name": org.get("org_name", org["org_id"]),
                 }
-    
+
     return None
 
 
