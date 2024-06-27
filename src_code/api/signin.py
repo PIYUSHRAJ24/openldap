@@ -163,6 +163,7 @@ def filter_data(response):
                         user.get("digilockerid", ""), client_secret
                     )
                     return {"status": "success", "digilockerid":  user.get("digilockerid", ""), "org_id": org_id}, 200
+                    
                     data_as_per_org["user_id"] = CommonLib.aes_encryption_v3(
                         user["user_id"], client_secret
                     )
