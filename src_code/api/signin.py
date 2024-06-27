@@ -188,8 +188,7 @@ def filter_data(response):
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
     return res
-    exit()
-
+ 
     # if res["status"] == "success" and res["response"]:
     #     if res["response"][0] and res["response"][0]["is_active"] == "Y":
     #         data = res["response"][0]
