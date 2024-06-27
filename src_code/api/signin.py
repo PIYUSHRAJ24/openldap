@@ -123,17 +123,18 @@ def get_multiuser_clients():
                     }
 
                 users.append(output_dict)
-                # responce["response"] = users
-                # usr = responce
+                responce["response"] = users
+                usr = responce
                 
-        
+        return {"status": "sucess", "response": usr}, 200
+    
         if status_code != 200:
             return users, status_code
         
         if aadhar:
             filtered_data = filter_data(users)
         else :
-            filtered_data = filter_data(users)
+            filtered_data = filter_data(usr)
             
     except Exception as e:
         return {
