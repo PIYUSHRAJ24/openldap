@@ -108,17 +108,15 @@ def get_multiuser_clients():
                     "status": "error",
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
-                
-            if 'response' in users and all('org_id' not in item for item in users['response']):
-                return {
-                    "status": "error",
-                    "response ": "Not linked to any organization",
-                }, status_code
-     
+                   
 
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
+                return {
+                    "status": "success",
+                    "response 1 :- ": user_info,
+                }, status_code
                 if user_info["digilockerid"]:
                     digilockerid = user_info["digilockerid"]
                     user_type = user_info["user_type"]
