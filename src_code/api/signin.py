@@ -156,7 +156,6 @@ def filter_data(response):
                 is_valid_organization = check_for_organization(
                     user.get("digilockerid", ""), org_id
                 )
-                    
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
 
@@ -175,11 +174,11 @@ def filter_data(response):
 
     if filtered_data:
         return {"status": "success", "data": filtered_data}
-    else:
-        # unique_mobile_numbers = {
-        #     user.get("mobile_no", "") for user in response["response"]
-        # }
-        return {"status": "success", "data": filtered_data}
+    # else:
+    #     unique_mobile_numbers = {
+    #         user.get("mobile_no", "") for user in response["response"]
+    #     }
+    #     return {"status": "success", "data": filtered_data}
 
 
 # Function to check organization details
