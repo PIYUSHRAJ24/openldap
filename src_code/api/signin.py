@@ -226,7 +226,7 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         "ts":ts,
         "hmac":hmac,
         # "device-security-id": g.did,
-        # "Authorization": "Bearer " + g.jwt_token,
+        "Authorization": "Bearer " + g.jwt_token,
         # "Content-Type": "application/x-www-form-urlencoded",
     }
 
