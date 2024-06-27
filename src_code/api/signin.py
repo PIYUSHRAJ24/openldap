@@ -187,24 +187,13 @@ def filter_data(response):
 # Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid, org_id)
-    return res["response"]
- 
-    # if res["status"] == "success" and res["response"]:
-    #     if res["response"][0] and res["response"][0]["is_active"] == "Y":
-    #         data = res["response"][0]
-    #         return {
-    #             "org_id": data["org_id"],
-    #             "org_name": data.get("org_name", data["org_id"]),
-    #         }
-    
-    if res["status"] == "success" and res["response"]:
+    if res.get("status") == "success" and res.get("response"):
         for org in res["response"]:
             if org["org_id"] == org_id and org["is_active"] == "Y":
                 return {
                     "org_id": org["org_id"],
                     "org_name": org.get("org_name", org["org_id"]),
                 }
-
     return None
 
 
@@ -236,7 +225,7 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
         if response.status_code != 200:
             return None
 
-        return {"status": "success", "response": response.json(), "code": 200}
+        return response.json()
 
     except Exception as e:
         return {"status": "error", "response": str(e)}
