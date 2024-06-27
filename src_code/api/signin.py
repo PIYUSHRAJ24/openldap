@@ -109,10 +109,6 @@ def get_multiuser_clients():
                     "response ": f"{mobile_no} Not Found",
                 }, status_code
 
-            return {
-                    "status": "error",
-                    "response 2": responce,
-                }, 200
             users = []
             if responce["status"] == "success":
                 user_info = responce["response"][0]
@@ -120,7 +116,7 @@ def get_multiuser_clients():
                     digilockerid = user_info["digilockerid"]
                     user_type = user_info["user_type"]
                     user_id = user_info["user_id"]
-                    org_ids = user_info["org_id_exists"]
+                    org_ids = user_info["org_id"]
 
                     output_dict = {
                         "digilockerid": digilockerid,
