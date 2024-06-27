@@ -117,8 +117,7 @@ def get_multiuser_clients():
                 if 'org_id' not in user_info:
                     return {
                         "status": "success",
-                        "response :- ": "Not linked any organization",
-                        "data" : user_info
+                        "response :- ": "User not linked any organization",
                     } , status_code
                     
                     
