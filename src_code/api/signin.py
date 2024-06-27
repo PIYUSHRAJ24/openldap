@@ -226,7 +226,7 @@ def get_org_details_based_on_lockerid(lockerid=None, org_id=None):
 
     ts = str(int(time.time()))
     client_id = 'EA98DD7F33'
-    client_secret = '825a1a80a90a64842a8a'
+    client_secret = CONFIG["org_signin_api"]["client_secret"]
     key = client_secret + client_id + ts
     hash_object = hashlib.sha256(key.encode())
     hmac = hash_object.hexdigest()
