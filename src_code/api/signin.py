@@ -172,9 +172,9 @@ def filter_data(response):
                     filtered_data.append(data_as_per_org)
 
     if filtered_data:
-        return {"status": "success", "data": filtered_data}
+        return {"status": "success", "response": filtered_data}
     else:
-        return {"status": "error", "data": "Not found"}
+        return {"status": "error", "response": "Not found"}
 
 
 def check_for_organization(lockerid, org_id):
