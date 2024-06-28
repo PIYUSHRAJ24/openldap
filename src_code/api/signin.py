@@ -57,16 +57,6 @@ def validate_user():
         g.did = jwtlib.device_security_id
         g.digilockerid = jwtlib.digilockerid
         g.org_id = jwtlib.org_id
-        # g.role = jwtlib.user_role
-        # g.org_access_rules = jwtlib.org_access_rules
-        # g.org_user_details = jwtlib.org_user_details
-        # g.user_rules = jwtlib.user_rules
-        # g.org_access_functions = jwtlib.org_access_functions
-        # g.user_departments = jwtlib.user_departments
-        # g.org_access_functions = jwtlib.org_access_functions
-        # g.org_ds_fn_roles = jwtlib.org_ds_fn_roles
-        # g.dept_details = jwtlib.dept_details
-        # g.sec_details = jwtlib.sec_details
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
@@ -101,7 +91,7 @@ def get_multiuser_clients():
             query = {"mobile_no": mobile_no}
             fields = {}
             responce, status_code = MONGOLIB.accounts_eve(
-                "users", query, fields, limit=1
+                accounts_eve['collection_usr'], query, fields, limit=1
             )
             if status_code != 200:
                 return {
@@ -155,7 +145,6 @@ def get_multiuser_clients():
 
     return filtered_data, 200
 
-# Function to filter user data
 def filter_data(response):
     filtered_data = []
     client_secret = CONFIG["org_signin_api"]["client_secret"]
@@ -166,8 +155,6 @@ def filter_data(response):
                 is_valid_organization = check_for_organization(
                     user.get("digilockerid", ""), org_id
                 )
-                # return {"status": "success", "data": is_valid_organization, 'dlid': user.get("digilockerid", ""),'org_id': org_id}
-                # exit()
                 if is_valid_organization is not None:
                     data_as_per_org = user.copy()
 
@@ -187,13 +174,9 @@ def filter_data(response):
     if filtered_data:
         return {"status": "success", "data": filtered_data}
     else:
-        # unique_mobile_numbers = {
-        #     user.get("mobile_no", "") for user in response["response"]
-        # }
-        return {"status": "success", "data": filtered_data}
+        return {"status": "error", "data": "Not found"}
 
 
-# Function to check organization details
 def check_for_organization(lockerid, org_id):
     res = get_org_details_based_on_lockerid(lockerid)
     if res.get("status") == "success" and res.get("response"):
@@ -206,11 +189,9 @@ def check_for_organization(lockerid, org_id):
     return None
 
 
-# Function to get organization details based on locker ID and org ID
 def get_org_details_based_on_lockerid(lockerid=None):
 
-    # url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules"+lockerid
-    url = "https://dl-org-api.dl6.in//org/get_access_rules?digilockerid="+lockerid
+    url = CONFIG["org_signin_api"]["url"] + "/org/get_access_rules?digilockerid="+lockerid
 
     payload = {}
     files={}
@@ -260,16 +241,7 @@ def get_users(str_value, user_type):
                     ]
                 }
 
-        # str_value = "d31642f4-ec78-5fcc-a967-bbc6db911360"
-        # query = {
-        #     "$or": [
-        #         {"vt": str_value},
-        #         {"user_alias": str_value},
-        #         {"user_id": str_value},
-        #     ]
-        # }
-
-        response, status_code = MONGOLIB.accounts_eve("users", query, fields)
+        response, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr'], query, fields)
         if status_code != 200:
             return {
                 "status": "error",
@@ -324,11 +296,10 @@ def get_users(str_value, user_type):
         return {"status": "error", "response": str(e)}, 500
 
 
-# Function to get profile names based on objList
 def get_profilename(objList):
     query = {"digilockerid": {"$in": objList}}
     fields = {}
-    response = MONGOLIB.accounts_eve("users_profile", query, fields)
+    response = MONGOLIB.accounts_eve(accounts_eve['collection_usr_profile'], query, fields)
     userData = response[0]
     if userData and "response" in userData and len(userData["response"]) >= 1:
         data = []
@@ -346,7 +317,7 @@ def get_profilename(objList):
 
 def get_user_name(digilockerid):
     data = {"digilockerid": digilockerid}
-    resp, status_code = MONGOLIB.accounts_eve("users_profile", data, {"name": 1})
+    resp, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr_profile'], data, {"name": 1})
     name = None
     if status_code == 200 and resp["status"] == "success":
         user_info = resp["response"][0]
