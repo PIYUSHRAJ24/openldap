@@ -96,7 +96,7 @@ def get_multiuser_clients():
             if status_code != 200:
                 return {
                     "status": "error",
-                    "response ": f"{mobile_no} Not Found",
+                    "response ": "Not Found",
                 }, status_code
                    
 
@@ -245,7 +245,7 @@ def get_users(str_value, user_type):
         if status_code != 200:
             return {
                 "status": "error",
-                "response ": f"{str_value} Not Found",
+                "response ": "Not Found",
             }, status_code
 
         if (
