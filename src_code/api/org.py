@@ -405,9 +405,9 @@ def send_otp_v1():
         else:
             return res,400
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "send_otp_v1: " + str(e)}
-        logarray.update({RESPONSE: res})
-        RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        return {STATUS: ERROR, ERROR_DES: "send_otp_v1: " + str(e)}
+        # logarray.update({RESPONSE: res})
+        # RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
         return res, 400  
     
 
