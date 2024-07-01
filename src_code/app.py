@@ -45,7 +45,7 @@ from api.image import bp as image_bp
 # from api.lockpdf import bp as lockpdf_bp
 # from api.metadata import bp as metadata_bp
 from api.name_match import bp as name_match_bp
-# from api.org import bp as org_bp
+from api.org import bp as org_bp
 from api.org_activity import bp as org_activity_bp
 from api.otpservices import bp as otpservices_bp
 from api.pin import bp as pin_bp
@@ -55,7 +55,7 @@ from api.signin import bp as signin_bp
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
 app.register_blueprint(image_bp, url_prefix='/image')
 app.register_blueprint(org_activity_bp, url_prefix='/org_activity')
-# app.register_blueprint(org_bp, url_prefix='/org')
+app.register_blueprint(org_bp, url_prefix='/org')
 app.register_blueprint(filelock_bp, url_prefix='/filelock')
 # app.register_blueprint(metadata_bp, url_prefix='/metadata')
 # app.register_blueprint(lockpdf_bp, url_prefix='/lockpdf')
