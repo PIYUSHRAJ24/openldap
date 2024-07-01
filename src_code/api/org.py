@@ -58,7 +58,6 @@ def validate_user():
         if request.path.split('/')[1] in bypass_urls:
             return
         res, status_code = VALIDATIONS.hmac_authentication(request)
-        return {STATUS: "success", 'RES': res}, status_code
         if status_code != 200:
             return res, status_code
     except Exception as e:
