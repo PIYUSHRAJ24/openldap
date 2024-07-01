@@ -585,15 +585,13 @@ class Validations:
             elif not hmac[0]:
                 return {STATUS: ERROR, ERROR_DES: "Invalid hmac"}, 400
             
-            #creating hmac on server side stored secret
-            plain_text_key_created = CONFIG['credentials']['client_secret'] + CONFIG['credentials']['client_id'] + ts[0]
+            plain_text_key_created = CONFIG['credentials']['client_secret']  + CONFIG['credentials']['client_id']  +  ts[0]
             key_created = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
             if hmac[0] == key_created:
                 return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
             else:
                 return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access' , 'key_created' :key_created ,'hmac' :hmac[0]}, 401
-                # return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access'}, 401
-
+       
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authentication:' + str(e)}, 400
 
