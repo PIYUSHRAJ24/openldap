@@ -379,7 +379,7 @@ def verify_pin():
 def send_otp_v1():
     try:
         res, status_code = VALIDATIONS.send_otp_v1(request)
-       
+        return {STATUS: "success", 'RES': res}, status_code
         if status_code != 200:
             return res, status_code
 
