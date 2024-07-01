@@ -569,8 +569,7 @@ class Validations:
         
         client_id = CommonLib.filter_input(request.headers.get("clientid"))
         ts = CommonLib.filter_input(request.headers.get("ts"))
-        hmac = CommonLib.filter_input(request.headers.get("hmac"))
-        return {STATUS: "success", 'error': "here"}, 400        
+        hmac = CommonLib.filter_input(request.headers.get("hmac"))        
         try:
             if client_id[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "client_id", RESPONSE: client_id[0]}, 400
