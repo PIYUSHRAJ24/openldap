@@ -3,7 +3,7 @@ from lib.constants import *
 from lib.validations import Validations
 from lib.mongolib import MongoLib
 from lib.rabbitmq import RabbitMQ
-# from lib.rabbitmqlogs import RabbitMQLogs
+from lib.rabbitmqlogs import RabbitMQLogs
 from lib.redislib import RedisLib
 import requests
 from api.org_activity import activity_insert
@@ -19,7 +19,7 @@ get_ttl.read('lib/cache_ttl.ini')
 VALIDATIONS = Validations()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
-# RABBITMQLOGS = RabbitMQLogs()
+RABBITMQLOGS = RabbitMQLogs()
 REDISLIB = RedisLib()
 
 accounts_eve = CONFIG['accounts_eve']
