@@ -378,8 +378,8 @@ def verify_pin():
 @bp.route('/send_mobile_otp', methods=['POST'])
 def send_otp_v1():
     try:
+        mobile = request.form.get('mobile')
         res, status_code = VALIDATIONS.send_otp_v1(request)
-    
         if status_code != 200:
             return res, status_code
 
@@ -441,7 +441,7 @@ def verify_otp_v1():
         res = {STATUS: ERROR, ERROR_DES: "verify_otp_v1: " + str(e)}
         logarray.update({ RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-        return res, 400    
+        return res, 400     
 
 
 @bp.route('/consent', methods=['POST'])

@@ -1087,25 +1087,24 @@ class Validations:
 
 
     
-    def send_otp_v1(self, request,org_id =None):
+    def send_otp_v1(self, request):
         mobile =  CommonLib.filter_input(request.values.get('mobile'))
-        mobile_decrypted = CommonLib.aes_decryption_v2(mobile[0],org_id[:16])
+       
         try: 
-            if mobile_decrypted == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile_decrypted}, 400
-            elif not mobile_decrypted or len(mobile_decrypted) != 10:
+            if mobile[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+            elif not mobile[0] or len(mobile[0]) != 10:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
             ts = str(int(time.time()))
-            plain_text_key_created = client_seret + clientid + mobile_decrypted + ts
+            plain_text_key_created = client_seret + clientid + mobile[0] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
             return {
                 STATUS: SUCCESS,
                 "post_data": {
-                    'mobile': mobile_decrypted,
-                    'source' : '07567360', #need to discuss alok sir this is temporary solution
+                    'mobile': mobile[0],
                     'clientid': clientid,
                     'ts': ts,
                     'hmac': hmac
@@ -1113,38 +1112,37 @@ class Validations:
                 },
                 "headers": {}
             }, 200
-            
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400
         
 
     
-    def verify_otp_v1(self, request,org_id = None):
+    def verify_otp_v1(self, request):
         mobile =  CommonLib.filter_input(request.values.get('mobile'))
-        mobile_decrypted = CommonLib.aes_decryption_v2(mobile[0],org_id[:16])
         otp =  CommonLib.filter_input(request.values.get('otp'))
-        otp_decrypted = CommonLib.aes_decryption_v2(otp[0],org_id[:16])
         txn =  CommonLib.filter_input(request.values.get('txn'))
         try: 
-            if mobile_decrypted == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile_decrypted}, 400
-            if not mobile_decrypted or len(mobile_decrypted) != 10:
+            if mobile[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+            elif not mobile[0] or len(mobile[0]) != 10:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-            if otp_decrypted is None or len(otp_decrypted) != 6:
+            if otp[0] is None or len(otp[0]) != 6:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_130')}, 400
+            if DEBUG_MODE and otp[0] != '123456':
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_131')}, 400
             if txn[0] is None or len(txn[0]) != 36:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134')}, 400
            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
             ts = str(int(time.time()))
-            plain_text_key_created = client_seret + clientid + mobile_decrypted + otp_decrypted+ ts + txn[0]
+            plain_text_key_created = client_seret + clientid + mobile[0] + otp[0]+ ts + txn[0]
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
             return {
                 STATUS: SUCCESS,
                 "post_data": {
-                    'mobile': mobile_decrypted,
-                    'otp': otp_decrypted,
+                    'mobile': mobile[0],
+                    'otp': otp[0],
                     'txn': txn[0],
                     'clientid': clientid,
                     'ts': ts,
