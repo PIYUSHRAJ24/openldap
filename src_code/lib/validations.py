@@ -1127,8 +1127,8 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
             if otp[0] is None or len(otp[0]) != 6:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_130')}, 400
-            # if DEBUG_MODE and otp[0] != '123456':
-            #     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_131')}, 400
+            if DEBUG_MODE and otp[0] != '123456':
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_131')}, 400
             if txn[0] is None or len(txn[0]) != 36:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134')}, 400
            
