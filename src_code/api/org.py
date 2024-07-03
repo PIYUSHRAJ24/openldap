@@ -36,7 +36,7 @@ def validate_user():
     """
     logarray.update({
         ENDPOINT: request.path,
-        HEADERS: {
+        HEADER: {
             'user-agent': request.headers.get('User-Agent'),
             "client_id": request.headers.get("client_id"),
             "ts": request.headers.get("ts"),
