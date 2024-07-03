@@ -1098,7 +1098,7 @@ class Validations:
            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
-            ts = str(int(time.time()))
+            ts = request.headers.get("ts")
             plain_text_key_created = client_seret + clientid + mobile[0] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
             return {
