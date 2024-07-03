@@ -419,9 +419,9 @@ def verify_otp_v1():
             return res, status_code
         mobile = res['post_data']['mobile']
         otp = res['post_data'].get('otp')
-        if DEBUG_MODE:
-            REDISLIB.set(mobile+"_verified_udyam_otp", "test")
-            return {STATUS: SUCCESS}, 200
+        # if DEBUG_MODE:
+        #     REDISLIB.set(mobile+"_verified_udyam_otp", "test")
+        #     return {STATUS: SUCCESS}, 200
         if REDISLIB.checkAttemptValidateOtp((hashlib.md5((mobile + otp).encode()).hexdigest())) == False:
             retMsg = {
                 STATUS:ERROR,
