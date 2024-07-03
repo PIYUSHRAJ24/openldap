@@ -382,9 +382,7 @@ def send_otp_v1():
         res, status_code = VALIDATIONS.send_otp_v1(request)
         if status_code != 200:
             return res, status_code
-        print(res)
-        print(status_code)
-        exit()
+
         if DEBUG_MODE:
             return {
                 STATUS: SUCCESS,
