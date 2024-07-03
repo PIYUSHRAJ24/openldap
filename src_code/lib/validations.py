@@ -569,7 +569,7 @@ class Validations:
         
         client_id = CommonLib.filter_input(request.headers.get("clientid"))
         ts = CommonLib.filter_input(request.headers.get("ts"))
-        hmac = CommonLib.filter_input(request.headers.get("hmac"))        
+        hmac = CommonLib.filter_input(request.headers.get("hmac"))  
         try:
             if client_id[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "client_id", RESPONSE: client_id[0]}, 400
@@ -585,7 +585,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: "Invalid hmac"}, 400
             
             plain_text_key_created = CONFIG['credentials']['client_secret']  + CONFIG['credentials']['client_id']  +  ts[0]
-            key_created = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+            key_created = hashlib.sha256(plain_text_key_created.encode()).hexdigest()        
             if hmac[0] == key_created:
                 return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
             else:
@@ -1098,8 +1098,8 @@ class Validations:
            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
-            ts = request.headers.get("ts")
-            plain_text_key_created = client_seret + clientid + ts
+            ts = str(int(time.time()))
+            plain_text_key_created = client_seret + clientid + mobile[0] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
             return {
                 STATUS: SUCCESS,
