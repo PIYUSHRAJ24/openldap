@@ -383,13 +383,13 @@ def send_otp_v1():
         if status_code != 200:
             return res, status_code
 
-        if DEBUG_MODE:
-            return {
-                STATUS: SUCCESS,
-                "message": "DigiLocker has sent you an OTP to your registered mobile (xxxxxxxxxx)",
-                "msg": "DigiLocker has sent you an OTP to your registered mobile (xxxxxxxxxx)",
-                "txn": "29e9898d-bd17-5ba8-9e56-cc75d14b1bd9"
-            }, 200
+        # if DEBUG_MODE:
+        #     return {
+        #         STATUS: SUCCESS,
+        #         "message": "DigiLocker has sent you an OTP to your registered mobile (xxxxxxxxxx)",
+        #         "msg": "DigiLocker has sent you an OTP to your registered mobile (xxxxxxxxxx)",
+        #         "txn": "29e9898d-bd17-5ba8-9e56-cc75d14b1bd9"
+        #     }, 200
         if REDISLIB.checkAttemptValidateOtp((hashlib.md5((res['post_data'].get('mobile')).encode()).hexdigest())) == False:
             retMsg = {
                 STATUS:ERROR,
