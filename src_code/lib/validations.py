@@ -963,6 +963,27 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:sendaadhaarOTP_valid::' + str(e)}, 400
     
+    def verify_aadhaar_otp_valid(self, request):
+        try:
+            uid = request.values.get('uid')
+            txn = request.values.get('txn')  # to validate txn from redis
+            otp = request.values.get('otp')
+            
+            # todo validation rules
+            if otp is None or len(otp) != 6:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('err_101')}, 400
+            if uid is None or len(uid) != 12:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('err_931')}, 400
+            if txn is None or len(txn) != 36:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_133')}, 400
+            elif not self.valid_txn(txn):
+                return {STATUS: ERROR, ERROR_DES: Errors.error('err_115')}, 400
+
+            return [uid, txn, otp], 200
+        except Exception as e:
+            return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verifyaadhaarOTP::' + str(e)}
+
+
     def org_access_rules(self, request, operation = 'G'):
         ''' Validate org access rules received over http request '''
         digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
