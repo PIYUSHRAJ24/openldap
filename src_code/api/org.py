@@ -187,7 +187,7 @@ def create_details():
         if post_data.get('org_type'):
             suggest.append(post_data['org_type'])
         # Send Entity Details for searching
-        stats_res = ELASTICLIB.send_signup_stats({**post_data, 'suggest': suggest})
+        # stats_res = ELASTICLIB.send_signup_stats({**post_data, 'suggest': suggest})
         # Save Document Automatically
         MONGOLIB.saveuri(post_data)
         activity_insert("signup","signup",did,post_data['org_id'],post_data['name']) # type: ignore

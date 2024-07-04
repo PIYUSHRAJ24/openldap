@@ -589,7 +589,7 @@ class Validations:
             if hmac[0] == key_created:
                 return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
             else:
-                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access'}, 401
+                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access', 'HMAC' : hmac[0] , 'key_created' : key_created }, 401
 
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authentication:' + str(e)}, 400
@@ -693,6 +693,276 @@ class Validations:
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_151") % str(keys)}, 400
         return res, status_code
 
+    def validate_org_details(self, request, req_type='get'):
+            org_alias = CommonLib.filter_input(request.json.get('org_alias'))
+            org_type = CommonLib.filter_input(request.json.get('org_type'))
+            name = CommonLib.filter_input(request.json.get('name'))
+            pan = CommonLib.filter_input(request.json.get('pan'))
+            mobile = CommonLib.filter_input(request.json.get('mobile'))
+            email = CommonLib.filter_input(request.json.get('email'))
+            d_incorporation = CommonLib.filter_input(request.json.get('d_incorporation'))
+            roc = CommonLib.filter_input(request.json.get('roc'))
+            icai = CommonLib.filter_input(request.json.get('icai'))
+            din = CommonLib.filter_input(request.json.get('din'))
+            cin = CommonLib.filter_input(request.json.get('cin'))
+            gstin = CommonLib.filter_input(request.json.get('gstin'))
+            dir_info = request.json.get('dir_info')
+            authorization_letter = request.json.get('authorization_letter')
+            is_authorization_letter = CommonLib.filter_input(request.json.get('is_authorization_letter'))
+            consent = request.json.get('consent')
+            ccin = None
+            udyam = None
+            
+            try:
+                if org_alias[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org alias", RESPONSE: org_alias[0]}, 400
+                elif (org_alias[0] != None and org_alias[0] != '') and not org_alias[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_124")}, 400
+                if name[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "name", RESPONSE: name[0]}, 400
+                elif (name[0] != None and name[0] != '') and not name[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_125")}, 400
+                if org_type[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org_type", RESPONSE: org_type[0]}, 400
+                elif (org_type[0] != None and org_type[0] != '') and not org_type[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_172")}, 400
+                if pan[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "pan", RESPONSE: pan[0]}, 400
+                elif (pan[0] != None and pan[0] != '') and not self.is_valid_pan(pan[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
+                if mobile[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+                elif (mobile[0] != None and mobile[0] != '') and not self.is_valid_mobile(mobile[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_136")}, 400
+                if email[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "email", RESPONSE: email[0]}, 400
+                elif (email[0] != None and email[0] != '') and not self.is_valid_email(email[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_171")}, 400
+                if d_incorporation[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "date of incorporation", RESPONSE: d_incorporation[0]}, 400
+                elif (d_incorporation[0] != None and d_incorporation[0] != '') and not self.is_valid_date(d_incorporation[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_152")}, 400
+                if roc[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "roc", RESPONSE: roc[0]}, 400
+                elif (roc[0] != None and roc[0] != '') and not roc[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_174")}, 400
+                if icai[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "icai", RESPONSE: icai[0]}, 400
+                elif (icai[0] != None and icai[0] != '') and len(icai[0]) != 6:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_176")}, 400
+                if din[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "din", RESPONSE: din[0]}, 400
+                elif (din[0] != None and din[0] != '') and len(din[0]) != 8:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_145")}, 400
+                if authorization_letter and len(authorization_letter) < 32:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_177")}, 400
+                if is_authorization_letter[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "is_authorization_letter", RESPONSE: din[0]}, 400
+                if is_authorization_letter[0] != None and not is_authorization_letter[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_179")}, 400
+                if cin[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "cin", RESPONSE: cin[0]}, 400
+                elif not cin[0]:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_148")}, 400
+                elif req_type == 'create':
+                    if org_type[0] in ['LLP','llp']:
+                        res, status_code = self.is_valid_cin(cin[0], True)
+                        if status_code != 200:
+                            return res, status_code
+                        ccin = cin[0]
+                    if org_type[0] in ['MSME', 'msme']:
+                        if not cin[0]:
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_160")}, 400
+                        res, status_code = self.is_valid_udyam_number(cin[0], True)
+                        if status_code != 200:
+                            return res, status_code
+                        udyam = cin[0]
+                    if org_type[0] in ['PAN', 'pan']:
+                        query = {'cin': pan[0]}
+                        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+                        if status_code == 200 and len(res[RESPONSE]) > 0:
+                            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_163')}, 406 # type: ignore
+                        if not consent or len(consent) < 20:
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_182")}, 400
+                        
+                        if not name[0]:
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_125")}, 400
+                        if not self.is_valid_date(d_incorporation[0]):
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_152")}, 400
+                        if not self.is_valid_pan(pan[0]):
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
+                        if cin[0] != pan[0]: 
+                            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_148")}, 400
+                        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], {'cin': cin[0]}, {}, limit=500)
+                        if status_code == 200 and len(res[RESPONSE]) > 0:
+                            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_178')}, 422 # type: ignore
+                if gstin[1] == 400:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "gstin", RESPONSE: gstin[0]}, 400
+                elif (gstin[0] != None and gstin[0] != '') and not self.is_valid_gstin(gstin[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_150")}, 400
+                status, res = self.validate_dict(dir_info)
+                if status == 400:
+                    return res, status
+               
+                dir_info = res
+                post_data = {}
+                if org_alias[0]:
+                    post_data['org_alias'] = org_alias[0]
+                if org_type[0]:
+                    post_data['org_type'] = org_type[0].lower()
+                if name[0]:
+                    post_data['name'] = name[0].upper()
+                if pan[0]:
+                    post_data['pan'] = pan[0].upper()
+                if ccin:
+                    post_data['ccin'] = ccin.upper()
+                if udyam:
+                    post_data['udyam'] = udyam.upper()
+                if mobile[0]:
+                    post_data['mobile'] = mobile[0]
+                if email[0]:
+                    post_data['email'] = email[0].lower()
+                if d_incorporation[0]:
+                    post_data['d_incorporation'] = d_incorporation[0]
+                if dir_info[0]['digilocker_id']: # type:ignore
+                    post_data['created_by'] = dir_info[0]['digilocker_id'] # type:ignore
+                if req_type == 'create':
+                    post_data['created_on'] = datetime.now().strftime(D_FORMAT)
+                if din[0]:
+                    post_data['din'] = din[0]
+                if cin[0]:
+                    post_data['cin'] = cin[0].upper()
+                if gstin[0]:
+                    post_data['gstin'] = gstin[0].upper()
+                if roc[0]:
+                    post_data['roc'] = roc[0]
+                if icai[0]:
+                    post_data['icai'] = icai[0]
+                if dir_info:
+                    post_data['dir_info'] = dir_info
+                if authorization_letter:
+                    post_data['authorization_letter'] = authorization_letter
+                if consent:
+                    post_data['consent'] = consent
+                if is_authorization_letter[0]:
+                    post_data['is_authorization_letter'] = is_authorization_letter[0].upper()
+                return {
+                    STATUS: SUCCESS,
+                    "post_data": post_data
+                }, 200
+            except Exception as e:
+                return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:validate_org_details:: ' + str(e)}, 500
+
+    def validate_get_org_details(self, request):
+        org_id = CommonLib.filter_input(request.values.get('org_id'))
+        org_alias = CommonLib.filter_input(request.values.get('org_alias'))
+        pan = CommonLib.filter_input(request.values.get('pan'))
+        mobile = CommonLib.filter_input(request.values.get('mobile'))
+        created_by = CommonLib.filter_input(request.values.get('created_by'))
+        din = CommonLib.filter_input(request.values.get('din'))
+        cin = CommonLib.filter_input(request.values.get('cin'))
+        gstin = CommonLib.filter_input(request.values.get('gstin'))
+        digilockerid = CommonLib.filter_input(request.values.get('digilockerid'))
+
+        try:
+            filter_data = {}
+            if org_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org id", RESPONSE: org_id[0]}, 400
+            elif org_id[0] != None and not self.is_valid_did(org_id[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_123")}, 400
+            elif org_id[0] != None:
+                filter_data["org_id"] = org_id[0]
+            if org_alias[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org alias", RESPONSE: org_alias[0]}, 400
+            elif org_alias[0] != None and not org_alias[0]:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_124")}, 400
+            elif org_alias[0] != None:
+                filter_data["org_alias"] = org_alias[0]
+            if pan[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "pan", RESPONSE: pan[0]}, 400
+            elif pan[0] != None and not self.is_valid_pan(pan[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
+            elif pan[0] != None:
+                filter_data["pan"] = pan[0]
+            if mobile[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+            elif mobile[0] != None and not self.is_valid_mobile(mobile[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_136")}, 400
+            elif mobile[0] != None:
+                filter_data["mobile"] = mobile[0]
+            if din[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "din", RESPONSE: din[0]}, 400
+            elif din[0] != None and len(din[0]) != 8:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
+            elif din[0] != None:
+                filter_data["din"] = din[0]
+            if cin[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "cin", RESPONSE: cin[0]}, 400
+            elif cin[0]:
+                c_status_code = self.is_valid_cin(cin[0])
+                u_status_code = self.is_valid_udyam_number(cin[0])
+                if c_status_code[1] != 200 and u_status_code[1] != 200 and cin[0] != 10:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_168")}, 400
+                filter_data["cin"] = cin[0]
+            if gstin[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "gstin", RESPONSE: gstin[0]}, 400
+            elif gstin[0] != None and not self.is_valid_gstin(gstin[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_150")}, 400
+            elif gstin[0] != None:
+                filter_data["gstin"] = gstin[0]
+            if digilockerid[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "digilockerid", RESPONSE: digilockerid[0]}, 400
+            elif digilockerid[0]:
+                if not self.is_valid_did(digilockerid[0]):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
+                else:
+                    filter_data["digilockerid"] = digilockerid[0]
+            return {
+                STATUS: SUCCESS,
+                "post_data": filter_data
+            }, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:validate_get_org_details:: ' + str(e)}, 500
+        
+    def create_org_details(self, request):
+        ''' Validate org details received over http request '''
+
+        keys = ["org_id", "org_alias", "pan", "mobile", "cin", "gstin"]
+        org_id = self.get_txn(CommonLib.filter_input(request.json.get('txn', ''))[0])
+        res, status_code = self.validate_org_details(request, 'create')
+        if status_code != 200:
+            return res, status_code
+        did = res["post_data"]['dir_info'][0]['digilocker_id']
+    
+        if True not in [res["post_data"].get(key) != None for key in keys]:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_151") % str(keys)}, 400
+
+        access_post_data = {
+            'org_id': org_id,
+            'digilockerid': did,
+            'access_id': hashlib.md5((org_id+did).encode()).hexdigest(),
+            'is_active': res["post_data"]['dir_info'][0]['is_active'],
+            'rule_id': 'ORGR001',
+            'designation': 'director',
+            'updated_by': did,
+            'updated_on': datetime.now().strftime(D_FORMAT)
+
+        }
+        return {STATUS: SUCCESS, 'post_data': {'org_id': org_id, **res["post_data"]}, 'access_post_data': access_post_data}, status_code
+    
+    
+    def send_aadhaar_otp_valid(self, request):
+        try:
+            uid = request.values.get('uid')
+            din = request.values.get('din')
+            if uid is None or len(uid) != 12:
+                return {STATUS: ERROR,  ERROR_DES: Errors.error('err_931')}, 400
+            if din != None and len(din) != 8:
+                return {STATUS: ERROR,  ERROR_DES: Errors.error('ERR_MSG_132')}, 400
+            return [uid, din], 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:sendaadhaarOTP_valid::' + str(e)}, 400
+    
     def org_access_rules(self, request, operation = 'G'):
         ''' Validate org access rules received over http request '''
         digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
