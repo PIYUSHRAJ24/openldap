@@ -1,19 +1,23 @@
-import json
 import re
-import datetime, time
-
-from flask import g
-import requests
-from lib.commonlib import CommonLib
-from lib.constants import *
-import hashlib
+import ast
+import uuid
+import json
+import time
 import hmac
 import uuid
+import hashlib
+import requests
+from datetime import datetime
+import xml.etree.ElementTree as ET
+from flask import g
+from thefuzz import fuzz
+from lib.constants import *
 from lib.redislib import RedisLib
 from lib.mongolib import MongoLib
-from thefuzz import fuzz
+from lib.commonlib import CommonLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
-import xml.etree.ElementTree as ET
+
+
 
 
 rmq = RabbitMQTaskClientLogstash()
@@ -42,9 +46,9 @@ class Validations:
     def is_valid_date(self, date):
         if date is not None:
             try:
-                datetime.datetime.strptime(date, D_FORMAT)
+                datetime.strptime(date, D_FORMAT)
                 return True
-            except Exception:
+            except Exception :
                 return
 
     def is_valid_pin(self, pin):
@@ -1695,3 +1699,84 @@ class Validations:
             res = json.loads(response.content)
             return {STATUS: ERROR, ERROR_DES: res.get('errorDescription') or Errors.error('ERR_MSG_155'), RESPONSE: res.get('error') or res}, response.status_code
         
+        
+    def verify_pan(self, request, flag=False):
+        pan = CommonLib.filter_input(request.values.get('pan'))
+        name = CommonLib.filter_input(request.values.get('name'))
+        d_incorporation = CommonLib.filter_input(request.values.get('d_incorporation'))
+        try:
+            if pan[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "pan", RESPONSE: pan[0]}, 400
+            elif not pan[0] or not self.is_valid_pan(pan[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
+            
+            '''check if PAN already exists in db'''
+            if flag:
+                query = {'cin': pan[0]}
+                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+                if status_code == 200 and len(res[RESPONSE]) > 0:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_178')}, 406 # type: ignore
+                
+            if name[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "name", RESPONSE: name[0]}, 400
+            elif not name[0]:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_125")}, 400
+            if d_incorporation[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "date of incorporation", RESPONSE: d_incorporation[0]}, 400
+            elif (d_incorporation[0] != None and d_incorporation[0] != '') and not self.is_valid_date(d_incorporation[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_152")}, 400
+            TS = datetime.now().strftime(D_FORMAT)
+            post_data = {
+                "txnId": str(uuid.uuid4()),
+                "orgPan": pan[0],
+                "verificationData": {
+                    "orgName": name[0],
+                    "doi": datetime.strptime(d_incorporation[0], D_FORMAT).strftime("%d-%m-%Y")
+                },
+                "consentArtifact": {
+                    "consent": {
+                        "consentId": "string",
+                        "timestamp": "string",
+                        "dataConsumer": {
+                            "id": "string"
+                        },
+                        "dataProvider": {
+                            "id": "string"
+                        },
+                        "purpose": {
+                            "description": "string"
+                        },
+                        "user": {
+                            "idType": "string",
+                            "idNumber": "string",
+                            "mobile": "9874563210",
+                            "email": "demostest@gmail.com"
+                        },
+                        "data": {
+                            "id": "string"
+                        },
+                        "permission": {
+                            "access": "string",
+                            "dateRange": {
+                                "from": TS,
+                                "to": TS
+                            },
+                            "frequency": {
+                                "unit": "string",
+                                "value": 0,
+                                "repeats": 0
+                            }
+                        }
+                    },
+                    "signature": {
+                        "signature": "string"
+                    }
+                }
+            }
+            return {
+                STATUS: SUCCESS,
+                "post_data": post_data
+            }, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
+            
