@@ -7,17 +7,15 @@ import hmac
 import uuid
 import hashlib
 import requests
-from datetime import datetime
 import xml.etree.ElementTree as ET
 from flask import g
 from thefuzz import fuzz
 from lib.constants import *
+from datetime import datetime
 from lib.redislib import RedisLib
 from lib.mongolib import MongoLib
 from lib.commonlib import CommonLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
-
-
 
 
 rmq = RabbitMQTaskClientLogstash()
@@ -593,7 +591,7 @@ class Validations:
             if hmac[0] == key_created:
                 return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
             else:
-                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access', 'HMAC' : hmac[0] , 'key_created' : key_created }, 401
+                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access'}, 401
 
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authentication:' + str(e)}, 400
@@ -954,6 +952,80 @@ class Validations:
         }
         return {STATUS: SUCCESS, 'post_data': {'org_id': org_id, **res["post_data"]}, 'access_post_data': access_post_data}, status_code
     
+    def verify_icai(self, request):
+        member_id = CommonLib.filter_input(request.values.get('member_id'))
+        name = CommonLib.filter_input(request.values.get('name'))
+        dob = CommonLib.filter_input(request.values.get('dob'))
+        try:
+            if member_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "member_id", RESPONSE: member_id[0]}, 400
+            elif not member_id[0] or len(member_id[0]) != 6:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_176")}, 400
+            if name[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "name", RESPONSE: name[0]}, 400
+            elif not name[0]:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_101")}, 400
+            if dob[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "date of incorporation", RESPONSE: dob[0]}, 400
+            elif (dob[0] != None and dob[0] != '') and not self.is_valid_date(dob[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("err_473")}, 400
+            TS = datetime.now().strftime(D_FORMAT)
+            post_data = {
+                "txnId": str(uuid.uuid4()),
+                "format": "xml",
+                "certificateParameters": {
+                    "memberid": member_id[0],
+                    "FullName": name[0],
+                    "DOB": datetime.strptime(dob[0], D_FORMAT).strftime("%d-%m-%Y")
+                },
+                "consentArtifact": {
+                    "consent": {
+                        "consentId": str(uuid.uuid4()),
+                        "timestamp": TS,
+                        "dataConsumer": {
+                            "id": "string"
+                        },
+                        "dataProvider": {
+                            "id": "string"
+                        },
+                        "purpose": {
+                            "description": "string"
+                        },
+                        "user": {
+                            "idType": "string",
+                            "idNumber": "string",
+                            "mobile": "9999999999",
+                            "email": "abc@gmail.com"
+                        },
+                        "data": {
+                            "id": "string"
+                        },
+                        "permission": {
+                            "access": "string",
+                            "dateRange": {
+                                "from": TS,
+                                "to": TS
+                            },
+                            "frequency": {
+                                "unit": "string",
+                                "value": 0,
+                                "repeats": 0
+                            }
+                        }
+                    },
+                    "signature": {
+                        "signature": "string"
+                    }
+                }
+            }
+            return {
+                STATUS: SUCCESS,
+                "post_data": post_data
+            }, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
+        
+
     
     def send_aadhaar_otp_valid(self, request):
         try:
@@ -1362,7 +1434,6 @@ class Validations:
             otp = CommonLib.filter_input(request.values.get('otp'))
             otp_decrypted = CommonLib.aes_decryption_v2(otp[0],org_id[:16])
             consent = CommonLib.filter_input(request.values.get("consent"))
-            # function = request.values.get('function')
             
             # todo validation rules
             if otp_decrypted is None or len(otp_decrypted) != 6:
