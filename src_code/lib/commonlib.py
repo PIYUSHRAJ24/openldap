@@ -463,22 +463,13 @@ class CommonLib:
     def aes_decryption_v2(plain_text, secret):
         ''' This method introduced to decrypt using iv '''
         try:
-            
-            filtered_cipher_text = plain_text.replace('---', '+').replace('_', '/')
-            # Fix the base64 padding
-            missing_padding = len(filtered_cipher_text) % 4
-            if missing_padding != 0:
-                filtered_cipher_text += '=' * (4 - missing_padding)
-   
+            filtered_cipher_text = plain_text.replace('---', '+')
             secret_key=bytearray((hashlib.md5(secret.encode("utf-8")).hexdigest()).encode("utf-8"))
-           
             iv = bytearray(secret.encode('utf-8'))
             encode_cipher = base64.b64decode(filtered_cipher_text)
             aes_obj = AES.new(secret_key, AES.MODE_CBC, iv)
             return unpad(aes_obj.decrypt(encode_cipher), AES.block_size).decode('utf-8')
         except Exception as e:
-            print(e)
-            exit()
             return None
     
     
