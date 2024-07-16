@@ -80,16 +80,16 @@ def validate():
         g.dept_details = jwtlib.dept_details
         g.sec_details = jwtlib.sec_details
         g.consent_time = ''
-        consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
-        if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
-            consent_status, consent_code = esign_consent_get()
-            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            try:
-                datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
-            except Exception:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            g.consent_time = consent_status.get('consent_time')
+        # consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
+        # if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
+        #     consent_status, consent_code = esign_consent_get()
+        #     if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+        #         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+        #     try:
+        #         datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+        #     except Exception:
+        #         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+        #     g.consent_time = consent_status.get('consent_time')
             
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
@@ -582,6 +582,7 @@ def revoke_access():
 
         post_data['org_id'] = g.org_id
         post_data['updated_by'] = g.digilockerid
+        post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
         res, status_code = RABBITMQ.send_to_queue({"data": post_data}, 'Organization_Xchange', 'org_update_rules_')
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
@@ -643,6 +644,7 @@ def grant_access():
         
         post_data['org_id'] = g.org_id
         post_data['updated_by'] = g.digilockerid
+        post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
         res, status_code = RABBITMQ.send_to_queue({"data": post_data}, 'Organization_Xchange', 'org_update_rules_')
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
@@ -706,6 +708,7 @@ def assign_access():
         post_data['org_id'] = g.org_id
         post_data['rule_id'] = rule_id
         post_data['updated_by'] = g.digilockerid
+        post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
         res, status_code = RABBITMQ.send_to_queue({"data": post_data}, 'Organization_Xchange', 'org_update_rules_')
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})

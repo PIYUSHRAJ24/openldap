@@ -1214,7 +1214,7 @@ class Validations:
         ''' Validate org access rules received over http request '''
         digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
         access_id = CommonLib.filter_input(request.values.get('access_id') or request.args.get('access_id'))
-        updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
+        # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
             if digilockerid[1] == 400:
@@ -1230,7 +1230,7 @@ class Validations:
             post_data = {
                 'digilockerid': digilockerid[0],
                 'access_id': access_id[0],
-                'updated_on': updated_on,
+                # 'updated_on': updated_on,
                 'is_active': "N"
             }
             return {
@@ -1246,7 +1246,7 @@ class Validations:
         digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
         access_id = CommonLib.filter_input(request.values.get('access_id') or request.args.get('access_id'))
         rule_name =  CommonLib.filter_input(request.values.get('rule_name') or request.args.get('rule_name'))
-        updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
+        # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
             if digilockerid[1] == 400:
@@ -1267,7 +1267,7 @@ class Validations:
                 'digilockerid': digilockerid[0],
                 'access_id': access_id[0],
                 'rule_name': rule_name[0],
-                'updated_on': updated_on,
+                # 'updated_on': updated_on,
                 'is_active': "Y"
             }
             return {
@@ -1286,7 +1286,7 @@ class Validations:
         designation =  CommonLib.filter_input(request.values.get('designation') or request.args.get('designation'))
         cin =  CommonLib.filter_input(request.values.get('cin') or request.args.get('cin'))
         din =  CommonLib.filter_input(request.values.get('din') or request.args.get('din'))
-        updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
+        # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
             if digilockerid[1] == 400:
@@ -1324,7 +1324,7 @@ class Validations:
                 'access_id': access_id[0],
                 'rule_name': rule_name[0],
                 'designation': designation[0],
-                'updated_on': updated_on,
+                # 'updated_on': updated_on,
                 'is_active': "Y"
             }
             return {
