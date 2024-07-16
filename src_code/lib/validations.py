@@ -1074,7 +1074,7 @@ class Validations:
         designation =  CommonLib.filter_input(request.values.get('designation') or request.args.get('designation'))
         rule_name =  CommonLib.filter_input(request.values.get('rule_name') or request.args.get('rule_name'))
         updated_by = CommonLib.filter_input(request.values.get('updated_by') )
-        # updated_on = datetime.datetime.now().strftime(D_FORMAT) #add this to worker
+        updated_on = datetime.datetime.now().strftime(D_FORMAT) #add this to worker
         is_active = CommonLib.filter_input(request.values.get('is_active'))
             
         try:   
@@ -1149,7 +1149,7 @@ class Validations:
                 'rule_name': rule_name[0],
                 'designation': designation[0],
                 'updated_by': g.digilockerid,
-                # 'updated_on': updated_on,
+                'updated_on': updated_on,
             }
             if operation == 'C2':
                 post_data['aadhaar'] = aadhaar_dec # type: ignore
