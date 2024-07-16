@@ -400,6 +400,7 @@ def create_access_rules_v2():
         post_data['din'] = din
         post_data['attempts'] = 0
         post_data['request_status'] = "initiated"
+        post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
         transaction_id = hashlib.md5((post_data['aadhaar']+post_data['org_id']+rule_id+post_data['updated_on']).encode()).hexdigest()
         post_data['transaction_id'] = transaction_id
 
