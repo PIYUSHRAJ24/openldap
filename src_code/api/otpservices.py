@@ -159,6 +159,61 @@ def verify_otp():
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111"), RESPONSE: str(e)}
     
+@bp.route('/send_otp/1.0',methods =['POST'])
+def send_aadhaar_otp1():
+    try:
+        res, status_code = VALIDATIONS.send_aadhaar_otp_valid(request)
+        
+        if status_code == 200:
+            uid, din = res
+        else:
+            return res, status_code  
+        
+        '''Once validaion and hmac done..genereate txn '''
+        txnId = VALIDATIONS.get_txn(uid)
+        logarray.update({"response": txnId})
+        RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
+        return AADHAAR_CONNECTOR.send_aadhaar_otp(uid, txnId)
+    except Exception as e:
+        logarray.update({"response": str(e)})
+        RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
+        return {STATUS: ERROR, ERROR_DES: str(e)}
+        
+@bp.route('/verify_otp/1.0', methods=['POST'])
+def verify_aadhaar_otp1():
+    try:
+        res, status_code = VALIDATIONS.verify_aadhaar_otp_valid(request)
+        if status_code == 200:
+            uid, txn, otp = res
+        else:
+            return res, status_code
+        
+        '''Once validaion and hmac done.. '''
+        data = {
+            'uid':uid,
+            'otp':otp,
+            'txn':txn,
+            'client_id': CONFIG['credentials']['client_id'],
+            'isKYC':'Y',
+        }
+        res_data = AADHAAR_CONNECTOR.aadhaar_otp_verify(data)
+        if res_data['status']== 'success':
+            REDISLIB.remove(txn + '_logID')
+            resp = res_data['response']
+            logarray.update({"response": resp})
+            RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_') 
+            return SIGNUP_CONNECTOR.aadhaar_signup(resp, data)
+        else:
+            logarray.update({"response": res_data})
+            RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
+            return {
+                STATUS: ERROR,
+                ERROR_DES:res_data['error_description'] #OTP not valid. Please enter Correct OTP as sent by UIDAI.[#K-100]
+            }
+    except Exception as e:
+        logarray.update({"response": str(e)})
+        RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
+        return {STATUS: ERROR, ERROR_DES: str(e)}
 
 @bp.after_request
 def after_request(response):
