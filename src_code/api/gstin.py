@@ -89,8 +89,9 @@ def healthcheck():
 
 @bp.route("/set_gstin", methods=["POST"])
 def set_gstin():
-
-    gstin = request.form.get("gstin")
+    
+    res, status_code = VALIDATIONS.is_valid_gstin_v2(request, g.org_id)
+    gstin = res['gstin']
     
     if not gstin:
         return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400

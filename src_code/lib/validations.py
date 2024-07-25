@@ -1614,6 +1614,23 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
 
+    def is_valid_gstin_v2(self, request, org_id):
+        try:
+            gstin = request.values.get('gstin')
+            gstin = CommonLib.aes_decryption_v2(gstin, org_id[:16])
+            if not gstin or not self.is_valid_gstin(gstin):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
+            
+            query = {'gstin': gstin}
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+            
+            if status_code == 200 and len(res[RESPONSE]) > 0:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
+            else:
+                return {STATUS: SUCCESS, 'gstin': gstin}, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_gstin:' + str(e)}, 400
+
     
     def verify_name_v3(self, name, original_name):
         try:
