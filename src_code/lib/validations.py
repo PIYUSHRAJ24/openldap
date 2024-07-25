@@ -1789,7 +1789,7 @@ class Validations:
                 
 
     def verify_pan(self, request, flag=False):
-        txn_id = CommonLib.filter_input(request.value.get('txn'))
+        txn_id = CommonLib.filter_input(request.values.get('txn'))
         pan = CommonLib.filter_input(request.values.get('pan'))
         name = CommonLib.filter_input(request.values.get('name'))
         d_incorporation = CommonLib.filter_input(request.values.get('d_incorporation'))
