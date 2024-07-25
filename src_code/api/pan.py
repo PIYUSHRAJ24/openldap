@@ -66,7 +66,7 @@ def verify_pan():
             logarray.update(res)
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return res, status_code
-        txn_id = 
+        txn_id = res['txn_id']
         pan = res['post_data']['orgPan']
         url = CONFIG['pan']['pan_url']
         headers = {
