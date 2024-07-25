@@ -23,7 +23,7 @@ from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
 VALIDATIONS = Validations()
-# ELASTICLIB = ElasticLib()
+ELASTICLIB = ElasticLib()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
