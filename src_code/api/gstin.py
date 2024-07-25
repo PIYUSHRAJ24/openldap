@@ -51,12 +51,14 @@ def validate_user():
         ENDPOINT: request.path,
         HEADER: {
             'user-agent': request.headers.get('User-Agent'),
-            "client_id": request.headers.get("client_id"),
+            "clientid": request.headers.get("clientid"),
             "ts": request.headers.get("ts"),
+            "orgid": request.headers.get("orgid"),
             "hmac": request.headers.get("hmac")
         },
         REQUEST: {}
     })
+
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
