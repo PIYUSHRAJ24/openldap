@@ -1769,9 +1769,27 @@ class Validations:
         else:
             res = json.loads(response.content)
             return {STATUS: ERROR, ERROR_DES: res.get('errorDescription') or Errors.error('ERR_MSG_155'), RESPONSE: res.get('error') or res}, response.status_code
-        
-        
+    
+
+    def get_txn(self, org_id):
+        try:
+            if len(org_id) == 36:
+                res = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"],
+                    {'org_id': org_id},
+                    projection={'_id': 0, 'org_id': 1}
+                )
+                for data in res:
+                    if data:
+                        return str(uuid.uuid4())
+                return org_id
+            else:
+                return str(uuid.uuid4())
+        except Exception as e:
+            return str(uuid.uuid4())
+                
+
     def verify_pan(self, request, flag=False):
+        txn_id = CommonLib.filter_input(request.value.get('txn'))
         pan = CommonLib.filter_input(request.values.get('pan'))
         name = CommonLib.filter_input(request.values.get('name'))
         d_incorporation = CommonLib.filter_input(request.values.get('d_incorporation'))
@@ -1781,12 +1799,19 @@ class Validations:
             elif not pan[0] or not self.is_valid_pan(pan[0]):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
             
+            if txn_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "txn_id", RESPONSE: txn_id[0]}, 400
+            elif txn_id[0] != None and self.is_valid_did(txn_id[0]) == None:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_134")}, 400
+            
             '''check if PAN already exists in db'''
             if flag:
                 query = {'cin': pan[0]}
                 res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
                 if status_code == 200 and len(res[RESPONSE]) > 0:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_178')}, 406 # type: ignore
+                
+                txn_id[0] = self.get_txn(txn_id[0])
                 
             if name[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "name", RESPONSE: name[0]}, 400
@@ -1846,7 +1871,8 @@ class Validations:
             }
             return {
                 STATUS: SUCCESS,
-                "post_data": post_data
+                "post_data": post_data,
+                'txn_id': txn_id
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400

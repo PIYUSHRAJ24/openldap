@@ -1,3 +1,6 @@
+from datetime import datetime
+import hashlib
+import time
 import requests
 import json
 from lib.validations import Validations
@@ -63,6 +66,8 @@ def verify_pan():
             logarray.update(res)
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return res, status_code
+        txn_id = res['txn_id']
+        pan = res['post_data']['orgPan']
         url = CONFIG['pan']['pan_url']
         headers = {
             'X-APISETU-APIKEY': CONFIG['mca']['api_key'],
@@ -103,11 +108,46 @@ def verify_pan():
             if res.get("verificationResult") and res["verificationResult"].get("doi") != "Y":
                 return { STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_152')}, 400
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134'), RESPONSE: res.get('errorDescription') or res}, response.status_code
-        return {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_100')}, 200
+        if not save_uri(txn_id, pan):
+            return { STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_207')}, 400
+        return {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_100'), 'txn': txn_id}, 200
     except Exception as t:
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_184'), RESPONSE: str(t)}, 400
 
         
+
+def save_uri(txn_id, pan):
+    ts = int(time.time())
+    ci = '0000'
+    key = f"{txn_id}{ci}{ts}"
+    hmac = hashlib.sha256(key.encode()).hexdigest()
+
+    headers = {
+        'ts': str(ts),
+        'lockerRequestToken': hmac,
+        'uid': txn_id,
+        'Content-Type': 'application/json'
+    }
+
+    data = {
+        "userName": txn_id,
+        "uri": f"in.gov.pan-OPNCR-{pan}",
+        "orgId": "001891",
+        "orgName": "Income Tax Department",
+        "docIssueType": "Public",
+        "docTypeId": "OPNCR",
+        "issuerId": "in.gov.pan",
+        "docName": "PAN Verification Record",
+        "docId": pan,
+        "issuedOn": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
+        "createdBy": txn_id,
+        "modifiedBy": txn_id,
+        "recordFrom": "MSTL",
+        "digilockerId": txn_id
+        }
+
+    response = requests.post('https://ids.digilocker.gov.in/api/2.0/save-uri', headers=headers, json=data)
+    return response.status_code == 200
 
 
 @bp.route('/verify_icai', methods=['POST'])

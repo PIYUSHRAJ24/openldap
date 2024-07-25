@@ -170,6 +170,7 @@ class Errors:
             'ERR_MSG_204': 'Provided date is invalid. Please provide date in fromat DDMMYYYY',
             'ERR_MSG_205' : "An user can only be associated with %s Entities."%CONFIG['roles']['max_organizations'],
             'ERR_MSG_206': "Invalid Jtoken.",
+            'ERR_MSG_207': "Cannot save the Organisation PAN.",
 
             'UIDAI-K-100' : 'OTP is not valid. Please enter Correct OTP as sent by UIDAI.',
             'UIDAI-K-200' : 'Data is currently not available with UIDAI.',
