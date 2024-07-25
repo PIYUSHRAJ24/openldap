@@ -58,7 +58,8 @@ def validate_user():
         },
         REQUEST: {}
     })
-
+    g.org_id = request.headers.get("orgid")
+    
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -88,20 +89,20 @@ def healthcheck():
 
 @bp.route("/set_gstin", methods=["POST"])
 def set_gstin():
-    gstin = request.form.get("gstin")
-    org_id = request.form.get("org_id")
 
+    gstin = request.form.get("gstin")
+    
     if not gstin:
         return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400
 
-    if not org_id:
+    if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
 
     if not is_valid_gstin(gstin):
         return jsonify({"status": "error", "response": "Please enter a valid GSTIN number, pattern not match"}), 400
 
     # Check if org_id exists
-    query = {"org_id": org_id}
+    query = {"org_id": g.org_id}
     fields = {}
     res, status_code = MONGOLIB.org_eve("org_details", query, fields, limit=1)
 
@@ -116,7 +117,7 @@ def set_gstin():
 
     try:
         # Update org_id if it exists
-        res, status_code = MONGOLIB.org_eve_update("org_details", data, org_id)
+        res, status_code = MONGOLIB.org_eve_update("org_details", data, g.org_id)
     except Exception as e:
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
 
