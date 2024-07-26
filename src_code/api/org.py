@@ -252,9 +252,7 @@ def get_users():
 def get_access_rules():
     logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
     try:
-        user_access_requests, status_code = get_user_access_requests()
-        if status_code != 200:
-           return {STATUS: ERROR, ERROR_DES: "No user request found."}, 400 
+        
         user_details = [{
                 'profile': CommonLib.get_profile_details(x),
                 **Roles.rule_id(x.pop('rule_id')), **x,
@@ -262,7 +260,9 @@ def get_access_rules():
                 "dept_name": g.dept_details.get(x.get('dept_id'),{}).get("name",""),
                 "sec_name": g.sec_details.get(x.get('sec_id'),{}).get("name","")
             } for x in g.org_access_rules]
-        user_details.append(user_access_requests)
+        user_access_requests, status_code = get_user_access_requests()
+        if status_code == 200 and len(user_access_requests[RESPONSE])>0:
+            user_details += user_access_requests[RESPONSE]
         res = {STATUS: SUCCESS, RESPONSE: user_details}
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1172,7 +1172,7 @@ def get_user_access_requests():
                 'rule_name' : Roles.rule_id(d.get('rule_id', 0)).get('rule_name', '').title() ,# type: ignore
                 'access_id' : d.get('transaction_id',''),
                 'dept_name' : d.get('dept_id',''),
-                'designatio' : d.get('designation',''),
+                'designation' : d.get('designation',''),
                 'digilockerid' : "NA",
                 'is_active' : d.get('request_status',''),
                 'is_loggedin' : d.get('dept_id',''),
