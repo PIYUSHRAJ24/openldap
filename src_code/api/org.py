@@ -239,7 +239,7 @@ def get_users():
                     **Roles.rule_id(rule.pop('rule_id')),
                 })
 
-        res = {STATUS: SUCCESS, RESPONSE: list(unique_users.values())}
+        res = {STATUS: SUCCESS, RESPONSE: list(unique_users.values()), 'count': len(list(unique_users.values()))}
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
