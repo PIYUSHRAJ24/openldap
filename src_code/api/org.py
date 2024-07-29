@@ -252,6 +252,7 @@ def get_users():
 def get_access_rules():
     logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
     try:
+        
         user_details = [{
                 'profile': CommonLib.get_profile_details(x),
                 **Roles.rule_id(x.pop('rule_id')), **x,
@@ -259,6 +260,9 @@ def get_access_rules():
                 "dept_name": g.dept_details.get(x.get('dept_id'),{}).get("name",""),
                 "sec_name": g.sec_details.get(x.get('sec_id'),{}).get("name","")
             } for x in g.org_access_rules]
+        user_access_requests, status_code = get_user_access_requests()
+        if status_code == 200 and len(user_access_requests[RESPONSE])>0:
+            user_details += user_access_requests[RESPONSE]
         res = {STATUS: SUCCESS, RESPONSE: user_details}
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1149,6 +1153,49 @@ def get_user_requests():
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+@bp.route('/get_user_access_requests', methods=['GET'])
+def get_user_access_requests():
+    req = {'org_id': g.org_id}
+    logarray.update({ENDPOINT: 'get_user_requests', REQUEST: req})
+    try:
+        res, status_code = MONGOLIB.org_eve("org_user_requests", req, {}, limit = 1000)
+        if status_code == 400:
+            logarray.update({RESPONSE: res})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return {STATUS: SUCCESS, RESPONSE: []}, 200
+        logarray.update({RESPONSE: res})
+        data = []
+        if len(res[RESPONSE]) > 0:
+            for d in res[RESPONSE]:
+                data.append({
+                'rule_name' : Roles.rule_id(d.get('rule_id', 0)).get('rule_name', '').title() ,# type: ignore
+                'access_id' : d.get('transaction_id',''),
+                'dept_name' : d.get('dept_id',''),
+                'designation' : d.get('designation',''),
+                'digilockerid' : "NA",
+                'is_active' : d.get('request_status',''),
+                'is_loggedin' : d.get('dept_id',''),
+                'rule_desc' : "NA",
+                'sec_name' : "NA",
+                'updated_by' : d.get('updated_by',''),
+                'org_id' : d.get('org_id',''),
+                'updated_on' : d.get('updated_on',''),
+                'profile' : {
+                    "email" : d.get('email',''),
+                    "gender":"NA",
+                    "mobile": d.get('mobile',''),
+                    "photo": "NA",
+                    "username": d.get('email','')
+                }
+                
+                })
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return {STATUS: SUCCESS, RESPONSE: data}, status_code
+    except Exception as e:
+        logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
 @bp.route('/cancel_user_request', methods=['POST'])
@@ -1240,7 +1287,13 @@ def create_org_user():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-
+        post_data['is_active'] = "N"
+        res1, status_code = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_users_pool"], post_data)
+        if status_code != 200:
+            logarray.update({RESPONSE: res1})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return res1, status_code
+        post_data['is_active'] = "Y"
         data = {'data': {'digilockerid': g.digilockerid, 'org_id': [post_data['org_id'] or g.org_id]}} # type: ignore
         users_res = RABBITMQ.send_to_queue(data, 'Organization_Xchange', 'org_add_org_user_')
         logarray.update({RESPONSE: {'org_access_rules_create': res, 'users_update': users_res}})
