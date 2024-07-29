@@ -1186,7 +1186,7 @@ def get_user_access_requests():
                     "gender":"NA",
                     "mobile": d.get('mobile',''),
                     "photo": "NA",
-                    "username": "NA"
+                    "username": d.get('email','')
                 }
                 
                 })
