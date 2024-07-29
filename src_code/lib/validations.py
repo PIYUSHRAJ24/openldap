@@ -1806,7 +1806,7 @@ class Validations:
                 
 
     def verify_pan(self, request, flag=False):
-        txn_id = CommonLib.filter_input(request.value.get('txn'))
+        txn_id = CommonLib.filter_input(request.values.get('txn'))
         pan = CommonLib.filter_input(request.values.get('pan'))
         name = CommonLib.filter_input(request.values.get('name'))
         d_incorporation = CommonLib.filter_input(request.values.get('d_incorporation'))
@@ -1820,7 +1820,8 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "txn_id", RESPONSE: txn_id[0]}, 400
             elif txn_id[0] != None and self.is_valid_did(txn_id[0]) == None:
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_134")}, 400
-            
+            txn = txn_id[0]
+
             '''check if PAN already exists in db'''
             if flag:
                 query = {'cin': pan[0]}
@@ -1828,7 +1829,7 @@ class Validations:
                 if status_code == 200 and len(res[RESPONSE]) > 0:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_178')}, 406 # type: ignore
                 
-                txn_id[0] = self.get_txn(txn_id[0])
+                txn = self.get_txn(txn_id[0])
                 
             if name[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "name", RESPONSE: name[0]}, 400
@@ -1889,7 +1890,7 @@ class Validations:
             return {
                 STATUS: SUCCESS,
                 "post_data": post_data,
-                'txn_id': txn_id
+                'txn_id': txn
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
