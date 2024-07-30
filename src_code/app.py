@@ -68,4 +68,4 @@ app.register_blueprint(pan_bp, url_prefix='/pan')
 app.register_blueprint(gstin_bp, url_prefix='/gstin')
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
-app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug= True)#os.getenv('debug_mode','').lower() == 'true')
+app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug= os.getenv('debug_mode','').lower() == 'true')
