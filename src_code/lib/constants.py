@@ -294,6 +294,7 @@ class Roles:
     def rule_name(code):
         return {
             "admin": "ORGR001",
-            "user": "ORGR002"
+            "user": "ORGR002",
+            "manager": "ORGR003"
         }.get(code, '')
     

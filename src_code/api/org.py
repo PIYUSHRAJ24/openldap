@@ -1287,13 +1287,13 @@ def create_org_user():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        # post_data['is_active'] = "N"
-        # res1, status_code = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_users_pool"], post_data)
-        # if status_code != 200:
-        #     logarray.update({RESPONSE: res1})
-        #     RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-        #     return res1, status_code
-        # post_data['is_active'] = "Y"
+        post_data['is_active'] = "N"
+        res1, status_code = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_users_pool"], post_data)
+        if status_code != 200:
+            logarray.update({RESPONSE: res1})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return res1, status_code
+        post_data['is_active'] = "Y"
         data = {'data': {'digilockerid': g.digilockerid, 'org_id': [post_data['org_id'] or g.org_id]}} # type: ignore
         users_res = RABBITMQ.send_to_queue(data, 'Organization_Xchange', 'org_add_org_user_')
         logarray.update({RESPONSE: {'org_access_rules_create': res, 'users_update': users_res}})
