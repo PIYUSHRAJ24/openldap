@@ -1287,7 +1287,7 @@ def create_org_user():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        post_data['is_active'] = "N"
+        # post_data['is_active'] = "N"
         # res1, status_code = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_users_pool"], post_data)
         # if status_code != 200:
         #     logarray.update({RESPONSE: res1})
