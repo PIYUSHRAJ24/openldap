@@ -1319,7 +1319,7 @@ def create_org_user():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+        return {STATUS: ERROR, ERROR_DES: str(e)+Errors.error('ERR_MSG_111')}, 400
     
 
 @bp.route('/update_cin_profile', methods=['POST'])
