@@ -52,6 +52,7 @@ from api.pin import bp as pin_bp
 from api.signin import bp as signin_bp
 from api.pan import bp as pan_bp
 from api.gstin import bp as gstin_bp
+from api.cin import bp as cin_bp
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
