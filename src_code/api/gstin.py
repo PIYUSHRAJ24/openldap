@@ -95,49 +95,46 @@ def set_gstin():
     
     if not gstin_no:
         return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400
+    
+    if not gstin_name:
+        return jsonify({"status": "error", "response": "GSTIN name not provided"}), 400
 
     if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
 
-    res, status_code = ids_gstin_verify(gstin_no, gstin_name)
+    res = ids_gstin_verify(gstin_no, gstin_name)
     
-    if status_code != 200:
-        return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
-    
-    if DEBUG_MODE:
-        return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
-    
-    # Check if org_id exists
-    query = {"org_id": g.org_id}
-    fields = {}
-    res, status_code = MONGOLIB.org_eve("org_details", query, fields, limit=1)
+    status_code = res[1];
 
-    if status_code != 200:
-        return jsonify({"status": "error", "response": res}), status_code
+    if status_code != 200 :
+        return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
+        
+    # Check if org_id exists
+    query = {"gstin": gstin_no}
+    fields = {}
+    res = MONGOLIB.org_eve("org_details", query, fields, limit=1)
+    status_code = res[1]
+    if status_code == 200:
+        return jsonify({"status": "success", "response": 'GSTIN is already associated with the organization.'}), status_code
     
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
         "gstin": gstin_no,
         "updated_on": date_time,
     }
-
     try:
-        res, status_code = MONGOLIB.org_eve_update("org_details", data, g.org_id)
+        RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
+        return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
     except Exception as e:
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
 
-    if status_code != 200:
-        return jsonify({"status": "error", "response": res}), status_code
-
-    RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
-    return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
 
 def ids_gstin_verify(gstin_no, gstin_name):
     try:
         ids_api_url = CONFIG["ids"]["url"]
+        curlurl = f"{ids_api_url}gateway/1.0/verify_gstin"
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
-
         if not gstin_no or not gstin_name:
             return {"status": "error", "error_desc": "err_112"}, 400
      
@@ -159,7 +156,7 @@ def ids_gstin_verify(gstin_no, gstin_name):
             'Content-Type': 'application/json'
         }
         
-        curlurl = f"{ids_api_url}gateway/1.0/verify_gstin"
+        
         curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=5)
         response = curl_result.json()
         

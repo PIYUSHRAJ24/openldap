@@ -1617,34 +1617,31 @@ class Validations:
     def is_valid_gstin_v2(self, request, org_id):
         try:
             
-            if request.is_json :
-                input_data= request.json
-            else:
-                input_data_ios = request.get_data().decode("utf-8")
-                input_data = json.loads(input_data_ios)
-                
-            gstin_no= input_data.get("gstin")
-            gstin_no = CommonLib.aes_encryption(gstin_no, org_id[:16])
-            
-            gstin_name= input_data.get("name")
-            gstin_name = CommonLib.aes_encryption(gstin_name, org_id[:16])
+            input_data_raw = request.get_data().decode("utf-8")
+            input_data = json.loads(input_data_raw)
 
-            gstin = CommonLib.aes_decryption_v2(gstin_no, org_id[:16])
-            gstin_name = CommonLib.aes_decryption_v2(gstin_name, org_id[:16])
-      
+            gstin = input_data.get("gstin")
+            name = input_data.get("name")
+
+            gstin_decrypted = CommonLib.aes_decryption_v2(gstin, org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(name, org_id[:16])
+
+            gstin = gstin_decrypted if gstin_decrypted is not None else gstin
+            name = name_decrypted if name_decrypted is not None else name
+           
             if not gstin or not self.is_valid_gstin(gstin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
             
-            if not gstin_name :
+            if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
-            
+           
             query = {'gstin': gstin}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
             else:
-                return {STATUS: SUCCESS, 'gstin': gstin ,'name': gstin_name}, 200
+                return {STATUS: SUCCESS, 'gstin': gstin ,'name': name}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_gstin:' + str(e)}, 400
 
