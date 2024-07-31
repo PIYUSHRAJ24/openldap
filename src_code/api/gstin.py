@@ -104,7 +104,7 @@ def set_gstin():
 
     res = ids_gstin_verify(gstin_no, gstin_name)
     
-    status_code = res[1];
+    status_code = res[1]
 
     if status_code != 200 :
         return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
