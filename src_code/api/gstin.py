@@ -93,7 +93,6 @@ def set_gstin():
     gstin_no = res.get('gstin')
     gstin_name = res.get('name')
     
- 
     if not gstin_no:
         return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400
 
@@ -104,8 +103,6 @@ def set_gstin():
     
     if status_code != 200:
         return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
-    else:
-        return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
     
     if DEBUG_MODE:
         return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
