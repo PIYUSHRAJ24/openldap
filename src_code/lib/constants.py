@@ -162,7 +162,7 @@ class Errors:
             "ERR_MSG_196": "The Udyam Number you entered is already registered with us.",
             'ERR_MSG_197': "Provided Udyam number seems to be incorrect. We could not match Entity name with MSME, please verify and try again.",
             'ERR_MSG_198': "Name of the director does not match with DIN. Please verify and try again.",
-            'ERR_MSG_199': "Please provide your Director Identification Number (DIN).",
+            'ERR_MSG_199': "Please provide your CIN name.",
             'ERR_MSG_200': "Entity already has a registered CIN Number.",
             'ERR_MSG_201': "Entity already has a registered Udyam Number.",
             'ERR_MSG_202': 'We could not validate you DIN. Please enter correct DIN.',
