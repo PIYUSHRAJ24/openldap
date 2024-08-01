@@ -260,9 +260,6 @@ def get_access_rules():
                 "dept_name": g.dept_details.get(x.get('dept_id'),{}).get("name",""),
                 "sec_name": g.sec_details.get(x.get('sec_id'),{}).get("name","")
             } for x in g.org_access_rules]
-        user_access_requests, status_code = get_user_access_requests()
-        if status_code == 200 and len(user_access_requests[RESPONSE])>0:
-            user_details += user_access_requests[RESPONSE]
         res = {STATUS: SUCCESS, RESPONSE: user_details}
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
