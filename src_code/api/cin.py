@@ -59,7 +59,6 @@ def validate_user():
         REQUEST: {}
     })
     g.org_id = request.headers.get("orgid")
-  
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -76,7 +75,6 @@ def validate_user():
             return
 
         res, status_code = VALIDATIONS.hmac_authentication(request)
-        print('COMpleted hmac_auth0-0-0-0-0',res,status_code)
 
         if status_code != 200:
             return res, status_code
@@ -110,14 +108,6 @@ def set_cin():
 
     if status_code != 200 :
         return jsonify({"status": "error", "response": "CIN number not verified"}), 400
-        
-    # Check if org_id exists
-    query = {"cin": cin_no}
-    fields = {}
-    res = MONGOLIB.org_eve("org_details", query, fields, limit=1)
-    status_code = res[1]
-    if status_code == 200:
-        return jsonify({"status": "success", "response": 'CIN is already associated with the organization.'}), status_code
     
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
