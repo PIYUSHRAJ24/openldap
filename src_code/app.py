@@ -17,8 +17,6 @@ app.config['SERVER_NAME'] = None
 def healthcheck():
     return {"status": "success"}, 200
 
-
-
 from api.filelock import bp as filelock_bp
 # importing APIs
 from api.image import bp as image_bp
