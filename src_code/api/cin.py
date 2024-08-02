@@ -59,13 +59,14 @@ def validate_user():
         REQUEST: {}
     })
     g.org_id = request.headers.get("orgid")
-    
+  
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
         logarray[REQUEST].update(dict(request.values))
     if request.headers.get('Content-Type') == "application/json":
         logarray[REQUEST].update(dict(request.json)) # type: ignore
+    head_load = logarray.get('HEADER',{})
     
     try:
         if request.method == 'OPTIONS':
@@ -75,6 +76,7 @@ def validate_user():
             return
 
         res, status_code = VALIDATIONS.hmac_authentication(request)
+        print('COMpleted hmac_auth0-0-0-0-0',res,status_code)
 
         if status_code != 200:
             return res, status_code
@@ -87,15 +89,14 @@ def validate_user():
 def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
-@bp.route("/set_cin", methods=["POST"])
+@bp.route("/update_cin", methods=["POST"])
 def set_cin():
-    
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
     cin_no = res.get('cin')
     cin_name = res.get('name')
     
     if not cin_no:
-        return jsonify({"status": "error", "response": "CIN 1 number not provided"}), 400
+        return jsonify({"status": "error", "response": "CIN number not provided"}), 400
     
     if not cin_name:
         return jsonify({"status": "error", "response": "CIN name not provided"}), 400
@@ -105,6 +106,19 @@ def set_cin():
 
     res = ids_cin_verify(cin_no, cin_name)
 
+    status_code = res[1]
+
+    if status_code != 200 :
+        return jsonify({"status": "error", "response": "CIN number not verified"}), 400
+        
+    # Check if org_id exists
+    query = {"cin": cin_no}
+    fields = {}
+    res = MONGOLIB.org_eve("org_details", query, fields, limit=1)
+    status_code = res[1]
+    if status_code == 200:
+        return jsonify({"status": "success", "response": 'CIN is already associated with the organization.'}), status_code
+    
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
         "cin": cin_no,
