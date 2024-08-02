@@ -53,6 +53,7 @@ from api.signin import bp as signin_bp
 from api.pan import bp as pan_bp
 from api.gstin import bp as gstin_bp
 from api.cin import bp as cin_bp
+from api.msme import bp as msme_bp
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')

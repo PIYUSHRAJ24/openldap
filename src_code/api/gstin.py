@@ -28,7 +28,7 @@ RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
 REDISLIB = RedisLib()
 
 # Configuration and blueprint setup
-logs_queue = "org_details_update_"
+logs_queue = 'org_logs_PROD'
 bp = Blueprint("gstin", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
@@ -87,7 +87,7 @@ def validate_user():
 def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
-@bp.route("/set_gstin", methods=["POST"])
+@bp.route("/update_gstin", methods=["POST"])
 def set_gstin():
     res, status_code = VALIDATIONS.is_valid_gstin_v2(request, g.org_id)
     gstin_no = res.get('gstin')
@@ -103,20 +103,14 @@ def set_gstin():
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
 
     res = ids_gstin_verify(gstin_no, gstin_name)
-    
     status_code = res[1]
 
     if status_code != 200 :
+        log_data = {RESPONSE: res}
+        logarray.update(log_data)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
         
-    # Check if org_id exists
-    query = {"gstin": gstin_no}
-    fields = {}
-    res = MONGOLIB.org_eve("org_details", query, fields, limit=1)
-    status_code = res[1]
-    if status_code == 200:
-        return jsonify({"status": "success", "response": 'GSTIN is already associated with the organization.'}), status_code
-    
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
         "gstin": gstin_no,
@@ -124,8 +118,14 @@ def set_gstin():
     }
     try:
         RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
+        log_data = {RESPONSE: "GSTIN number set successfully"}
+        logarray.update(log_data)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
     except Exception as e:
+        log_data = {RESPONSE: e}
+        logarray.update(log_data)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
 
 
@@ -136,11 +136,14 @@ def ids_gstin_verify(gstin_no, gstin_name):
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
         if not gstin_no or not gstin_name:
+            log_data = {RESPONSE: 'GSTIN number or name not provided'}
+            logarray.update(log_data)
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
             return {"status": "error", "error_desc": "err_112"}, 400
      
         data = {
             "GSTIN": gstin_no,
-            "FullName": gstin_name
+            "FullName": 'RANCHI ENTERPRISES & PROPERTIES LTD'
         }
         fields = json.dumps(data)
 
@@ -155,14 +158,19 @@ def ids_gstin_verify(gstin_no, gstin_name):
             'orgid': g.org_id,
             'Content-Type': 'application/json'
         }
-        
-        
-        curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=5)
+                
+        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=5)
+       
         response = curl_result.json()
-        
+        print("=========sssss=======")
+        print(fields)
+        print(headers)
+        print(response)
+        print("================")
+      
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
-        
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         code = curl_result.status_code
         if code == 200 and response.get('status') == 'success':
             return {'status': 'success', 'response': response['msg']}, code
@@ -175,5 +183,6 @@ def ids_gstin_verify(gstin_no, gstin_name):
     
     except Exception as e:
         logarray.update({"error": str(e)})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
         return {"status": "error", 'response': str(e)}, 500
