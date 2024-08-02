@@ -162,12 +162,12 @@ def ids_gstin_verify(gstin_no, gstin_name):
         curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=5)
        
         response = curl_result.json()
-        # print("================")
-        # print(fields)
-        # print(headers)
-        # print(response)
-        # print("================")
-        # exit()
+        print("=========sssss=======")
+        print(fields)
+        print(headers)
+        print(response)
+        print("================")
+      
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
