@@ -18,26 +18,6 @@ def healthcheck():
     return {"status": "success"}, 200
 
 
-@app.after_request
-def add_security_headers(response): 
-    # referring_domain = request.referrer
-    # allowed_domains = [
-    #     'localhost',
-    #     'https://entity.digilocker.gov.in',
-    #     'http://entity.digilocker.gov.in',
-    #     'https://entity.dl6.in',
-    #     'https://dl-org-beta.dl6.in',
-    #     'http://ashish.dl6.in'
-    # ]
-    response.headers['Content-Security-Policy'] = "default-src 'self'"
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    response.headers['X-Content-Type-Options'] = 'nosniff'
-    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-    response.headers['X-XSS-Protection'] = '1; mode=block'
-    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-    response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
-    return response
 
 from api.filelock import bp as filelock_bp
 # importing APIs

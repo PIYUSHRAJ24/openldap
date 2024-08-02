@@ -23,9 +23,10 @@ from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
 import logging
+from pythonjsonlogger import jsonlogger
 
 # Setup logging
-current_date = datetime.now().strftime("%Y-%m-%d")
+current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
@@ -44,14 +45,14 @@ AADHAAR_CONNECTOR = AADHAAR_services(CONFIG)
 from lib import otp_service
 otp_connector = otp_service.OTP_services()
 logs_queue = 'org_logs_PROD'
-bp = Blueprint('org', __name__)
+bp = Blueprint('orgc', __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
 try:
     CONFIG['JWT_SECRET'] = secrets.get('aes_secret', os.getenv('JWT_SECRET'))
 except Exception as s:
-    CONFIG['JWT_SECRET'] = os.getenv('JWT_SECRET') 
+    CONFIG['JWT_SECRET'] = os.getenv('JWT_SECRET')
 
 @bp.before_request
 def validate():
@@ -60,14 +61,14 @@ def validate():
     """
     try:
         request_data = {
-            'time_start': datetime.utcnow().isoformat(),
+            'time_start': datetime.datetime.utcnow().isoformat(),
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
             'body': request.get_data(as_text=True)
         }
         request.logger_data = request_data
-        
+
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
         bypass_urls = ('healthcheck', 'get_count')
@@ -110,7 +111,7 @@ def validate():
             except Exception:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
             g.consent_time = consent_status.get('consent_time')
-            
+
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
@@ -211,7 +212,7 @@ def update_details(post_data = None):
                 RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
                 return res, status_code
             post_data = res['post_data']
-        
+
         res, status_code = RABBITMQ.send_to_queue({"data": post_data}, 'Organization_Xchange', 'org_update_details_')
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
@@ -223,7 +224,7 @@ def update_details(post_data = None):
         logarray[RESPONSE].update(res)
         subjectparams = post_data.get('email') or post_data.get('mobile') # type: ignore
         subject = "email_updated" if post_data.get('email') else "mobile_updated" # type: ignore
-        act_resp = activity_insert(subject,subject,g.digilockerid,g.org_id,user_affected="",subjectparams=subjectparams) 
+        act_resp = activity_insert(subject,subject,g.digilockerid,g.org_id,user_affected="",subjectparams=subjectparams)
         logarray.update({RESPONSE: res, "activity_update": act_resp[0]})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
@@ -272,7 +273,7 @@ def get_users():
 def get_access_rules():
     logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
     try:
-        
+
         user_details = [{
                 'profile': CommonLib.get_profile_details(x),
                 **Roles.rule_id(x.pop('rule_id')), **x,
@@ -338,7 +339,7 @@ def create_access_rules():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         # Same accounts can not be added
         if did in [d['digilockerid'] for d in g.org_access_rules]: # type: ignore
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_156')}
@@ -431,7 +432,7 @@ def create_access_rules_v2():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         # Max user accounts restriction
         # active_users = []
         # for a in g.org_access_rules:
@@ -442,13 +443,13 @@ def create_access_rules_v2():
         #     logarray.update({RESPONSE: res})
         #     RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         #     return res, 400
-        
+
         res, status_code = MONGOLIB.org_eve_post("org_user_requests", post_data)
         logarray.update({RESPONSE: res})
         if status_code == 200:
             res.update({'transaction_id': transaction_id})
         resp, code = get_details()
-        
+
         resp, status_code = RABBITMQ.send_to_queue({
             "data": {
                 'recipients': post_data['email'],
@@ -493,15 +494,15 @@ def transfer_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.transfer_access(request)
         if status_code != 200:
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         digilockerid_to = res['digilockerid']
-        
+
         data = {}
         data['digilockerid'] = digilockerid_to
         data['is_active'] = 'Y'
@@ -516,7 +517,7 @@ def transfer_access():
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
         logarray.update({RESPONSE: {'trasferee_update': res}})
-        
+
         data['digilockerid'] = g.digilockerid
         data['is_active'] = 'N'
         data['org_id'] =  g.org_id
@@ -528,37 +529,37 @@ def transfer_access():
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
         logarray[RESPONSE].update({'trasferer_update': res})
-       
+
         data1 ={}
         data1['org_id'] =  g.org_id
         data1['dir_info'] =[
             {
                 'digilocker_id': g.digilockerid,
-                'is_active' : 'N'   
+                'is_active' : 'N'
             }, {
                 'digilocker_id': digilockerid_to,
-                'is_active' : 'Y'   
+                'is_active' : 'Y'
             }
         ]
         res = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
         logarray[RESPONSE].update({"org_details_update": res})
-        
+
         res = {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_101')}
         logarray[RESPONSE].update(res)
         act_resp = activity_insert('transfer_ownership','transfer_ownership',g.digilockerid,g.org_id,user_affected=digilockerid_to)
         logarray.update({"activity_update": act_resp[0]})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)           
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400  
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
 @bp.route('/revoke_access', methods=['POST'])
 def revoke_access():
-    ''' 
-        Revokes user access if digilockerid is provided,it can be used to change 
+    '''
+        Revokes user access if digilockerid is provided,it can be used to change
         user's role as well by providing digilockerid, with new rule_name.
     '''
     logarray.update({ENDPOINT: 'revoke_access', REQUEST: dict(request.values)})
@@ -568,7 +569,7 @@ def revoke_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.revoke_access(request)
         if status_code != 200:
             logarray.update({RESPONSE: res})
@@ -582,11 +583,11 @@ def revoke_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         rule_id, designation = '', ''
         for r in g.org_access_rules:
             if r['digilockerid'] == did:
-                rule_id, designation = r['rule_id'], r.get('designation')      
+                rule_id, designation = r['rule_id'], r.get('designation')
 
         # Admin accounts can be only revoked by other admins
         if rule_id == 'ORGR001' and g.role != 'ORGR001':
@@ -594,7 +595,7 @@ def revoke_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         if rule_id == 'ORGR001' and True not in [r['rule_id'] == "ORGR001" and r.get('designation') == "director" and r['is_active'] == "Y" and r['digilockerid'] != did for r in g.org_access_rules]:
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_161')}
             logarray.update({RESPONSE: res})
@@ -622,7 +623,7 @@ def revoke_access():
 
         res = {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_102')}
         logarray[RESPONSE].update(res)
-        act_resp = activity_insert("user_deactivated","user_deactivated",g.digilockerid,g.org_id,user_affected=did) 
+        act_resp = activity_insert("user_deactivated","user_deactivated",g.digilockerid,g.org_id,user_affected=did)
         logarray.update({"activity_update": act_resp[0]})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
@@ -641,28 +642,28 @@ def grant_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.grant_access(request)
         if status_code != 200:
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         post_data = res['post_data']
         did = post_data['digilockerid']
-        
+
         rule_id, designation = '', ''
         for r in g.org_access_rules:
             if r['digilockerid'] == did:
                 rule_id, designation = r['rule_id'], r.get('designation')
-        
+
         # Admin accounts can be only granted access by other admins
         if rule_id == 'ORGR001' and g.role != 'ORGR001':
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_150')}
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         post_data['org_id'] = g.org_id
         post_data['updated_by'] = g.digilockerid
         post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
@@ -672,7 +673,7 @@ def grant_access():
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
         logarray.update({RESPONSE: {"org_rules_update": res}})
-        
+
         if rule_id == 'ORGR001' and designation == "director":
             data1 = {'org_id': g.org_id, 'dir_info': [{'digilocker_id': did, 'is_active' : 'Y'}]}
             res, status_code = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
@@ -703,14 +704,14 @@ def assign_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.assign_access(request)
         if status_code != 200:
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
         post_data = res['post_data']
-        
+
         did = post_data['digilockerid']
         din = res['din']
         rule_name = post_data['rule_name']
@@ -720,7 +721,7 @@ def assign_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         rule_id_org, designation = '', ''
         for r in g.org_access_rules:
             if r['digilockerid'] == did:
@@ -777,20 +778,20 @@ def update_avatar():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         status_code, res = VALIDATIONS.upload_file_validation(request)
         if status_code != 200:
             logarray.update({STATUS: ERROR, RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res,status_code
-        
+
         file_name, file_data = res
         upload_res, status_code = CONNECTORS3.file_upload_obj(path, file_name, file_data)
         if status_code != 201:
             logarray.update(upload_res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return upload_res, status_code
-  
+
         logarray.update({RESPONSE: upload_res})
         act_resp = activity_insert("file_created","file_created",user = g.digilockerid,org_id = g.org_id,doc_name=file_name)
         logarray.update({"activity_update": act_resp[0]})
@@ -802,7 +803,7 @@ def update_avatar():
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
-    
+
 @bp.route('/get_avatar', methods=['GET'])
 def get_avatar():
     logarray.update({ENDPOINT: 'get_avatar', REQUEST: {'org_id': g.org_id}})
@@ -824,18 +825,18 @@ def get_avatar():
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
-    
+
 @bp.route('/send_mobile_otp', methods=['POST'])
 def send_otp_v1():
     logarray.update({ENDPOINT: 'send_mobile_otp', REQUEST: dict(request.values)})
     try:
-        
+
         if g.role != 'ORGR001':
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_150')}
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.send_otp_v1(request,g.org_id)
         if status_code != 200:
             logarray.update({RESPONSE: res})
@@ -887,7 +888,7 @@ def verify_otp_v1():
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-       
+
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -903,14 +904,14 @@ def send_email_otp():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.send_email_otp(request,g.org_id)
         if status_code != 200:
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res,status_code
         otp = random.randrange(100000, 999999)
-        
+
         strtohash = g.org_id + g.digilockerid
         md5 = hashlib.md5(strtohash.encode()).hexdigest()
         rediskey = md5 + "_verify_email"
@@ -939,7 +940,7 @@ def send_email_otp():
                 "send_attempts":send_email_otp_attempts,
                 "timestamp":TS
             }
-            
+
         data = {
             "data" : {
                 'template' : 'reset_email',
@@ -994,14 +995,14 @@ def verify_email_otp():
                 logarray.update({RESPONSE: res})
                 RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
                 return res, 400
-            
+
             if int(otp) == redisdata['otp']:
                 postdata = {
                     "org_id": g.org_id,
                     "email" : redisdata["email"]
                 }
                 logarray.update({RESPONSE: {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_108')}})
-                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint) 
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
                 return update_details(postdata)
             else:
                 redisdata["attempts"] += 1
@@ -1009,11 +1010,11 @@ def verify_email_otp():
                 no_of_attempts= int(CONFIG["otp"]["email_attempts"])-int(redisdata["attempts"])
                 res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_159')%str(no_of_attempts)}
                 logarray.update({RESPONSE: res})
-                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)   
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
                 return res, 400
         res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_110')}
         logarray.update({RESPONSE: res})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)   
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 404
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
@@ -1031,7 +1032,7 @@ def search_entity():
         return jsonify({'results': results})
     except Exception as e:
         return jsonify({'results': []})
-    
+
 
 @bp.route('/search_regulators', methods=['GET'])
 def search_regulators():
@@ -1073,13 +1074,13 @@ def get_user_request():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         if len(res[RESPONSE]) == 1:
             if not res[RESPONSE][0].get('rejected_on'): # type: ignore
                 CommonLib().update_request(transaction_id, "expired", True)
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_175")}, 400
         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_173")}, 400
-    
+
     try:
         res, status_code = MONGOLIB.org_eve("org_user_requests", {'transaction_id': transaction_id}, {})
         if status_code != 200:
@@ -1095,12 +1096,12 @@ def get_user_request():
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_168")}, 400
-        
+
         if res[RESPONSE][0].get('request_status') == "created": # type: ignore
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_179")}, 400
-    
+
         if res[RESPONSE][0].get('rejected_on'): # type: ignore
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_178")%res[RESPONSE][0].get('request_status')}, 400 # type: ignore
 
@@ -1112,7 +1113,7 @@ def get_user_request():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res[RESPONSE][0]['updated_by'] = CommonLib.get_profile_details({"digilockerid" :res[RESPONSE][0].get('updated_by')}).get('username', '') # type: ignore
         g.org_id = res[RESPONSE][0]['org_id'] # type: ignore
         g.role = ""
@@ -1124,7 +1125,7 @@ def get_user_request():
         res[RESPONSE][0]['org_name'] = resp[RESPONSE][0]['name'] if code == 200 else '' # type: ignore
         resp, code = get_avatar()
         res[RESPONSE][0]['avatar'] = resp['body'] if code == 200 else default_avatars.entity # type: ignore
-        
+
         post_data = {
             'attempts': attempts+1
         }
@@ -1171,7 +1172,7 @@ def get_user_requests():
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-    
+
 @bp.route('/get_user_access_requests', methods=['GET'])
 def get_user_access_requests():
     req = {'org_id': g.org_id}
@@ -1206,7 +1207,7 @@ def get_user_access_requests():
                     "photo": "NA",
                     "username": d.get('email','')
                 }
-                
+
                 })
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: SUCCESS, RESPONSE: data}, status_code
@@ -1218,25 +1219,25 @@ def get_user_access_requests():
 
 @bp.route('/cancel_user_request', methods=['POST'])
 def cancel_user_request():
-    
+
     if g.role != 'ORGR001':
         res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_150')}
         logarray.update({RESPONSE: res})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 400
-    
+
     transaction_id = request.values.get('transaction_id')
     if not transaction_id:
         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_173")}, 400
     logarray.update({ENDPOINT: 'cancel_user_request', REQUEST: {'transaction_id': transaction_id}})
-    
+
     try:
         res, status_code = MONGOLIB.org_eve("org_user_requests", {'transaction_id': transaction_id}, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         if len(res[RESPONSE]) == 0:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1274,7 +1275,7 @@ def cancel_user_request():
 def create_org_user():
     transaction_id = request.values.get('transaction_id')
     logarray.update({ENDPOINT: 'create_org_user', REQUEST: {'transaction_id': transaction_id}})
-    
+
     if not transaction_id:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: Errors.error("ERR_MSG_173")}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1294,12 +1295,12 @@ def create_org_user():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         post_data = res['post_data'] # type: ignore
         din = res['din'] # type: ignore
         rule_id = post_data['rule_id'] # type: ignore
         rule_name = Roles.rule_id(rule_id)['rule_name']
-        
+
         res, status_code = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], post_data)
         if status_code != 200:
             logarray.update({RESPONSE: res})
@@ -1338,12 +1339,12 @@ def create_org_user():
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-    
+
 
 @bp.route('/update_cin_profile', methods=['POST'])
 def update_cin_profile():
     try:
-        
+
         if g.role != 'ORGR001':
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_150')}
             logarray.update({RESPONSE: res})
@@ -1353,7 +1354,7 @@ def update_cin_profile():
         res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
         if status_code != 200:
             return res, status_code
-        
+
         cin = res.get("cin")
         din = res.get("din")
 
@@ -1390,25 +1391,25 @@ def update_cin_profile():
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         if VALIDATIONS.is_valid_cin(res.get("response", [{}])[0].get("cin", None)):
             res = {STATUS: ERROR, ERROR: Errors.error('ERR_MSG_200')}
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         if VALIDATIONS.is_valid_udyam_number(res.get("response", [{}])[0].get("udyam", None))[1] == 200:
             res = {STATUS: ERROR, ERROR: Errors.error('ERR_MSG_201')}
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         original_name = res.get("response", [{}])[0].get("name", None)
         resp = name_match_v3(company_name_api, original_name)
         if resp["status"] != "success":
             logarray.update({RESPONSE: {'status_code': status_code, RESPONSE: resp}})
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_165")}, 400 
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_165")}, 400
 
         # DIN Verification
         url = CONFIG['mca']['din_url'] + cin
@@ -1440,23 +1441,23 @@ def update_cin_profile():
             logarray.update({RESPONSE:res})
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_202")}, 400
-        
+
         if not any([d['din'] == din for d in res]):
             res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_203')}
             logarray.update({RESPONSE:res})
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return res, 400
-        
+
         for i in res:
             if i['din'] == din:
                 original_name = i['name']
-            
+
         username = CommonLib.get_profile_details({'digilockerid': g.digilockerid}).get('username', '')
         resp = name_match_v3(username, original_name)
         if resp["status"] != "success":
             logarray.update({RESPONSE: {'status_code': status_code, RESPONSE: resp}})
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_198")}, 400 
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_198")}, 400
 
         # Update CIN and DIN
         post_data = {"org_id":g.org_id, 'ccin':cin, 'dir_info': [{'digilocker_id': g.digilockerid, 'din': din[2:], 'is_active' : 'Y'}]}
@@ -1465,12 +1466,12 @@ def update_cin_profile():
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         act_resp = activity_insert("cin_updated","cin_updated",g.digilockerid,g.org_id,user_affected="",subjectparams=cin)
         logarray.update({"activity_update": act_resp[0]})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint) 
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: SUCCESS, RESPONSE: Messages.message('MSG_110')}
-        
+
     except Exception as e:
         print(f"Exception occurred: {e}")
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
@@ -1486,7 +1487,7 @@ def update_icai_profile():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.is_valid_icai(request, g.org_id)
         if status_code != 200:
             return res, status_code
@@ -1505,12 +1506,12 @@ def update_icai_profile():
             logarray.update({"activity_update": act_resp[0]})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return {STATUS: SUCCESS, RESPONSE: Messages.message('MSG_111')}
-    
+
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-    
+
 
 @bp.route('/esign_consent_get', methods=['GET'])
 def esign_consent_get():
@@ -1553,13 +1554,13 @@ def update_udyam_profile():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         res, status_code = VALIDATIONS.is_valid_udcer(request)
         if status_code != 200:
             logarray.update({RESPONSE:res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         company_name_api = res[RESPONSE]['enterprise_name']
         udyam = res[RESPONSE]['udyam']
         req = {'org_id': g.org_id}
@@ -1568,58 +1569,80 @@ def update_udyam_profile():
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         if VALIDATIONS.is_valid_cin(res.get("response", [{}])[0].get("cin", None)):
             res = {STATUS: ERROR, ERROR: Errors.error('ERR_MSG_200')}
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         if VALIDATIONS.is_valid_udyam_number(res.get("response", [{}])[0].get("udyam", None))[1] == 200:
             res = {STATUS: ERROR, ERROR: Errors.error('ERR_MSG_201')}
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-        
+
         original_name = res.get("response", [{}])[0].get("name", None)
         resp = name_match_v3(company_name_api, original_name)
         if resp["status"] != "success":
             logarray.update({RESPONSE: {'status_code': status_code, RESPONSE: resp}})
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_197")}, 400
-        
+
         post_data = {"org_id":g.org_id, 'udyam':udyam}
         res, status_code = RABBITMQ.send_to_queue({"data": post_data}, 'Organization_Xchange', 'org_update_details_')
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
-        
+
         # Send Entity Details for searching
         act_resp = activity_insert("udyam_updated","udyam_updated",g.digilockerid,g.org_id,user_affected="",subjectparams=udyam)
         logarray.update({"activity_update": act_resp[0]})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint) 
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return {STATUS: SUCCESS, RESPONSE: Messages.message('MSG_110')}
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         print(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-    
+
 @bp.after_request
 def after_request(response):
     try:
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
+        
+        
         response_data = {
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.utcnow().isoformat()
+            'time_end': datetime.datetime.utcnow().isoformat()
         }
         log_data = {
             'request': request.logger_data,
             'response': response_data
         }
         logger.info(log_data)
+        return response
     except Exception as e:
         print(f"Logging error: {str(e)}")
+    return response
+
+@bp.errorhandler(Exception)
+def handle_exception(e):
+    log_data = {
+        'error': str(e),
+        'time': datetime.datetime.utcnow().isoformat()
+    }
+    logger.error(log_data)
+    response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
+    response.status_code = 500
     return response
