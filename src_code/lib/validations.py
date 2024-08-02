@@ -1593,19 +1593,19 @@ class Validations:
 
     def is_valid_cin_v2(self, request, org_id):
         try:
-            
+         
             input_data_raw = request.get_data().decode("utf-8")
             input_data = json.loads(input_data_raw)
-
-            cin = input_data.get("cin")
-            name = input_data.get("name")
-
-            cin_decrypted = CommonLib.aes_decryption_v2(cin, org_id[:16])
-            name_decrypted = CommonLib.aes_decryption_v2(name, org_id[:16])
-
-            cin = cin_decrypted if cin_decrypted is not None else cin
-            name = name_decrypted if name_decrypted is not None else name
-            
+    
+            cin_no = input_data.get("cin")
+            cin_name = input_data.get("name")
+           
+            cin_decrypted = CommonLib.aes_decryption_v2(cin_no, org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(cin_name, org_id[:16])
+    
+            cin = cin_decrypted if cin_decrypted is not None else cin_no
+            name = name_decrypted if name_decrypted is not None else cin_name
+        
             if not cin or not self.is_valid_cin(cin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             
@@ -1624,19 +1624,19 @@ class Validations:
 
     def is_valid_gstin_v2(self, request, org_id):
         try:
-            
+                                
             input_data_raw = request.get_data().decode("utf-8")
             input_data = json.loads(input_data_raw)
 
-            gstin = input_data.get("gstin")
-            name = input_data.get("name")
+            gstin_enc = input_data.get("gstin")
+            name_enc = input_data.get("name")
 
-            gstin_decrypted = CommonLib.aes_decryption_v2(gstin, org_id[:16])
-            name_decrypted = CommonLib.aes_decryption_v2(name, org_id[:16])
+            gstin_decrypted = CommonLib.aes_decryption_v2(gstin_enc, org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(name_enc, org_id[:16])
 
-            gstin = gstin_decrypted if gstin_decrypted is not None else gstin
-            name = name_decrypted if name_decrypted is not None else name
-           
+            gstin = gstin_decrypted if gstin_decrypted is not None else gstin_enc
+            name = name_decrypted if name_decrypted is not None else name_enc
+
             if not gstin or not self.is_valid_gstin(gstin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
             

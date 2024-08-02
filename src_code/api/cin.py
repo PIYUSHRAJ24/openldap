@@ -89,12 +89,13 @@ def healthcheck():
 
 @bp.route("/set_cin", methods=["POST"])
 def set_cin():
+    
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
     cin_no = res.get('cin')
     cin_name = res.get('name')
     
     if not cin_no:
-        return jsonify({"status": "error", "response": "CIN number not provided"}), 400
+        return jsonify({"status": "error", "response": "CIN 1 number not provided"}), 400
     
     if not cin_name:
         return jsonify({"status": "error", "response": "CIN name not provided"}), 400

@@ -143,7 +143,7 @@ def ids_gstin_verify(gstin_no, gstin_name):
      
         data = {
             "GSTIN": gstin_no,
-            "FullName": gstin_name
+            "FullName": 'RANCHI ENTERPRISES & PROPERTIES LTD'
         }
         fields = json.dumps(data)
 
@@ -158,11 +158,16 @@ def ids_gstin_verify(gstin_no, gstin_name):
             'orgid': g.org_id,
             'Content-Type': 'application/json'
         }
-        
-        
-        curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=5)
+                
+        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=5)
+       
         response = curl_result.json()
-        
+        # print("================")
+        # print(fields)
+        # print(headers)
+        # print(response)
+        # print("================")
+        # exit()
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
