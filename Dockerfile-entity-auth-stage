@@ -3,7 +3,7 @@ LABEL maintainer="DigiLocker"
 LABEL version="1.0"
 ENV TZ="Asia/Kolkata"
 
-RUN apt-get update && apt-get install -y libssl-dev libcurl4-openssl-dev python3-dev
+RUN apt-get update && apt-get install -y libssl-dev libcurl4-openssl-dev python3-dev python-json-logger
 RUN pip install -U pymongo
 RUN pip install -U captcha gTTS
 RUN pip install --upgrade Pillow
@@ -16,6 +16,11 @@ COPY src_code/ /opt/entity_auth-py
 COPY config_stage/appconfig/.env /opt/entity_auth-py/
 COPY config_stage/ /opt/entity_auth-py/config
 COPY config_stage/appconfig/server.py /usr/local/lib/python3.11/http/
+
+RUN mkdir -p /opt/entity_auth-py && \
+    touch /opt/entity_auth-py/app.log && \
+    chmod -R 777 /opt/entity_auth-py
+
 
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
