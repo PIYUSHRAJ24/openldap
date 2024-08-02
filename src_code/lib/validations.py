@@ -18,9 +18,9 @@ from lib.commonlib import CommonLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
 
-rmq = RabbitMQTaskClientLogstash()
-rmq_queue = 'ACS_api_logs_verify_pin'
-
+RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
+logs_queue = 'org_logs_PROD'
+logarray = {}
 REDISLIB = RedisLib()
 MONGOLIB = MongoLib()
 
@@ -1593,15 +1593,23 @@ class Validations:
 
     def is_valid_cin_v2(self, request, org_id):
         try:
-            cin_enc = request.values.get('cin')
-            din_enc = request.values.get('din')
-            cin = CommonLib.aes_decryption_v2(cin_enc, org_id[:16])
-            din = CommonLib.aes_decryption_v2(din_enc, org_id[:16])
-
+         
+            input_data_raw = request.get_data().decode("utf-8")
+            input_data = json.loads(input_data_raw)
+    
+            cin_no = input_data.get("cin")
+            cin_name = input_data.get("name")
+           
+            cin_decrypted = CommonLib.aes_decryption_v2(cin_no, org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(cin_name, org_id[:16])
+    
+            cin = cin_decrypted if cin_decrypted is not None else cin_no
+            name = name_decrypted if name_decrypted is not None else cin_name
+        
             if not cin or not self.is_valid_cin(cin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             
-            if not din or len(din) != 8:
+            if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
 
             query = {'cin': cin}
@@ -1610,25 +1618,25 @@ class Validations:
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
             else:
-                return {STATUS: SUCCESS, 'cin': cin, 'din': '00'+din}, 200
+                return {STATUS: SUCCESS, 'cin': cin, 'name': name}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
 
     def is_valid_gstin_v2(self, request, org_id):
         try:
-            
+                                
             input_data_raw = request.get_data().decode("utf-8")
             input_data = json.loads(input_data_raw)
 
-            gstin = input_data.get("gstin")
-            name = input_data.get("name")
+            gstin_enc = input_data.get("gstin")
+            name_enc = input_data.get("name")
 
-            gstin_decrypted = CommonLib.aes_decryption_v2(gstin, org_id[:16])
-            name_decrypted = CommonLib.aes_decryption_v2(name, org_id[:16])
+            gstin_decrypted = CommonLib.aes_decryption_v2(gstin_enc, org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(name_enc, org_id[:16])
 
-            gstin = gstin_decrypted if gstin_decrypted is not None else gstin
-            name = name_decrypted if name_decrypted is not None else name
-           
+            gstin = gstin_decrypted if gstin_decrypted is not None else gstin_enc
+            name = name_decrypted if name_decrypted is not None else name_enc
+
             if not gstin or not self.is_valid_gstin(gstin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
             
@@ -1639,10 +1647,19 @@ class Validations:
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             
             if status_code == 200 and len(res[RESPONSE]) > 0:
+                log_data = {RESPONSE: 'GSTIN is already associated with the organization.'}
+                logarray.update(log_data)
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
             else:
+                log_data = {RESPONSE: 'GSTIN name and number successfully decrypted'}
+                logarray.update(log_data)
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
                 return {STATUS: SUCCESS, 'gstin': gstin ,'name': name}, 200
         except Exception as e:
+            log_data = {RESPONSE: e}
+            logarray.update(log_data)
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_gstin:' + str(e)}, 400
 
     
@@ -1695,9 +1712,23 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_icai:' + str(e)}, 400    
 
-    def get_udcer(self, request):
-        mobile = CommonLib.filter_input(CommonLib.aes_decryption_v2(request.values.get('mobile'), g.org_id[:16]))
-        udyam_number = CommonLib.filter_input(CommonLib.aes_decryption_v2(request.values.get('udyam'), g.org_id[:16]))
+    def get_udcer(self, request, org_id):
+        
+        input_data_raw = request.get_data().decode("utf-8")
+        input_data = json.loads(input_data_raw)
+
+        udyam_number = input_data.get("udyam_number")
+        mobile = input_data.get("mobile")
+
+        mobile_decrypted = CommonLib.filter_input(CommonLib.aes_decryption_v2(mobile, org_id[:16]))
+        udyam_number_decrypted = CommonLib.filter_input(CommonLib.aes_decryption_v2(udyam_number, org_id[:16]))
+        
+  
+        mobile = mobile_decrypted if mobile_decrypted is not None else mobile
+        udyam_number = udyam_number_decrypted if udyam_number_decrypted is not None else udyam_number
+        
+        
+        
         try:
             if mobile[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
@@ -1710,7 +1741,7 @@ class Validations:
             res, status_code = self.is_valid_udyam_number(udyam_number[0], True)
             if status_code != 200:
                 return res, status_code
-            TS = datetime.datetime.now().strftime(D_FORMAT)
+            TS = datetime.now().strftime(D_FORMAT)
             post_data = {
                 "txnId": str(uuid.uuid4()),
                 "format": "xml",

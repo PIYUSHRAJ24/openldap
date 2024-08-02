@@ -37,7 +37,6 @@ secrets = json.loads(SecretManager.get_secret())
 # cin validation pattern
 cin_pattern = r"^([L|U]{1})(\d{5})([A-Za-z]{2})(\d{4})([A-Za-z]{3})(\d{6})$"
 
-
 try:
     CONFIG["JWT_SECRET"] = secrets.get("aes_secret", os.getenv("JWT_SECRET"))
 except Exception:
@@ -60,13 +59,13 @@ def validate_user():
         REQUEST: {}
     })
     g.org_id = request.headers.get("orgid")
-
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
         logarray[REQUEST].update(dict(request.values))
     if request.headers.get('Content-Type') == "application/json":
         logarray[REQUEST].update(dict(request.json)) # type: ignore
+    head_load = logarray.get('HEADER',{})
     
     try:
         if request.method == 'OPTIONS':
@@ -88,48 +87,82 @@ def validate_user():
 def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
-@bp.route("/set_cin", methods=["POST"])
-def set_cin():
+@bp.route("/update_cin", methods=["POST"])
+def update_cin():
+    res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
+    cin_no = res.get('cin')
+    cin_name = res.get('name')
     
-    res, status_code = VALIDATIONS.is_valid_cin_v3(request, g.org_id)
-    return jsonify({"status": "error", "response": res}), status_code
-    cin = res['cin']
-    
-    if not cin:
+    if not cin_no:
         return jsonify({"status": "error", "response": "CIN number not provided"}), 400
+    
+    if not cin_name:
+        return jsonify({"status": "error", "response": "CIN name not provided"}), 400
 
     if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
 
-    if not is_valid_cin(cin):
-        return jsonify({"status": "error", "response": "Please enter a valid CIN number, pattern not match"}), 400
+    res = ids_cin_verify(cin_no, cin_name)
 
-    # Check if org_id exists
-    query = {"org_id": g.org_id}
-    fields = {}
-    res, status_code = MONGOLIB.org_eve("org_details", query, fields, limit=1)
+    status_code = res[1]
 
-    if status_code != 200:
-        return jsonify({"status": "error", "response": res}), status_code
+    if status_code != 200 :
+        return jsonify({"status": "error", "response": "CIN number not verified"}), 400
     
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
-        "cin": cin,
+        "cin": cin_no,
         "updated_on": date_time,
     }
-
     try:
-        # Update org_id if it exists
-        res, status_code = MONGOLIB.org_eve_update("org_details", data, g.org_id)
+        RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
+        return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
     except Exception as e:
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
 
-    if status_code != 200:
-        return jsonify({"status": "error", "response": res}), status_code
 
-    RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
-    return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
+def ids_cin_verify(cin_no, cin_name):
+    try:
+        ids_api_url = CONFIG["ids"]["url"]
+        curlurl = f"{ids_api_url}gateway/1.0/verify_cin"
+        ids_clientid = CONFIG["ids"]["client_id"]
+        ids_clientsecret = CONFIG["ids"]["client_secret"]
+        if not cin_no or not cin_name:
+            return {"status": "error", "error_desc": "err_112"}, 400
+     
+        data = {
+            "cin": cin_no,
+            "name": cin_name
+        }
+        fields = json.dumps(data)
 
-def is_valid_cin(cin):
-    cin_pattern = re.compile(r"^([L|U]{1})(\d{5})([A-Za-z]{2})(\d{4})([A-Za-z]{3})(\d{6})$")
-    return bool(cin_pattern.match(cin))
+        ts = str(int(time.time()))
+        key = f"{ids_clientsecret}{ids_clientid}{g.org_id}{ts}"
+        hmac = hashlib.sha256(key.encode()).hexdigest()
+        
+        headers = {
+            'ts': ts,
+            'clientid': ids_clientid,
+            'hmac': hmac,
+            'orgid': g.org_id,
+            'Content-Type': 'application/json'
+        }
+        curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=5)
+        response = curl_result.json()
+        log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
+        logarray.update(log)
+        
+        code = curl_result.status_code
+        if code == 200 and response.get('status') == 'success':
+            return {'status': 'success', 'response': response['msg']}, code
+        elif 400 <= code <= 499 or code == 503:
+            RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
+            return {'status': 'error', 'response': response['msg']}, code
+        else:
+            RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
+            return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
+    
+    except Exception as e:
+        logarray.update({"error": str(e)})
+        RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
+        return {"status": "error", 'response': str(e)}, 500
