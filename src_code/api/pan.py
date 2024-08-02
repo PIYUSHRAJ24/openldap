@@ -112,6 +112,8 @@ def verify_pan():
             return { STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_207')}, 400
         return {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_100'), 'txn': txn_id}, 200
     except Exception as t:
+        logarray.update({RESPONSE: str(t)})
+        RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_184'), RESPONSE: str(t)}, 400
 
         
@@ -145,8 +147,9 @@ def save_uri(txn_id, pan):
         "recordFrom": "MSTL",
         "digilockerId": txn_id
         }
-
-    response = requests.post('https://ids.digilocker.gov.in/api/2.0/save-uri', headers=headers, json=data)
+    ids_api_url = CONFIG["ids"]["url"]
+    url = f"{ids_api_url}api/2.0/save-uri"
+    response = requests.post(url, headers=headers, json=data)
     return response.status_code == 200
 
 

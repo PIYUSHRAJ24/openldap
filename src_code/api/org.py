@@ -829,11 +829,12 @@ def send_otp_v1():
             return retMsg,400
         mobile = res['post_data'].get('mobile') # type: ignore
         res, code = otp_connector.entity_send_mobile_otp(mobile)
+        logarray.update({RESPONSE: res})
         if code == 200:
-            logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res,code
         else:
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res,400
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
