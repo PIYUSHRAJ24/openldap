@@ -80,7 +80,7 @@ def validate():
         g.dept_details = jwtlib.dept_details
         g.sec_details = jwtlib.sec_details
         g.consent_time = ''
-        consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
+        consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','get_user_access_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
         if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
             consent_status, consent_code = esign_consent_get()
             if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
@@ -1155,7 +1155,7 @@ def get_user_requests():
 @bp.route('/get_user_access_requests', methods=['GET'])
 def get_user_access_requests():
     req = {'org_id': g.org_id}
-    logarray.update({ENDPOINT: 'get_user_requests', REQUEST: req})
+    logarray.update({ENDPOINT: 'get_user_access_requests', REQUEST: req})
     try:
         res, status_code = MONGOLIB.org_eve("org_user_requests", req, {}, limit = 1000)
         if status_code == 400:
