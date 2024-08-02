@@ -14,6 +14,7 @@ app.config['SERVER_NAME'] = None
 
 
 @app.route('/healthcheck', methods=['GET'])
+@app.route('/', methods=['GET'])
 def healthcheck():
     return {"status": "success"}, 200
 

@@ -24,7 +24,6 @@ from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 # from api.org import esign_consent_get
 rmq = RabbitMQTaskClientLogstash()
 
-
 import logging
 from pythonjsonlogger import jsonlogger
 

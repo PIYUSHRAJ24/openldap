@@ -7,11 +7,11 @@ from lib.drivejwt import DriveJwt
 from lib.constants import *
 import time, json, requests, math
 from datetime import datetime
-import datetime
 from urllib.parse import unquote
 from requests.utils import requote_uri
 from requests.auth import HTTPBasicAuth
 from lib.secretsmanager import SecretManager
+
 
 VALIDATIONS = Validations()
 REDISLIB = RedisLib()
@@ -21,7 +21,7 @@ import logging
 from pythonjsonlogger import jsonlogger
 
 # Setup logging
-current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
@@ -53,7 +53,7 @@ def validate():
     try:
         
         request_data = {
-            'time_start': datetime.datetime.utcnow().isoformat(),
+            'time_start': datetime.utcnow().isoformat(),
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
@@ -114,7 +114,7 @@ def activity_insert():
 
 def activity_insert(ac_type, subject, user, org_id, doc_name="",role_id= "",user_affected="",subjectparams = ""):
     try:     
-        now = datetime.datetime.now()   
+        now = datetime.now()   
         res, status_code = VALIDATIONS.activity_insert(ac_type,subject,user)
         if status_code == 400:
             return res, status_code
@@ -325,7 +325,7 @@ def after_request(response):
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.datetime.utcnow().isoformat()
+            'time_end': datetime.utcnow().isoformat()
         }
         log_data = {
             'request': request.logger_data,
@@ -341,7 +341,7 @@ def after_request(response):
 def handle_exception(e):
     log_data = {
         'error': str(e),
-        'time': datetime.datetime.utcnow().isoformat()
+        'time': datetime.utcnow().isoformat()
     }
     logger.error(log_data)
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
