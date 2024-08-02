@@ -113,8 +113,9 @@ class DriveJwt:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_155')}, 401
         self.org_access_rules = res[RESPONSE]
         access_id = hashlib.md5((self.org_id+self.digilockerid).encode()).hexdigest()
+        access_id1 = hashlib.md5((self.org_id+self.digilockerid+self.org_id).encode()).hexdigest() # defualt Manager
         for u in res[RESPONSE]:
-            if u.get('access_id') == access_id: #type: ignore
+            if u.get('access_id') == access_id or u.get('access_id') == access_id1: #type: ignore
                 self.org_user_details = u
         if self.org_user_details == {}:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_152')}, 401

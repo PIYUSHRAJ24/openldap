@@ -1076,6 +1076,7 @@ class Validations:
         updated_by = CommonLib.filter_input(request.values.get('updated_by') )
         # updated_on = datetime.datetime.now().strftime(D_FORMAT) #add this to worker
         is_active = CommonLib.filter_input(request.values.get('is_active'))
+        dept_id = request.values.get('dept_id')
             
         try:   
             if not digilockerid[0] and not org_id[0] and not rule_id[0]:
@@ -1101,6 +1102,14 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
             elif access_id[0] != None and not access_id[0]:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
+            
+            # if dept_id[1] == 400:
+            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
+            # elif dept_id == g.org_id:
+            #     dept_id1= g.org_id
+            # elif not dept_id[0] or self.is_valid_dept(dept_id[0]) == None:
+            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
+
             if designation[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
             elif not designation[0]:
@@ -1151,6 +1160,12 @@ class Validations:
                 'updated_by': g.digilockerid
                 # 'updated_on': updated_on,
             }
+            if dept_id == g.org_id:
+               post_data['dept_id'] = dept_id
+               post_data['user_type'] = "default"
+            else:
+                post_data['dept_id'] = "" 
+
             if operation == 'C2':
                 post_data['aadhaar'] = aadhaar_dec # type: ignore
                 post_data['email'] = email_dec # type: ignore
