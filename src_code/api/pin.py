@@ -11,6 +11,20 @@ from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
+
+import logging
+from pythonjsonlogger import jsonlogger
+
+# Setup logging
+current_date = datetime.now().strftime("%Y-%m-%d")
+log_file_path = f"ORG-logs-{current_date}.log"
+logHandler = logging.FileHandler(log_file_path)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
+
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
@@ -37,6 +51,16 @@ def validate():
     JWT Authentication
     """
     try:
+        
+        request_data = {
+            'time_start': datetime.utcnow().isoformat(),
+            'method': request.method,
+            'url': request.url,
+            'headers': dict(request.headers),
+            'body': request.get_data(as_text=True)
+        }
+        request.logger_data = request_data
+        
         if request.method == "OPTIONS":
             return {"status": "error", "error_description": "OPTIONS OK"}
         bypass_urls = (
@@ -111,7 +135,7 @@ def validate():
             ):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
             try:
-                datetime.datetime.strptime(
+                datetime.strptime(
                     consent_status.get("consent_time", ""), D_FORMAT
                 )
             except Exception:
@@ -446,3 +470,43 @@ def get_profile_info(digilockerid):
             "response": f"An error occurred: {str(e)}",
             "code": 500,
         }
+
+@bp.after_request
+def after_request(response):
+    try:
+        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+        response.headers['X-XSS-Protection'] = '1; mode=block'
+        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
+        
+        
+        response_data = {
+            'status': response.status,
+            'headers': dict(response.headers),
+            'body': response.get_data(as_text=True),
+            'time_end': datetime.utcnow().isoformat()
+        }
+        log_data = {
+            'request': request.logger_data,
+            'response': response_data
+        }
+        logger.info(log_data)
+        return response
+    except Exception as e:
+        print(f"Logging error: {str(e)}")
+    return response
+
+@bp.errorhandler(Exception)
+def handle_exception(e):
+    log_data = {
+        'error': str(e),
+        'time': datetime.utcnow().isoformat()
+    }
+    logger.error(log_data)
+    response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
+    response.status_code = 500
+    return response

@@ -12,6 +12,20 @@ from PIL import Image
 from flask import Blueprint, request
 import time
 bp = Blueprint('image', __name__)
+import datetime
+import logging
+from pythonjsonlogger import jsonlogger
+
+# Setup logging
+current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+log_file_path = f"ORG-logs-{current_date}.log"
+logHandler = logging.FileHandler(log_file_path)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
+
 
 @bp.before_request
 def before_request():
