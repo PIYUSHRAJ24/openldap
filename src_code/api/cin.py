@@ -7,6 +7,7 @@ import time
 import os
 import re
 import json
+import logging
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, jsonify
 from lib.constants import *
@@ -30,6 +31,7 @@ REDISLIB = RedisLib()
 # Configuration and blueprint setup
 logs_queue = "org_details_update_"
 bp = Blueprint("cin", __name__)
+logger = logging.getLogger(__name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
@@ -48,7 +50,7 @@ def validate_user():
         HMAC Authentication
     """
     request_data = {
-            'time_start': datetime.datetime.utcnow().isoformat(),
+            'time_start': datetime.utcnow().isoformat(),
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
@@ -193,7 +195,7 @@ def after_request(response):
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.datetime.utcnow().isoformat()
+            'time_end': datetime.utcnow().isoformat()
         }
         log_data = {
             'request': request.logger_data,
@@ -209,7 +211,7 @@ def after_request(response):
 def handle_exception(e):
     log_data = {
         'error': str(e),
-        'time': datetime.datetime.utcnow().isoformat()
+        'time': datetime.utcnow().isoformat()
     }
     logger.error(log_data)
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
