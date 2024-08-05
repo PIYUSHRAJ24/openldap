@@ -1161,8 +1161,8 @@ class Validations:
                 # 'updated_on': updated_on,
             }
             if dept_id == g.org_id:
-               post_data['dept_id'] = dept_id
-               post_data['user_type'] = "default"
+                post_data['dept_id'] = dept_id
+                post_data['user_type'] = "default"
             else:
                 post_data['dept_id'] = "" 
 
