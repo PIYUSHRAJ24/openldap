@@ -17,8 +17,6 @@ COPY src_code/ /opt/entity_auth-py
 COPY config_stage/appconfig/.env /opt/entity_auth-py/
 COPY config_stage/ /opt/entity_auth-py/config
 COPY config_stage/appconfig/server.py /usr/local/lib/python3.11/http/
-
-RUN rm /etc/filebeat/filebeat.yml
 COPY config_stage/filebeat.yml /etc/filebeat/filebeat.yml
 
 RUN apt-get update && \
@@ -26,6 +24,7 @@ RUN apt-get update && \
     wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-8.5.3-amd64.deb && \
     dpkg -i filebeat-8.5.3-amd64.deb
     
+RUN cp -f /opt/entity_auth-py/config/filebeat.yml /etc/filebeat/filebeat.yml
     
 RUN mkdir -p /opt/entity_auth-py && \
     touch /opt/entity_auth-py/app.log && \
