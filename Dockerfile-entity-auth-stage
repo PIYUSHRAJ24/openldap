@@ -1,27 +1,19 @@
-FROM 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity_auth:base-v1.0
+FROM 816586121361.dkr.ecr.ap-south-1.amazonaws.com/entity_auth:base-v2.0
 LABEL maintainer="DigiLocker"
 LABEL version="1.0"
 ENV TZ="Asia/Kolkata"
 
-RUN apt-get update && apt-get install -y libssl-dev libcurl4-openssl-dev python3-dev 
-RUN pip install -U pymongo 
-RUN pip install -U python-json-logger 
-RUN pip install -U captcha gTTS
-RUN pip install --upgrade Pillow
 
 COPY config_share/dockerconfig/supervisord.conf /etc/supervisord.conf
 COPY config_share/dockerconfig/services.conf /etc/supervisord.d/services.conf
+COPY config_share/dockerconfig/http_ca.crt /etc/filebeat/http_ca.crt
 
 WORKDIR /opt/entity_auth-py
 COPY src_code/ /opt/entity_auth-py
 COPY config_stage/appconfig/.env /opt/entity_auth-py/
 COPY config_stage/ /opt/entity_auth-py/config
 COPY config_stage/appconfig/server.py /usr/local/lib/python3.11/http/
-
-RUN mkdir -p /opt/entity_auth-py && \
-    touch /opt/entity_auth-py/app.log && \
-    chmod -R 777 /opt/entity_auth-py
-
+COPY config_stage/filebeat.yml /etc/filebeat/filebeat.yml
 
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
