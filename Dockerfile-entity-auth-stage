@@ -6,6 +6,7 @@ ENV TZ="Asia/Kolkata"
 
 COPY config_share/dockerconfig/supervisord.conf /etc/supervisord.conf
 COPY config_share/dockerconfig/services.conf /etc/supervisord.d/services.conf
+COPY config_share/dockerconfig/http_ca.crt /etc/filebeat/http_ca.crt
 
 WORKDIR /opt/entity_auth-py
 COPY src_code/ /opt/entity_auth-py
