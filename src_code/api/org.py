@@ -22,6 +22,7 @@ from assets.images import default_avatars
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
+import traceback
 import logging
 from pythonjsonlogger import jsonlogger
 
@@ -1638,11 +1639,21 @@ def after_request(response):
 
 @bp.errorhandler(Exception)
 def handle_exception(e):
+    tb = traceback.format_exc()
     log_data = {
         'error': str(e),
-        'time': datetime.datetime.utcnow().isoformat()
+        'traceback': tb,
+        'time': datetime.datetime.utcnow().isoformat(),
+        'request': {
+            'method': request.method,
+            'url': request.url,
+            'headers': dict(request.headers),
+            'body': request.get_data(as_text=True)
+        }
     }
     logger.error(log_data)
+
+    # Return a generic error response
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
     response.status_code = 500
     return response
