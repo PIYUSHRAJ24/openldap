@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y libssl-dev libcurl4-openssl-dev python3
 RUN python -m pip install --upgrade pip
 
 RUN pip install -U boto3 flask flask-cors pyjwt pycryptodome python-dotenv redis-py-cluster pika requests bcrypt uuid thefuzz php xmltodict pillow elasticsearch pypdf2 cryptography nltk textblob pdf2image pytesseract pymongo
-RUN python -m textblob.download_corpora nltk.downloader stopwords pymongo Pillow python-json-logger captcha gTTS
+RUN python -m textblob.download_corpora nltk.downloader stopwords
+RUN pip install -U captcha gTTS pymongo Pillow python-json-logger
 
 RUN mkdir -p /etc/supervisord.d
 RUN mkdir -p /opt/enc_temp/
