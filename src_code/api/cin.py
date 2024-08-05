@@ -7,6 +7,7 @@ import time
 import os
 import re
 import json
+import logging
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, jsonify
 from lib.constants import *
@@ -15,6 +16,7 @@ from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
 from lib.validations import Validations
 from api.org_activity import activity_insert
+from api.org import esign_consent_get
 from lib.commonlib import CommonLib
 from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
@@ -30,6 +32,7 @@ REDISLIB = RedisLib()
 # Configuration and blueprint setup
 logs_queue = "org_details_update_"
 bp = Blueprint("cin", __name__)
+logger = logging.getLogger(__name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
@@ -42,46 +45,54 @@ try:
 except Exception:
     CONFIG["JWT_SECRET"] = os.getenv("JWT_SECRET")  # for local
 
+
 @bp.before_request
-def validate_user():
+def validate():
     """
-        HMAC Authentication
+        JWT Authentication
     """
-    logarray.update({
-        ENDPOINT: request.path,
-        HEADER: {
-            'user-agent': request.headers.get('User-Agent'),
-            "clientid": request.headers.get("clientid"),
-            "ts": request.headers.get("ts"),
-            "orgid": request.headers.get("orgid"),
-            "hmac": request.headers.get("hmac")
-        },
-        REQUEST: {}
-    })
-    g.org_id = request.headers.get("orgid")
-    if dict(request.args):
-        logarray[REQUEST].update(dict(request.args))
-    if dict(request.values):
-        logarray[REQUEST].update(dict(request.values))
-    if request.headers.get('Content-Type') == "application/json":
-        logarray[REQUEST].update(dict(request.json)) # type: ignore
-    head_load = logarray.get('HEADER',{})
-    
     try:
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
+
         bypass_urls = ('healthcheck')
-        if request.path.split('/')[1] in bypass_urls:
+        if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
             return
-
-        res, status_code = VALIDATIONS.hmac_authentication(request)
-
+        g.endpoint = request.path
+        if request.path.split('/')[-1] == "get_user_request":
+            res, status_code = CommonLib().validation_rules(request, True)
+            if status_code != 200:
+                return res, status_code
+            logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
+            return
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.jwt_login()
         if status_code != 200:
-            return res, status_code
+            return jwtres, status_code
+        g.path = jwtres
+        g.jwt_token = jwtlib.jwt_token
+        g.did = jwtlib.device_security_id
+        g.digilockerid = jwtlib.digilockerid
+        g.org_id = jwtlib.org_id
+        g.role = jwtlib.user_role
+        g.org_access_rules = jwtlib.org_access_rules
+        g.org_user_details = jwtlib.org_user_details
+        g.consent_time = ''
+        consent_bypass_urls = ('update_cin')
+        if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
+            consent_status, consent_code = esign_consent_get()
+            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            try:
+                datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+            except Exception:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            g.consent_time = consent_status.get('consent_time')
 
+        logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
-    
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+
 
 @bp.route("/", methods=["GET", "POST"])
 def healthcheck():
@@ -92,7 +103,6 @@ def update_cin():
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
     cin_no = res.get('cin')
     cin_name = res.get('name')
-    
     if not cin_no:
         return jsonify({"status": "error", "response": "CIN number not provided"}), 400
     
@@ -166,3 +176,43 @@ def ids_cin_verify(cin_no, cin_name):
         logarray.update({"error": str(e)})
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
         return {"status": "error", 'response': str(e)}, 500
+
+# @bp.after_request
+# def after_request(response):
+#     try:
+#         response.headers['Content-Security-Policy'] = "default-src 'self'"
+#         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+#         response.headers['X-Content-Type-Options'] = 'nosniff'
+#         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+#         response.headers['X-XSS-Protection'] = '1; mode=block'
+#         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+#         response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
+#         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
+        
+        
+#         response_data = {
+#             'status': response.status,
+#             'headers': dict(response.headers),
+#             'body': response.get_data(as_text=True),
+#             'time_end': datetime.utcnow().isoformat()
+#         }
+#         log_data = {
+#             'request': request.logger_data,
+#             'response': response_data
+#         }
+#         logger.info(log_data)
+#         return response
+#     except Exception as e:
+#         print(f"Logging error: {str(e)}")
+#     return response
+
+# @bp.errorhandler(Exception)
+# def handle_exception(e):
+#     log_data = {
+#         'error': str(e),
+#         'time': datetime.utcnow().isoformat()
+#     }
+#     logger.error(log_data)
+#     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
+#     response.status_code = 500
+#     return response
