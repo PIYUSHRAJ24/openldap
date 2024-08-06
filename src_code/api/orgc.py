@@ -22,7 +22,6 @@ from assets.images import default_avatars
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
-import traceback
 import logging
 from pythonjsonlogger import jsonlogger
 
@@ -46,7 +45,7 @@ AADHAAR_CONNECTOR = AADHAAR_services(CONFIG)
 from lib import otp_service
 otp_connector = otp_service.OTP_services()
 logs_queue = 'org_logs_PROD'
-bp = Blueprint('org', __name__)
+bp = Blueprint('orgc', __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
@@ -1639,21 +1638,11 @@ def after_request(response):
 
 @bp.errorhandler(Exception)
 def handle_exception(e):
-    tb = traceback.format_exc()
     log_data = {
         'error': str(e),
-        'traceback': tb,
-        'time': datetime.datetime.utcnow().isoformat(),
-        'request': {
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True)
-        }
+        'time': datetime.datetime.utcnow().isoformat()
     }
     logger.error(log_data)
-
-    # Return a generic error response
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
     response.status_code = 500
     return response

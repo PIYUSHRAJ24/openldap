@@ -525,6 +525,11 @@ class CommonLib:
                 'updated_by': res[RESPONSE][0].get('updated_by'), # type: ignore
                 'updated_on': datetime.datetime.now().strftime(D_FORMAT)
             }
+            if res[RESPONSE][0].get('dept_id','') == g.org_id:
+                access_post_data['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0]['org_id']).encode()).hexdigest()
+                access_post_data['user_type'] = res[RESPONSE][0].get('user_type','')
+            else:
+                access_post_data['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid).encode()).hexdigest()
 
             cin = res[RESPONSE][0].get('cin') # type: ignore
             din = res[RESPONSE][0].get('din') # type: ignore
