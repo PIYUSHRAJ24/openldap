@@ -1619,7 +1619,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
-            query = {'cin': cin}
+            query = {'ccin': cin}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
