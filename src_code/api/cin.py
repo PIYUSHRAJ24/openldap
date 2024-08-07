@@ -106,27 +106,20 @@ def update_cin():
     cin_name = res.get('name')
     if not cin_no:
         return jsonify({"status": "error", "response": "CIN number not provided"}), 400
-    
     if not cin_name:
         return jsonify({"status": "error", "response": "CIN name not provided"}), 400
-
     if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
-
     res = ids_cin_verify(cin_no, cin_name)
-
     status_code = res[1]
-
     if status_code != 200 :
         return jsonify({"status": "error", "response": "CIN number not verified"}), 400
-    
-    date_time = datetime.now().strftime(D_FORMAT)
-    data = {
-        "cin": cin_no,
-        "updated_on": date_time,
+    post_data = {
+        "org_id":g.org_id,
+        "ccin": cin_no
     }
     try:
-        RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
+        RABBITMQ.send_to_queue({"data": post_data}, "Organization_Xchange", "org_update_details_")
         return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
     except Exception as e:
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
