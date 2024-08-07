@@ -102,6 +102,8 @@ def healthcheck():
 @bp.route("/update_cin", methods=["POST"])
 def update_cin():
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
+    if res[STATUS] == ERROR:
+        return res[ERROR_DES]
     cin_no = res.get('cin')
     cin_name = res.get('name')
     if not cin_no:
