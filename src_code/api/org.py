@@ -274,10 +274,10 @@ def get_users():
 def get_access_rules():
     logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
     try:
-
+        
         user_details = [{
                 'profile': CommonLib.get_profile_details(x),
-                **Roles.rule_id(x.pop('rule_id')), **x,
+                **Roles.rule_id(x.pop('rule_id')), "is_active": "Active" if x.pop('is_active') == "Y" else "Inactive", **x,
                 'is_loggedin': "Y" if x.get('digilockerid') == g.digilockerid else "N",
                 "dept_name": g.dept_details.get(x.get('dept_id'),{}).get("name",""),
                 "sec_name": g.sec_details.get(x.get('sec_id'),{}).get("name","")
