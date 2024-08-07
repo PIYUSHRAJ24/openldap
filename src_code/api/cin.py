@@ -8,6 +8,7 @@ import os
 import re
 import json
 import logging
+import logging
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, jsonify
 from lib.constants import *
@@ -16,6 +17,7 @@ from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
 from lib.validations import Validations
 from api.org_activity import activity_insert
+from api.org import esign_consent_get
 from lib.commonlib import CommonLib
 from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
@@ -44,55 +46,54 @@ try:
 except Exception:
     CONFIG["JWT_SECRET"] = os.getenv("JWT_SECRET")  # for local
 
+
 @bp.before_request
-def validate_user():
+def validate():
     """
-        HMAC Authentication
+        JWT Authentication
     """
-    request_data = {
-            'time_start': datetime.utcnow().isoformat(),
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True)
-        }
-    request.logger_data = request_data
-    
-    logarray.update({
-        ENDPOINT: request.path,
-        HEADER: {
-            'user-agent': request.headers.get('User-Agent'),
-            "clientid": request.headers.get("clientid"),
-            "ts": request.headers.get("ts"),
-            "orgid": request.headers.get("orgid"),
-            "hmac": request.headers.get("hmac")
-        },
-        REQUEST: {}
-    })
-    g.org_id = request.headers.get("orgid")
-    if dict(request.args):
-        logarray[REQUEST].update(dict(request.args))
-    if dict(request.values):
-        logarray[REQUEST].update(dict(request.values))
-    if request.headers.get('Content-Type') == "application/json":
-        logarray[REQUEST].update(dict(request.json)) # type: ignore
-    head_load = logarray.get('HEADER',{})
-    
     try:
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
+
         bypass_urls = ('healthcheck')
-        if request.path.split('/')[1] in bypass_urls:
+        if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
             return
-
-        res, status_code = VALIDATIONS.hmac_authentication(request)
-
+        g.endpoint = request.path
+        if request.path.split('/')[-1] == "get_user_request":
+            res, status_code = CommonLib().validation_rules(request, True)
+            if status_code != 200:
+                return res, status_code
+            logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
+            return
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.jwt_login()
         if status_code != 200:
-            return res, status_code
+            return jwtres, status_code
+        g.path = jwtres
+        g.jwt_token = jwtlib.jwt_token
+        g.did = jwtlib.device_security_id
+        g.digilockerid = jwtlib.digilockerid
+        g.org_id = jwtlib.org_id
+        g.role = jwtlib.user_role
+        g.org_access_rules = jwtlib.org_access_rules
+        g.org_user_details = jwtlib.org_user_details
+        g.consent_time = ''
+        consent_bypass_urls = ('update_cin')
+        if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
+            consent_status, consent_code = esign_consent_get()
+            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            try:
+                datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+            except Exception:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            g.consent_time = consent_status.get('consent_time')
 
+        logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
-    
+        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+
 
 @bp.route("/", methods=["GET", "POST"])
 def healthcheck():
@@ -101,32 +102,26 @@ def healthcheck():
 @bp.route("/update_cin", methods=["POST"])
 def update_cin():
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
+    if res[STATUS] == ERROR:
+        return res[ERROR_DES]
     cin_no = res.get('cin')
     cin_name = res.get('name')
-    
     if not cin_no:
         return jsonify({"status": "error", "response": "CIN number not provided"}), 400
-    
     if not cin_name:
         return jsonify({"status": "error", "response": "CIN name not provided"}), 400
-
     if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
-
     res = ids_cin_verify(cin_no, cin_name)
-
     status_code = res[1]
-
     if status_code != 200 :
         return jsonify({"status": "error", "response": "CIN number not verified"}), 400
-    
-    date_time = datetime.now().strftime(D_FORMAT)
-    data = {
-        "cin": cin_no,
-        "updated_on": date_time,
+    post_data = {
+        "org_id":g.org_id,
+        "ccin": cin_no
     }
     try:
-        RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
+        RABBITMQ.send_to_queue({"data": post_data}, "Organization_Xchange", "org_update_details_")
         return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
     except Exception as e:
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400

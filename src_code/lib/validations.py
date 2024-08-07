@@ -1607,29 +1607,20 @@ class Validations:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:user_location::' + str(e)}
 
     def is_valid_cin_v2(self, request, org_id):
+        ''' check valid CIN'''
         try:
-         
-            input_data_raw = request.get_data().decode("utf-8")
-            input_data = json.loads(input_data_raw)
-    
-            cin_no = input_data.get("cin")
-            cin_name = input_data.get("name")
-           
-            cin_decrypted = CommonLib.aes_decryption_v2(cin_no, org_id[:16])
-            name_decrypted = CommonLib.aes_decryption_v2(cin_name, org_id[:16])
-    
+            cin_no = CommonLib.filter_input(request.values.get('cin'))
+            cin_name = CommonLib.filter_input(request.values.get('cin_name'))
+            cin_decrypted = CommonLib.aes_decryption_v2(cin_no[0], org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(cin_name[0], org_id[:16])
             cin = cin_decrypted if cin_decrypted is not None else cin_no
             name = name_decrypted if name_decrypted is not None else cin_name
-        
             if not cin or not self.is_valid_cin(cin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
-            
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
-
-            query = {'cin': cin}
+            query = {'ccin': cin}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
-            
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
             else:
