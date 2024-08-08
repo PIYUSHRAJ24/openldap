@@ -276,8 +276,8 @@ def get_access_rules():
     try:
         
         user_details = [{
-                'profile': CommonLib.get_profile_details(x),   
-                # 'profile': {"username": CommonLib.get_profile_details(x).get("username",''),"gender": CommonLib.get_profile_details(x).get("gender",''),"email": CommonLib.get_profile_details(x).get("email",''),"mobile": CommonLib.get_profile_details(x).get("mobile",'')},
+                # 'profile': CommonLib.get_profile_details(x),   
+                'profile': {"username": CommonLib.get_profile_details(x).get("username",''),"gender": CommonLib.get_profile_details(x).get("gender",''),"email": CommonLib.get_profile_details(x).get("email",''),"mobile": CommonLib.get_profile_details(x).get("mobile",'')},
                 **Roles.rule_id(x.pop('rule_id')), "is_active": "Active" if x.pop('is_active') == "Y" else "Inactive", **x,
                 # **Roles.rule_id(x.pop('rule_id')), **x,
                 'is_loggedin': "Y" if x.get('digilockerid') == g.digilockerid else "N",
