@@ -5,7 +5,7 @@ from lib.constants import *
 from flask import g
 
 es_config = CONFIG['elasticsearch']
-host = es_config["es_host"][:-1]+':443'
+host = es_config["es_host"]#[:-1]+':443'
 username = es_config["es_user"]
 password = es_config["es_pass"]
 
