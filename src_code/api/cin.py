@@ -8,7 +8,6 @@ import os
 import re
 import json
 import logging
-import logging
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, jsonify
 from lib.constants import *
@@ -103,7 +102,7 @@ def healthcheck():
 def update_cin():
     res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
     if res[STATUS] == ERROR:
-        return res[ERROR_DES]
+        return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
     cin_no = res.get('cin')
     cin_name = res.get('name')
     if not cin_no:
