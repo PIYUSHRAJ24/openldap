@@ -72,6 +72,10 @@ class Validations:
     def is_valid_gstin(self, code):
         pattern = r"^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$"
         return re.match(pattern, str(code))
+    
+    def is_valid_udyam(self, code):
+        pattern = r"^UDYAM-[A-Z]{2}-\d{2}-\d{7}$"
+        return re.match(pattern, str(code))
 
     def is_valid_date_elastic(self, date):
         if date is not None:
@@ -1717,7 +1721,8 @@ class Validations:
 
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_icai:' + str(e)}, 400    
-
+    
+    # get_udcer function not in use for entity_auth component from 9 Aug 2024
     def get_udcer(self, request, org_id):
         
         input_data_raw = request.get_data().decode("utf-8")
@@ -1800,6 +1805,51 @@ class Validations:
                 "post_data": post_data
             }, 200
         except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:get_udcer:: ' + str(e)}, 400
+    
+    def is_valid_udyam_v2(self, request, org_id):
+        
+        input_data_raw = request.get_data().decode("utf-8")
+        input_data = json.loads(input_data_raw)
+
+        udyam_number = input_data.get("udyam_number")
+        mobile = input_data.get("mobile")
+
+        mobile_decrypted = CommonLib.filter_input(CommonLib.aes_decryption_v2(mobile, org_id[:16]))
+        udyam_number_decrypted = CommonLib.filter_input(CommonLib.aes_decryption_v2(udyam_number, org_id[:16]))
+        
+  
+        mobile = mobile_decrypted if mobile_decrypted is not None else mobile
+        udyam_number = udyam_number_decrypted if udyam_number_decrypted is not None else udyam_number
+
+        try:
+            if mobile[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+            elif not mobile[0] or not self.is_valid_mobile(mobile[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
+            if udyam_number[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "udyam_number", RESPONSE: udyam_number[0]}, 400
+            elif not udyam_number[0] or not self.is_valid_udyam(udyam_number[0]):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_195")}, 400
+
+            query = {'udyam': udyam_number[1]}
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)          
+  
+            if status_code == 200:
+                log_data = {RESPONSE: 'UDYAM is already associated with the organization.'}
+                logarray.update(log_data)
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_gstin')
+                return res, status_code
+            else:
+                log_data = {RESPONSE: 'Udyam number and mobile successfully decrypted'}
+                logarray.update(log_data)
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
+                return {STATUS: SUCCESS, 'mobile': mobile[0] ,'udyam_number': udyam_number[0]}, 200
+
+        except Exception as e:
+            log_data = {RESPONSE: e}
+            logarray.update(log_data)
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_gstin')
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:get_udcer:: ' + str(e)}, 400
       
 
