@@ -152,7 +152,7 @@ def set_udyam():
 def ids_udyam_verify(udyam_no, mobile):
     try:
         ids_api_url = CONFIG["ids"]["url"]
-        curlurl = f"{ids_api_url}gateway/1.0/verify_udcer"
+        curlurl=f"{ids_api_url}gateway/1.0/verify_udcer"
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
         if not udyam_no or not mobile:
