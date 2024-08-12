@@ -50,6 +50,7 @@ app.register_blueprint(signin_bp, url_prefix='/signin')
 app.register_blueprint(pan_bp, url_prefix='/pan')
 app.register_blueprint(gstin_bp, url_prefix='/gstin')
 app.register_blueprint(cin_bp, url_prefix='/cin')
+app.register_blueprint(udyam_bp, url_prefix='/udyam')
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
 app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug= os.getenv('debug_mode','').lower() == 'true')
