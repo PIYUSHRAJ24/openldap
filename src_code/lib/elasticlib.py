@@ -14,7 +14,7 @@ ENTITY_INDEX = 'entity_details_'+APP_ENVIRONMENT.lower() if APP_ENVIRONMENT != '
 
 class ElasticLib:
     def __init__(self):
-        self.es = Elasticsearch(host, http_auth=(username, password))
+        self.es = Elasticsearch(host, http_auth=(username, password), ca_certs='/etc/filebeat/http_ca.crt')
 
     def search(self, index_name: str, orgid='', date: str = '*'):
         query = {"bool": {"must": [{ "match": {"org_id": orgid} }]}}
