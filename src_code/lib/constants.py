@@ -250,7 +250,7 @@ class Errors:
             'err_109' : 'Some technical error occurred. Please try again after sometime.[#503]',
             'err_110' : 'Aadhaar number does not have verified mobile/email.',
             'err_111' : 'Aadhaar number does not have verified mobile.',
-            'err_112' : 'Aadhaar number does not have both email and mobile.',
+            'err_112' : 'CIN details required.',
             'err_113' : 'Aadhaar number does not have both email and mobile.',
             'err_952' : 'Please wait for sometime before requesting another OTP.',
             'err_953' : 'You have exceeded the maximum attempts allowed to send OTP. Please try again after some time.',
