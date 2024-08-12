@@ -178,16 +178,7 @@ def ids_udyam_verify(udyam_no, mobile):
             'orgid': g.org_id,
             'Content-Type': 'application/json'
         }
-            
-        # print("==========================")
-        # print('curlurl :- ',curlurl)
-        # print('ids_clientid :-', ids_clientid)
-        # print('ids_clientsecret :-', ids_clientsecret)
-        # print('data :-', data) 
-        # print('fields :-', fields) 
-        # print('orgid :-', g.org_id)
-        # print('headers :-', headers)
-        # print("==========================")        
+                  
         curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=30)
        
         response = curl_result.json()
