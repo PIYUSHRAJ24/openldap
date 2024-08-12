@@ -108,12 +108,12 @@ def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
 @bp.route("/update_udyam", methods=["POST"])
-def set_udyam():
+def update_udyam():
     res, status_code = VALIDATIONS.is_valid_udyam_v2(request, g.org_id)
 
     udyam_no = res.get('udyam_number')
     mobile = res.get('mobile')
-    
+
     if not udyam_no:
         return jsonify({"status": "error", "response": "UDYAM number not provided"}), 400
     
@@ -128,7 +128,7 @@ def set_udyam():
     if status_code != 200 :
         log_data = {RESPONSE: res}
         logarray.update(log_data)
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         return jsonify({"status": "error", "response": "UDYAM number not verified"}), 400
         
     date_time = datetime.now().strftime(D_FORMAT)
@@ -140,12 +140,12 @@ def set_udyam():
         RABBITMQ.send_to_queue(data, "Organization_Xchange", "org_details_update_")
         log_data = {RESPONSE: "UDYAM number set successfully"}
         logarray.update(log_data)
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         return jsonify({"status": "success", "response": "UDYAM number set successfully"}), 200
     except Exception as e:
         log_data = {RESPONSE: e}
         logarray.update(log_data)
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
 
 
@@ -158,34 +158,35 @@ def ids_udyam_verify(udyam_no, mobile):
         if not udyam_no or not mobile:
             log_data = {RESPONSE: 'UDYAM number or name not provided'}
             logarray.update(log_data)
-            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
             return {"status": "error", "error_desc": "err_112"}, 400
-     
+        
         data = {
-            "mobile": mobile,
-            "udyam_number": udyam_no
+            'mobile': mobile,
+            'udyam_number': udyam_no
         }
-        fields = json.dumps(data)
 
+        fields = json.dumps(data)
+        
         ts = str(int(time.time()))
         key = f"{ids_clientsecret}{ids_clientid}{g.org_id}{ts}"
         hmac = hashlib.sha256(key.encode()).hexdigest()
-        
+
         headers = {
             'ts': ts,
             'clientid': ids_clientid,
             'hmac': hmac,
             'orgid': g.org_id,
             'Content-Type': 'application/json'
-        }
-                  
-        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=30)
-       
+        } 
+        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=180)        
         response = curl_result.json()
-      
+        print("===========RRRRRR===============")
+        print('response :- ',response)
+        print("===========RRRRRR===============")
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         code = curl_result.status_code
         if code == 200 and response.get('status') == 'success':
             return {'status': 'success', 'response': response['msg']}, code
@@ -198,7 +199,7 @@ def ids_udyam_verify(udyam_no, mobile):
     
     except Exception as e:
         logarray.update({"error": str(e)})
-        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_udyam')
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
         return {"status": "error", 'response': str(e)}, 500
 
