@@ -865,7 +865,7 @@ def send_otp_v1():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111'), 'response': str(e)}, 400
 
 @bp.route('/verify_mobile_otp', methods=['POST'])
 def verify_otp_v1():
