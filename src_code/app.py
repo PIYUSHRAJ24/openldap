@@ -33,6 +33,7 @@ from api.signin import bp as signin_bp
 from api.pan import bp as pan_bp
 from api.gstin import bp as gstin_bp
 from api.cin import bp as cin_bp
+from api.hmac_cin import bp as hmac_cin_bp
 from api.udyam import bp as udyam_bp
 
 # calling the APIs
@@ -50,6 +51,7 @@ app.register_blueprint(signin_bp, url_prefix='/signin')
 app.register_blueprint(pan_bp, url_prefix='/pan')
 app.register_blueprint(gstin_bp, url_prefix='/gstin')
 app.register_blueprint(cin_bp, url_prefix='/cin')
+app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
