@@ -1660,7 +1660,7 @@ class Validations:
                 log_data = {RESPONSE: 'GSTIN is already associated with the organization.'}
                 logarray.update(log_data)
                 RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
-                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_208')}, 406
             else:
                 log_data = {RESPONSE: 'GSTIN name and number successfully decrypted'}
                 logarray.update(log_data)

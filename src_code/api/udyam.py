@@ -181,9 +181,9 @@ def ids_udyam_verify(udyam_no, mobile):
         } 
         curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=180)        
         response = curl_result.json()
-        print("===========RRRRRR===============")
-        print('response :- ',response)
-        print("===========RRRRRR===============")
+        # print("===========RRRRRR===============")
+        # print('response :- ',response)
+        # print("===========RRRRRR===============")
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
