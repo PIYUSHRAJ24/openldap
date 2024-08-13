@@ -8,7 +8,7 @@ import os
 import time
 from lib.constants import *
 from lib.validations import Validations
-# from lib.elasticlib import ElasticLib
+from lib.elasticlib import ElasticLib
 from lib.mongolib import MongoLib
 from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
@@ -35,7 +35,7 @@ logHandler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
-
+ELASTICLIB = ElasticLib()
 VALIDATIONS = Validations()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
