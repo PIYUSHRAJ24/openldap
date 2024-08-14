@@ -1452,6 +1452,10 @@ class Validations:
             txn = CommonLib.filter_input(request.values.get("txn"))
             otp = CommonLib.filter_input(request.values.get('otp'))
             otp_decrypted = CommonLib.aes_decryption_v2(otp[0],org_id[:16])
+            email_id = CommonLib.filter_input(request.values.get('email_id'))
+            email_id_decrypted = CommonLib.aes_decryption_v2(email_id[0],org_id[:16])
+            mobile_no = CommonLib.filter_input(request.values.get('mobile_no'))
+            mobile_no_decrypted = CommonLib.aes_decryption_v2(mobile_no[0],org_id[:16])
             consent = CommonLib.filter_input(request.values.get("consent"))
             
             # todo validation rules
@@ -1465,7 +1469,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134')}, 400
             elif not self.valid_txn(txn[0]):
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_140')}, 400
-            return [uid_decrypted, txn[0], otp_decrypted, consent[0]], 200
+            return [uid_decrypted, txn[0], otp_decrypted, consent[0], email_id_decrypted, mobile_no_decrypted], 200
         except Exception as e:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_OTP_valid::' + str(e)}
 
