@@ -166,7 +166,7 @@ def ids_gstin_verify(gstin_no, gstin_name):
      
         data = {
             "GSTIN": gstin_no,
-            "FullName": 'RANCHI ENTERPRISES & PROPERTIES LTD'
+            "FullName": gstin_name
         }
         fields = json.dumps(data)
 
