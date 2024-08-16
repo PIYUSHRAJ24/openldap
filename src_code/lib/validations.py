@@ -1465,7 +1465,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134')}, 400
             elif not self.valid_txn(txn[0]):
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_140')}, 400
-            return [uid_decrypted, txn[0], otp_decrypted, consent[0], email_id_decrypted, mobile_no_decrypted], 200
+            return [uid_decrypted, txn[0], otp_decrypted, consent[0]], 200
         except Exception as e:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_OTP_valid::' + str(e)}
 
