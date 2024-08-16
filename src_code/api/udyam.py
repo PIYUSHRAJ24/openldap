@@ -115,13 +115,13 @@ def update_udyam():
     mobile = res.get('mobile')
 
     if not udyam_no:
-        return jsonify({"status": "error", "response": "UDYAM number not provided"}), 400
+        return jsonify({"status": "error", "error_description": "UDYAM number not provided"}), 400
     
     if not mobile:
-        return jsonify({"status": "error", "response": "UDYAM name not provided"}), 400
+        return jsonify({"status": "error", "error_description": "UDYAM name not provided"}), 400
 
     if not g.org_id:
-        return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
+        return jsonify({"status": "error", "error_description": "Organization ID not provided"}), 400
 
     res = ids_udyam_verify(udyam_no, mobile)
     status_code = res[1]
@@ -129,7 +129,7 @@ def update_udyam():
         log_data = {RESPONSE: res}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
-        return jsonify({"status": "error", "response": "UDYAM number not verified"}), 400
+        return jsonify({"status": "error", "error_description": "UDYAM number not verified"}), 400
         
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
@@ -159,7 +159,7 @@ def ids_udyam_verify(udyam_no, mobile):
             log_data = {RESPONSE: 'UDYAM number or name not provided'}
             logarray.update(log_data)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
-            return {"status": "error", "error_desc": "err_112"}, 400
+            return {"status": "error", "error_description": "err_112"}, 400
         
         data = {
             'mobile': mobile,
@@ -192,16 +192,16 @@ def ids_udyam_verify(udyam_no, mobile):
             return {'status': 'success', 'response': response['msg']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {'status': 'error', 'response': response['msg']}, code
+            return {'status': 'error', 'error_description': response['msg']}, code
         else:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
+            return {"status": "error", "error_description": f"Technical error occurred. Code: {code}"}, code
     
     except Exception as e:
         logarray.update({"error": str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-        return {"status": "error", 'response': str(e)}, 500
+        return {"status": "error", 'error_description': str(e)}, 500
 
 @bp.after_request
 def after_request(response):

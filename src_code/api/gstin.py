@@ -117,13 +117,13 @@ def set_gstin():
     gstin_name = res.get('name')
     
     if not gstin_no:
-        return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400
+        return jsonify({"status": "error", "error_description": "GSTIN number not provided"}), 400
     
     if not gstin_name:
-        return jsonify({"status": "error", "response": "GSTIN name not provided"}), 400
+        return jsonify({"status": "error", "error_description": "GSTIN name not provided"}), 400
 
     if not g.org_id:
-        return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
+        return jsonify({"status": "error", "error_description": "Organization ID not provided"}), 400
 
     res = ids_gstin_verify(gstin_no, gstin_name)
     status_code = res[1]
@@ -132,7 +132,7 @@ def set_gstin():
         log_data = {RESPONSE: res}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
-        return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
+        return jsonify({"status": "error", "error_description": "GSTIN number not verified"}), 400
         
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
@@ -162,11 +162,11 @@ def ids_gstin_verify(gstin_no, gstin_name):
             log_data = {RESPONSE: 'GSTIN number or name not provided'}
             logarray.update(log_data)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
-            return {"status": "error", "error_desc": "err_112"}, 400
+            return {"status": "error", "error_description": "err_112"}, 400
      
         data = {
             "GSTIN": gstin_no,
-            "FullName": 'RANCHI ENTERPRISES & PROPERTIES LTD'
+            "FullName": gstin_name
         }
         fields = json.dumps(data)
 
@@ -193,16 +193,16 @@ def ids_gstin_verify(gstin_no, gstin_name):
             return {'status': 'success', 'response': response['msg']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {'status': 'error', 'response': response['msg']}, code
+            return {'status': 'error', 'error_description': response['msg']}, code
         else:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
+            return {"status": "error", "error_description": f"Technical error occurred. Code: {code}"}, code
     
     except Exception as e:
         logarray.update({"error": str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-        return {"status": "error", 'response': str(e)}, 500
+        return {"status": "error", 'error_description': str(e)}, 500
 
 @bp.after_request
 def after_request(response):
