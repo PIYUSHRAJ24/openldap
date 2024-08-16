@@ -898,7 +898,7 @@ class CommonLib:
         headers = {
             'clientid': CONFIG["adv"]["ADV_API_CID"]
         }
-        end_point = f"{CONFIG["adv"]["ADV_API_URL"]}"+"gettoken"
+        end_point = CONFIG["adv"]["ADV_API_URL"] +"gettoken"
         response = requests.post(end_point , data=post_data, headers=headers)
         
         return response.text    
