@@ -74,7 +74,7 @@ app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
 
 
-@app.datetime.datetime.now(datetime.UTC)
+@app.after_request
 def after_request(response):
     try:
         if "healthcheck" in request.url:
