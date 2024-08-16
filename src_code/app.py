@@ -33,7 +33,7 @@ def before_request():
     ''' before request'''
     g.after_request_logged = False
     request_data = {
-        'time_start': datetime.datetime.now(datetime.UTC),
+        'time_start': datetime.utcnow().isoformat(),
         'method': request.method,
         'url': request.url,
         'headers': dict(request.headers),
@@ -77,7 +77,7 @@ app.register_blueprint(udyam_bp, url_prefix='/udyam')
 @app.after_request
 def after_request(response):
     try:
-        if "healthcheck" in request.url:
+        if "healthcheck" not in request.url:
             return response
         if getattr(g, 'after_request_logged', False):
             return response
@@ -100,7 +100,7 @@ def after_request(response):
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.datetime.now(datetime.UTC)
+            'time_end': datetime.utcnow().isoformat()
         }
         log_data = {
             'request': request.logger_data,
@@ -118,7 +118,7 @@ def handle_exception(e):
     log_data = {
         'error': str(e),
         'traceback': tb,
-        'time': datetime.datetime.now(datetime.UTC),
+        'time': datetime.utcnow().isoformat(),
         'request': {
             'method': request.method,
             'url': request.url,
@@ -126,7 +126,7 @@ def handle_exception(e):
             'body': request.get_data(as_text=True)
         }
     }
-    logger.info(log_data)
+    logger.error(log_data)
 
     # Return a generic error response
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
