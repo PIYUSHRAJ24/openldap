@@ -77,7 +77,7 @@ app.register_blueprint(udyam_bp, url_prefix='/udyam')
 @app.after_request
 def after_request(response):
     try:
-        if "healthcheck" not in request.url:
+        if "healthcheck" in request.url:
             return response
         if getattr(g, 'after_request_logged', False):
             return response
