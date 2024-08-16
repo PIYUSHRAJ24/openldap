@@ -1452,10 +1452,6 @@ class Validations:
             txn = CommonLib.filter_input(request.values.get("txn"))
             otp = CommonLib.filter_input(request.values.get('otp'))
             otp_decrypted = CommonLib.aes_decryption_v2(otp[0],org_id[:16])
-            email_id = CommonLib.filter_input(request.values.get('email_id'))
-            email_id_decrypted = CommonLib.aes_decryption_v2(email_id[0],org_id[:16])
-            mobile_no = CommonLib.filter_input(request.values.get('mobile_no'))
-            mobile_no_decrypted = CommonLib.aes_decryption_v2(mobile_no[0],org_id[:16])
             consent = CommonLib.filter_input(request.values.get("consent"))
             
             # todo validation rules

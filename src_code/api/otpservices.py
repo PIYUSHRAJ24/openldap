@@ -133,7 +133,7 @@ def verify_otp():
     try:
         res, status_code = VALIDATIONS.verify_otp(request,g.org_id)
         if status_code == 200:
-            uid, txn, otp, consent, email_id, mobile_no = res
+            uid, txn, otp, consent = res
         else:
             return res, status_code
         
@@ -142,8 +142,6 @@ def verify_otp():
             'uid':uid,
             'otp':otp,
             'txn':txn,
-            'email_id': email_id,
-            'mobile_no': mobile_no,
             'client_id': CONFIG['credentials']['client_id'],
             'isKYC':'Y',
             'requst_pdf': 'N',

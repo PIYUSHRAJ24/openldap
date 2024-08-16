@@ -46,13 +46,6 @@ class Signup_model:
                     finaldata['name'] = res['residentName']
                     finaldata['code']= 200
                     finaldata['careOf'] = res.get('careOf') if res.get('careOf') else ''
-
-                    # Set pin as last 6 digits of aadhaar
-                    rmq_connector.send_to_queue({"data": {"digilockerid": finaldata['digilockerid'], 'pin': MONGOLIB.get_hash_pwd(data['uid'][-6:])}}, 'Organization_Xchange', 'Set_User_Pin_')
-                    if finaldata['email_id'] and finaldata['mobile_no']:
-                        rmq_connector.send_to_queue({"data": {"email_id": finaldata['email_id'], 'mobile_no': finaldata['mobile_no']}}, 'Organization_Xchange', 'Update_User_')
-                    self.rs.set(finaldata['digilockerid']+'_org_add_user_verify_otp', json.dumps(finaldata))
-
                     return finaldata
                 else:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_166'), 'actual_err':createuser.get('error_description')}
