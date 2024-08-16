@@ -33,7 +33,7 @@ AADHAAR_CONNECTOR = AADHAAR_services(CONFIG)
 from lib import otp_service
 otp_connector = otp_service.OTP_services()
 logs_queue = 'org_logs_PROD'
-bp = Blueprint('org', __name__)
+bp = Blueprint('auth', __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())

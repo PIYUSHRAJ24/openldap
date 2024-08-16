@@ -44,6 +44,7 @@ def before_request():
 from api.filelock import bp as filelock_bp
 # importing APIs
 from api.image import bp as image_bp
+from api.auth import bp as auth_bp
 # from api.lockpdf import bp as lockpdf_bp
 # from api.metadata import bp as metadata_bp
 from api.name_match import bp as name_match_bp
@@ -72,6 +73,7 @@ app.register_blueprint(gstin_bp, url_prefix='/gstin')
 app.register_blueprint(cin_bp, url_prefix='/cin')
 app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
+app.register_blueprint(auth_bp, url_prefix='/auth')
 
 
 @app.after_request
