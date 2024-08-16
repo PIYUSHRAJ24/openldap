@@ -17,20 +17,6 @@ VALIDATIONS = Validations()
 REDISLIB = RedisLib()
 RABBITMQ = RabbitMQ()
 
-import logging
-from pythonjsonlogger import jsonlogger
-
-# Setup logging
-current_date = datetime.now().strftime("%Y-%m-%d")
-log_file_path = f"ORG-logs-{current_date}.log"
-logHandler = logging.FileHandler(log_file_path)
-formatter = jsonlogger.JsonFormatter()
-logHandler.setFormatter(formatter)
-logger = logging.getLogger()
-logger.addHandler(logHandler)
-logger.setLevel(logging.INFO)
-
-
 org_eve = CONFIG['org_eve']
 
 CONFIG = dict(CONFIG)
@@ -307,43 +293,3 @@ def translation(app, subject,user,user_affected= "", filename="", role_id="",val
 			"revoke_section": username + ' revoked access for ' + (prepared_params or '') + ' Section in ' + (value or '') + ' Department from ' + username_affected,
         }
         return switcher.get(subject,subject)
-
-@bp.after_request
-def after_request(response):
-    try:
-        response.headers['Content-Security-Policy'] = "default-src 'self'"
-        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['X-XSS-Protection'] = '1; mode=block'
-        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
-        
-        
-        response_data = {
-            'status': response.status,
-            'headers': dict(response.headers),
-            'body': response.get_data(as_text=True),
-            'time_end': datetime.utcnow().isoformat()
-        }
-        log_data = {
-            'request': request.logger_data,
-            'response': response_data
-        }
-        logger.info(log_data)
-        return response
-    except Exception as e:
-        print(f"Logging error: {str(e)}")
-    return response
-
-@bp.errorhandler(Exception)
-def handle_exception(e):
-    log_data = {
-        'error': str(e),
-        'time': datetime.utcnow().isoformat()
-    }
-    logger.error(log_data)
-    response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
-    response.status_code = 500
-    return response

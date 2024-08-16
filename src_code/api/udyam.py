@@ -20,20 +20,6 @@ from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
-
-import logging
-from pythonjsonlogger import jsonlogger
-
-# Setup logging
-current_date = datetime.now().strftime("%Y-%m-%d")
-log_file_path = f"ORG-logs-{current_date}.log"
-logHandler = logging.FileHandler(log_file_path)
-formatter = jsonlogger.JsonFormatter()
-logHandler.setFormatter(formatter)
-logger = logging.getLogger()
-logger.addHandler(logHandler)
-logger.setLevel(logging.INFO)
-
 # Initialize libraries
 MONGOLIB = MongoLib()
 VALIDATIONS = Validations()
@@ -57,16 +43,7 @@ except Exception:
 def validate_user():
     """
         HMAC Authentication
-    """
-    request_data = {
-            'time_start': datetime.utcnow().isoformat(),
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True)
-        }
-    request.logger_data = request_data
-    
+    """    
     logarray.update({
         ENDPOINT: request.path,
         HEADER: {
