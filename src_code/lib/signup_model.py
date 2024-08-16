@@ -58,11 +58,6 @@ class Signup_model:
                 finaldata['code']= 200
                 finaldata['careOf'] = res.get('careOf') if res.get('careOf') else ''
 
-                if not user_data.get('data').get('pin') and len(user_data.get('data').get('pin')) < 32:
-                    # Set pin as last 6 digits of aadhaar
-                    rmq_connector.send_to_queue({"data": {"digilockerid": finaldata['digilockerid'], 'pin': MONGOLIB.get_hash_pwd(data['uid'][-6:])}}, 'Organization_Xchange', 'Set_User_Pin_')
-                    finaldata['type']= 'new'
-
                 # aadhaar saveuri
                 MONGOLIB.saveuri_aadhaar(finaldata['digilockerid'], user_data.get('data').get('uid_token'), finaldata['username'])
                 self.rs.set(finaldata['digilockerid']+'_org_add_user_verify_otp', json.dumps(finaldata))
