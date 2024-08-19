@@ -8,19 +8,6 @@ import datetime
 VALIDATIONS = Validations()
 bp = Blueprint('name_match', __name__)
 
-import logging
-from pythonjsonlogger import jsonlogger
-
-# Setup logging
-current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-log_file_path = f"ORG-logs-{current_date}.log"
-logHandler = logging.FileHandler(log_file_path)
-formatter = jsonlogger.JsonFormatter()
-logHandler.setFormatter(formatter)
-logger = logging.getLogger()
-logger.addHandler(logHandler)
-logger.setLevel(logging.INFO)
-
 CONFIG = {}
 secrets = json.loads(SecretManager.get_secret())
 try:
@@ -33,15 +20,6 @@ def validate_user():
     """
         Jwt Authentication
     """
-    request_data = {
-            'time_start': datetime.datetime.utcnow().isoformat(),
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True)
-        }
-    request.logger_data = request_data
-    
     try:
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
@@ -134,43 +112,3 @@ def name_match_v3(name, original_name):
 
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: "v2: " + str(e)}
-
-@bp.after_request
-def after_request(response):
-    try:
-        response.headers['Content-Security-Policy'] = "default-src 'self'"
-        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-        response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['X-Frame-Options'] = 'SAMEORIGIN'
-        response.headers['X-XSS-Protection'] = '1; mode=block'
-        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
-        
-        
-        response_data = {
-            'status': response.status,
-            'headers': dict(response.headers),
-            'body': response.get_data(as_text=True),
-            'time_end': datetime.datetime.utcnow().isoformat()
-        }
-        log_data = {
-            'request': request.logger_data,
-            'response': response_data
-        }
-        logger.info(log_data)
-        return response
-    except Exception as e:
-        print(f"Logging error: {str(e)}")
-    return response
-
-@bp.errorhandler(Exception)
-def handle_exception(e):
-    log_data = {
-        'error': str(e),
-        'time': datetime.datetime.utcnow().isoformat()
-    }
-    logger.error(log_data)
-    response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
-    response.status_code = 500
-    return response
