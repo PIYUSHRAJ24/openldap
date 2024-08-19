@@ -1028,7 +1028,6 @@ class Validations:
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
-        
 
     
     def send_aadhaar_otp_valid(self, request):
@@ -1062,7 +1061,6 @@ class Validations:
             return [uid, txn, otp], 200
         except Exception as e:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verifyaadhaarOTP::' + str(e)}
-
 
     def org_access_rules(self, request, operation = 'G'):
         ''' Validate org access rules received over http request '''
@@ -1182,13 +1180,19 @@ class Validations:
     
                 active_requests = []
                 requests_res, status_code = MONGOLIB.org_eve("org_user_requests", {'org_id': g.org_id}, {}, limit = 1000)
+                added_requests = []
                 if status_code == 200 and len(requests_res[RESPONSE]) > 0:
                     for u in requests_res[RESPONSE]:
                         if u.get('request_status') == "initiated": # type: ignore
                             active_requests.append(u)
+                        if u.get('request_status') == "created": # type: ignore
+                            added_requests.append(u)
 
-                if post_data['aadhaar'] and len(active_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') or None for u in active_requests]: # type: ignore
-                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_190")}, 400
+                if post_data['aadhaar']:
+                    if len(added_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') for u in added_requests]:
+                        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_209")}, 400
+                    if len(active_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') or None for u in active_requests]: # type: ignore
+                        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_190")}, 400
                 if post_data['email']:
                     if len(active_users) > 0 and post_data['email'] in [u.get('email') for u in active_users]:
                         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_188")}, 400

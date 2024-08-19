@@ -2,7 +2,7 @@ import base64
 import hashlib
 import re, time, requests
 from datetime import datetime, timezone
-from flask import request, Blueprint, g
+from flask import request, Blueprint, g, jsonify
 from lib.constants import *
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
