@@ -50,11 +50,11 @@ def getjwt(post_data = None):
         digilockerid = request.values.get('digilockerid')
         source = request.values.get('source')
         jwtlib = DriveJwt(request, CONFIG)
-        jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)        
+        jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)
         return jwtres, status_code
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-    
+
 @bp.route('/refreshjwt', methods=['POST'])
 def refreshjwt(post_data = None):
     try:
@@ -64,7 +64,8 @@ def refreshjwt(post_data = None):
         refresh_token = request.values.get('refresh_token')
         source = request.values.get('source')
         jwtlib = DriveJwt(request, CONFIG)
-        jwtres, status_code = jwtlib.refresh_jwt(refresh_token, digilockerid, did, orgid, source)        
+        jwtres, status_code = jwtlib.refresh_jwt(refresh_token, digilockerid, did, orgid, source)
         return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400    
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400   
+    

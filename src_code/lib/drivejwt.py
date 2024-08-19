@@ -10,6 +10,8 @@ from lib.mongolib import MongoLib
 import time
 import secrets
 from datetime import datetime, timedelta
+from Crypto.Cipher import AES
+
 
 COMMONLIB = CommonLib()
 VALIDATIONS = Validations()
@@ -42,6 +44,29 @@ class DriveJwt:
         self.dept_details = {}
         self.sec_details = {}
 
+    def _pads(self, s):
+        bs = AES.block_size  # AES.block_size is 16 bytes
+        padding = bs - len(s) % bs
+        return s + (chr(padding) * padding)
+
+    def _pad(self, s):
+        try:
+            bs = AES.block_size
+            return s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
+        except Exception as e:
+            return str(e)
+
+    def aes_encryption(self, raw,secret_key):
+        try:
+            raw = self._pad(raw)
+            iv = bytes(16 * '\x00', 'utf-8')
+            #iv = bytes(16)
+            cipher = AES.new(secret_key, AES.MODE_CBC, iv)
+            return base64.b64encode(cipher.encrypt(raw.encode())).decode('utf-8').replace('+', '---')
+        except Exception as e:
+            return str(e)
+
+
     @staticmethod
     def aes_decryption(filtered_cipher_text, secret_key):
         try:
@@ -51,13 +76,13 @@ class DriveJwt:
             return unpad(aes_obj.decrypt(encode_cipher), AES.block_size).decode('utf-8')
         except Exception as e:
             print({STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:aes_decryption:: ' + str(e)})
-            return ''
-        
+            return str(e)
+
     def jwt_generate(self, digilockerid, did, orgid, source='web'):
         try:
             if did is None or did == '':
-                return {"status": "error", "error_description": 'Missing device security id'}, 400   
-            secret = self.aes_secret 
+                return {"status": "error", "error_description": 'Missing device security id'}, 400
+            secret = self.aes_secret
             ts = int(time.time())
             genreftoken = self.generate_refresh_token(digilockerid)
             access_token = {
@@ -69,21 +94,23 @@ class DriveJwt:
                 "data":{
                     "status":"success",
                     "orgid":orgid,
-                    "username":CommonLib.aes_encryption(digilockerid.encode('utf-8'), secret),
+                    "username":self.aes_encryption(digilockerid, secret),
                     "digilockerid":digilockerid,
-                    "didsign":CommonLib.aes_encryption(did.encode('utf-8'), secret)
+                    "didsign":self.aes_encryption(did, secret)
                     }
             }
             payload = {
               "access_token": access_token,
               "refresh_token": genreftoken,
               "token_type": "Bearer"
-            }            
-            
+
+            }
+
             if source == 'M':
                 payload["exp"] = ts + int(jwt_config.get('jwt_valid_upto_mobile') or 1800)
-            encoded = jwt.encode(payload, secret, algorithm="HS256")        
-            return encoded, 200
+            encoded = jwt.encode(payload, self.jwt_secret, algorithm="HS256")
+            encoded1 = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
+            return {"full":encoded, "token":encoded1} , 200
         except Exception as e:
             return {"status": "error", "error_description": 'Exception:LockerJwtvvvv:jwt_login:: ' + str(e)}, 400
 
@@ -94,9 +121,9 @@ class DriveJwt:
             token = self.jwt_token
             if token is None:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_107")}, 401
-            
+
             jwt_res = jwt.decode(token, self.jwt_secret, audience='DIGILOCKER', algorithms=['HS256'])
-            
+
             data = jwt_res.get('data', {})
             enc_username = data.get('username', '')
             self.org_id = data.get('orgid', '')
@@ -160,45 +187,44 @@ class DriveJwt:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_153')}, 401
         self.user_role = self.org_user_details.get('rule_id')  # type: ignore
         return self.org_user_details, 200  # type: ignore
-    
+
     def get_dept_detail(self):
 
         query = {'org_id': self.org_id}
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept"], query, {"dept_id":1, "name":1, "description":1, "is_active":1}, limit=500)
         if status_code == 200 or type(res[RESPONSE]) == type([]):
-            self.dept_details = {d["dept_id"]:d for d in res[RESPONSE]}  
+            self.dept_details = {d["dept_id"]:d for d in res[RESPONSE]}
         return self.dept_details, 200
-    
+
     def get_sec_detail(self):
         query = {'org_id': self.org_id}
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_sec"], query, {"sec_id":1, "dept_id":1, "name":1, "description":1, "is_active":1}, limit=500)
         if status_code == 200 or type(res[RESPONSE]) == type([]):
             self.sec_details = {d["sec_id"]:d for d in res[RESPONSE]}
         return self.sec_details, 200
-    
+
     def generate_refresh_token(self, user_id):
         refresh_token = secrets.token_hex(32)
         expiration = datetime.now() + timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
         #redis_client.setex(f"refresh_token:{user_id}", expiration, refresh_token)
         return refresh_token
-    
+
     def refresh_jwt(self, refresh_token, digilockerid, did, orgid, source):
         try:
             user_id = digilockerid
             stored_refresh_token = SRT #redis_client.get(f"refresh_token:{user_id}")
             #if stored_refresh_token and stored_refresh_token.decode('utf-8') == refresh_token:
             if stored_refresh_token == SRT:
-                new_jwt_token = self.jwt_generate(digilockerid, did, orgid, source)                
-                new_refresh_token = self.generate_refresh_token(user_id)                
+                new_jwt_token = self.jwt_generate(digilockerid, did, orgid, source)
+                new_refresh_token = self.generate_refresh_token(user_id)
                 payload = {
                   "access_token": new_jwt_token,
                   "refresh_token": new_refresh_token,
                   "token_type": "Bearer"
-                } 
-                
+                }
+
                 return payload, 200
             else:
                 return {STATUS: ERROR, ERROR_DES: "Invalid refresh token"}, 401
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Error refreshing token'}, 500
-
