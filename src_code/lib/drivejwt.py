@@ -11,8 +11,10 @@ import time
 import secrets
 from datetime import datetime, timedelta
 from Crypto.Cipher import AES
+from lib.redislib import RedisLib
 
 
+REDISLIB = RedisLib()
 COMMONLIB = CommonLib()
 VALIDATIONS = Validations()
 MONGOLIB = MongoLib()
@@ -103,7 +105,6 @@ class DriveJwt:
               "access_token": access_token,
               "refresh_token": genreftoken,
               "token_type": "Bearer"
-
             }
 
             if source == 'M':
@@ -206,21 +207,25 @@ class DriveJwt:
     def generate_refresh_token(self, user_id):
         refresh_token = secrets.token_hex(32)
         expiration = datetime.now() + timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
-        #redis_client.setex(f"refresh_token:{user_id}", expiration, refresh_token)
+        REDISLIB.set('refresh_token_'+user_id, refresh_token, int(expiration) * 24 * 60 * 60)
         return refresh_token
 
     def refresh_jwt(self, refresh_token, digilockerid, did, orgid, source):
         try:
             user_id = digilockerid
-            stored_refresh_token = SRT #redis_client.get(f"refresh_token:{user_id}")
+            stored_refresh_token = REDISLIB.get('refresh_token_'+user_id)
             #if stored_refresh_token and stored_refresh_token.decode('utf-8') == refresh_token:
-            if stored_refresh_token == SRT:
+            if stored_refresh_token:
+                ref = stored_refresh_token.decode('utf-8')
+                ref2 = refresh_token
                 new_jwt_token = self.jwt_generate(digilockerid, did, orgid, source)
                 new_refresh_token = self.generate_refresh_token(user_id)
                 payload = {
                   "access_token": new_jwt_token,
                   "refresh_token": new_refresh_token,
-                  "token_type": "Bearer"
+                  "token_type": "Bearer",
+                  "ref": ref,
+                  "ref2": ref2
                 }
 
                 return payload, 200
