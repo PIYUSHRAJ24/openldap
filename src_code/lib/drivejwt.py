@@ -7,6 +7,9 @@ from Crypto.Util.Padding import unpad
 from lib.commonlib import CommonLib
 from lib.validations import Validations
 from lib.mongolib import MongoLib
+import time
+import secrets
+import datetime
 
 COMMONLIB = CommonLib()
 VALIDATIONS = Validations()
@@ -56,7 +59,8 @@ class DriveJwt:
                 return {"status": "error", "error_description": 'Missing device security id'}, 400   
             secret = self.aes_secret 
             ts = int(time.time())
-            payload = {
+            genreftoken = self.generate_refresh_token(digilockerid)
+            access_token = {
                 "iss":"https://digilocker.gov.in",
                 "aud":"DIGILOCKER",
                 "iat":ts,
@@ -70,6 +74,12 @@ class DriveJwt:
                     "didsign":CommonLib.aes_encryption(did.encode('utf-8'), secret)
                     }
             }
+            payload = {
+              "access_token": access_token,
+              "refresh_token": genreftoken,
+              "token_type": "Bearer"
+            }            
+            
             if source == 'M':
                 payload["exp"] = ts + int(jwt_config.get('jwt_valid_upto_mobile') or 1800)
             encoded = jwt.encode(payload, secret, algorithm="HS256")        
@@ -168,7 +178,7 @@ class DriveJwt:
     
     def generate_refresh_token(self, user_id):
         refresh_token = secrets.token_hex(32)
-        expiration = datetime.datetime.now() + datetime.timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
+        expiration = datetime.now() + timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
         redis_client.setex(f"refresh_token:{user_id}", expiration, refresh_token)
         return refresh_token
     
@@ -177,10 +187,16 @@ class DriveJwt:
             user_id = digilockerid
             stored_refresh_token = SRT #redis_client.get(f"refresh_token:{user_id}")
             #if stored_refresh_token and stored_refresh_token.decode('utf-8') == refresh_token:
-            if stored_refresh_token == refresh_token:
+            if stored_refresh_token == SRT:
                 new_jwt_token = self.jwt_generate(digilockerid, did, orgid, source)                
                 new_refresh_token = self.generate_refresh_token(user_id)                
-                return {"jwt_token": new_jwt_token, "refresh_token": new_refresh_token}, 200
+                payload = {
+                  "access_token": new_jwt_token,
+                  "refresh_token": new_refresh_token,
+                  "token_type": "Bearer"
+                } 
+                
+                return payload, 200
             else:
                 return {STATUS: ERROR, ERROR_DES: "Invalid refresh token"}, 401
         except Exception as e:

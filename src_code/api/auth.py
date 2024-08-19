@@ -45,10 +45,10 @@ except Exception as s:
 @bp.route('/getjwt', methods=['POST'])
 def getjwt(post_data = None):
     try:
-        did = data.get('did')
-        orgid = data.get('orgid')
-        digilockerid = data.get('digilocker_id')
-        source = data.get('source')
+        did = request.values.get('did')
+        orgid = request.values.get('orgid')
+        digilockerid = request.values.get('digilockerid')
+        source = request.values.get('source')
         jwtlib = DriveJwt(request, CONFIG)
         jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)        
         return jwtres, status_code
@@ -58,11 +58,11 @@ def getjwt(post_data = None):
 @bp.route('/refreshjwt', methods=['POST'])
 def refreshjwt(post_data = None):
     try:
-        digilockerid, did, orgid, source
-        did = data.get('did')
-        orgid = data.get('orgid')
-        digilockerid = data.get('digilocker_id')
-        source = data.get('source')
+        did = request.values.get('did')
+        orgid = request.values.get('orgid')
+        digilockerid = request.values.get('digilockerid')
+        refresh_token = request.values.get('refresh_token')
+        source = request.values.get('source')
         jwtlib = DriveJwt(request, CONFIG)
         jwtres, status_code = jwtlib.refresh_jwt(refresh_token, digilockerid, did, orgid, source)        
         return jwtres, status_code
