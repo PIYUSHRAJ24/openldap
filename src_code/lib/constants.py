@@ -172,6 +172,7 @@ class Errors:
             'ERR_MSG_206': "Invalid Jtoken.",
             'ERR_MSG_207': "Cannot save the Organisation PAN.",
             'ERR_MSG_208': "The GSTIN you entered is already registered with us.",
+            'ERR_MSG_209': "An user with provided Aadhaar number is already registered with the entity.",
 
             'UIDAI-K-100' : 'OTP is not valid. Please enter Correct OTP as sent by UIDAI.',
             'UIDAI-K-200' : 'Data is currently not available with UIDAI.',
