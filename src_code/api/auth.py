@@ -45,7 +45,6 @@ except Exception as s:
 @bp.route('/getjwt', methods=['POST'])
 def getjwt(post_data = None):
     try:
-        digilockerid, did, orgid, source
         did = data.get('did')
         orgid = data.get('orgid')
         digilockerid = data.get('digilocker_id')

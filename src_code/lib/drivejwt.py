@@ -54,7 +54,7 @@ class DriveJwt:
         try:
             if did is None or did == '':
                 return {"status": "error", "error_description": 'Missing device security id'}, 400   
-            secret = self.aes_secret #bytes(secrets.get('aes_secret'), 'utf-8')
+            secret = self.aes_secret 
             ts = int(time.time())
             payload = {
                 "iss":"https://digilocker.gov.in",
