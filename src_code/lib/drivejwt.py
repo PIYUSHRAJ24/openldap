@@ -206,7 +206,7 @@ class DriveJwt:
 
     def generate_refresh_token(self, user_id):
         refresh_token = secrets.token_hex(32)
-        expiration = datetime.now() + timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
+        expiration = jwt_config.get('refresh_valid_upto') or 30
         REDISLIB.set('refresh_token_'+user_id, refresh_token, int(expiration) * 24 * 60 * 60)
         return refresh_token
 
@@ -214,18 +214,13 @@ class DriveJwt:
         try:
             user_id = digilockerid
             stored_refresh_token = REDISLIB.get('refresh_token_'+user_id)
-            #if stored_refresh_token and stored_refresh_token.decode('utf-8') == refresh_token:
-            if stored_refresh_token:
-                ref = stored_refresh_token.decode('utf-8')
-                ref2 = refresh_token
+            if stored_refresh_token and stored_refresh_token == refresh_token:
                 new_jwt_token = self.jwt_generate(digilockerid, did, orgid, source)
                 new_refresh_token = self.generate_refresh_token(user_id)
                 payload = {
                   "access_token": new_jwt_token,
                   "refresh_token": new_refresh_token,
-                  "token_type": "Bearer",
-                  "ref": ref,
-                  "ref2": ref2
+                  "token_type": "Bearer"
                 }
 
                 return payload, 200
