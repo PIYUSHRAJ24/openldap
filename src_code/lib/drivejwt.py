@@ -9,7 +9,7 @@ from lib.validations import Validations
 from lib.mongolib import MongoLib
 import time
 import secrets
-import datetime
+from datetime import datetime, timedelta
 
 COMMONLIB = CommonLib()
 VALIDATIONS = Validations()
@@ -179,7 +179,7 @@ class DriveJwt:
     def generate_refresh_token(self, user_id):
         refresh_token = secrets.token_hex(32)
         expiration = datetime.now() + timedelta(days=jwt_config.get('refresh_valid_upto') or 30)
-        redis_client.setex(f"refresh_token:{user_id}", expiration, refresh_token)
+        #redis_client.setex(f"refresh_token:{user_id}", expiration, refresh_token)
         return refresh_token
     
     def refresh_jwt(self, refresh_token, digilockerid, did, orgid, source):
