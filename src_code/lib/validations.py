@@ -1474,21 +1474,31 @@ class Validations:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_OTP_valid::' + str(e)}
 
 
-    
-    def send_otp_v1(self, request):
-        mobile =  CommonLib.filter_input(request.values.get('mobile'))
-       
-        try: 
+    def send_otp_v1(self, request, org_id):
+        try:
+            mobile_decrypted = CommonLib.aes_decryption_v2(request.values.get('mobile'), org_id[:16])
+            if mobile_decrypted is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile decryption failed"}, 400
+
+            mobile = CommonLib.filter_input(mobile_decrypted)
+            if mobile is None or mobile[0] is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile filtering failed"}, 400
+
             if mobile[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
             elif not mobile[0] or len(mobile[0]) != 10:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-           
+            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
+
+            if not clientid or not client_seret:
+                return {STATUS: ERROR, ERROR_DES: 'Missing client credentials'}, 400
+
             ts = str(int(time.time()))
             plain_text_key_created = client_seret + clientid + mobile[0] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+
             return {
                 STATUS: SUCCESS,
                 "post_data": {
@@ -1496,12 +1506,41 @@ class Validations:
                     'clientid': clientid,
                     'ts': ts,
                     'hmac': hmac
-                    
                 },
                 "headers": {}
             }, 200
+
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400
+
+  
+    # def send_otp_v1(self, request):
+    #     mobile =  CommonLib.filter_input(request.values.get('mobile'))
+       
+    #     try: 
+    #         if mobile[1] == 400:
+    #             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
+    #         elif not mobile[0] or len(mobile[0]) != 10:
+    #             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
+           
+    #         clientid = os.getenv('org_clientid')
+    #         client_seret = os.getenv('org_client_secret')
+    #         ts = str(int(time.time()))
+    #         plain_text_key_created = client_seret + clientid + mobile[0] + ts
+    #         hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+    #         return {
+    #             STATUS: SUCCESS,
+    #             "post_data": {
+    #                 'mobile': mobile[0],
+    #                 'clientid': clientid,
+    #                 'ts': ts,
+    #                 'hmac': hmac
+                    
+    #             },
+    #             "headers": {}
+    #         }, 200
+    #     except Exception as e:
+    #         return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400
         
 
     
