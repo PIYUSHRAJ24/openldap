@@ -872,7 +872,8 @@ def send_otp_v1():
 def verify_otp_v1():
     logarray.update({ENDPOINT: 'verify_mobile_otp', REQUEST: dict(request.values)})
     try:
-        res, status_code = VALIDATIONS.verify_otp_v1(request)
+        org_id = request.headers.get("orgid")
+        res, status_code = VALIDATIONS.verify_otp_v1(request,org_id)
         if status_code != 200:
             logarray.update(res)
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
