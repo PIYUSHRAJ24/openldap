@@ -40,6 +40,9 @@ class Validations:
     def is_valid_did(self, id):
         pattern = r'^[a-zA-Z0-9\-]{36}$'
         return re.fullmatch(pattern, id)
+    def is_valid_access_id(self, id):
+        pattern = r'^[a-zA-Z0-9\-]{32}$'
+        return re.fullmatch(pattern, id)
 
     def is_valid_date(self, date):
         if date is not None:
@@ -1236,19 +1239,20 @@ class Validations:
         # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
-            if digilockerid[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "digilockerid", RESPONSE: digilockerid[0]}, 400
-            elif digilockerid[0] != None and self.is_valid_did(digilockerid[0]) == None:
+            access_id_1 = CommonLib.aes_decryption_v2(access_id[0], g.org_id[:16])
+            digilockerid_1 = CommonLib.aes_decryption_v2(digilockerid[0], g.org_id[:16])
+            if digilockerid_1 is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_209")}, 400
+            elif digilockerid_1 and not self.is_valid_did(digilockerid_1):
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
-            if access_id[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
-            elif access_id[0] != None and not access_id[0]:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
-            if not (digilockerid[0] or access_id[0]):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_126")}, 400
+            
+            if access_id_1 is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_210")}, 400
+            elif access_id_1 and not self.is_valid_access_id(access_id_1):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
             post_data = {
-                'digilockerid': digilockerid[0],
-                'access_id': access_id[0],
+                'digilockerid': digilockerid_1,
+                'access_id': access_id_1,
                 # 'updated_on': updated_on,
                 'is_active': "N"
             }
