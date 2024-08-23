@@ -1031,7 +1031,6 @@ class Validations:
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
-        
 
     
     def send_aadhaar_otp_valid(self, request):
@@ -1065,7 +1064,6 @@ class Validations:
             return [uid, txn, otp], 200
         except Exception as e:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verifyaadhaarOTP::' + str(e)}
-
 
     def org_access_rules(self, request, operation = 'G'):
         ''' Validate org access rules received over http request '''
@@ -1185,13 +1183,19 @@ class Validations:
     
                 active_requests = []
                 requests_res, status_code = MONGOLIB.org_eve("org_user_requests", {'org_id': g.org_id}, {}, limit = 1000)
+                added_requests = []
                 if status_code == 200 and len(requests_res[RESPONSE]) > 0:
                     for u in requests_res[RESPONSE]:
                         if u.get('request_status') == "initiated": # type: ignore
                             active_requests.append(u)
+                        if u.get('request_status') == "created": # type: ignore
+                            added_requests.append(u)
 
-                if post_data['aadhaar'] and len(active_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') or None for u in active_requests]: # type: ignore
-                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_190")}, 400
+                if post_data['aadhaar']:
+                    if len(added_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') for u in added_requests]:
+                        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_209")}, 400
+                    if len(active_requests) > 0 and post_data['aadhaar'] in [u.get('aadhaar') or None for u in active_requests]: # type: ignore
+                        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_190")}, 400
                 if post_data['email']:
                     if len(active_users) > 0 and post_data['email'] in [u.get('email') for u in active_users]:
                         return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_188")}, 400
@@ -1242,7 +1246,7 @@ class Validations:
             access_id_1 = CommonLib.aes_decryption_v2(access_id[0], g.org_id[:16])
             digilockerid_1 = CommonLib.aes_decryption_v2(digilockerid[0], g.org_id[:16])
             if digilockerid_1 is None:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_209")}, 400
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_211")}, 400
             elif digilockerid_1 and not self.is_valid_did(digilockerid_1):
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
             
@@ -1474,21 +1478,31 @@ class Validations:
             return 400, {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_OTP_valid::' + str(e)}
 
 
-    
-    def send_otp_v1(self, request):
-        mobile =  CommonLib.filter_input(request.values.get('mobile'))
-       
-        try: 
+    def send_otp_v1(self, request, org_id):
+        try:
+            mobile_decrypted = CommonLib.aes_decryption_v2(request.values.get('mobile'), org_id[:16])
+            if mobile_decrypted is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile decryption failed"}, 400
+
+            mobile = CommonLib.filter_input(mobile_decrypted)
+            if mobile is None or mobile[0] is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile filtering failed"}, 400
+
             if mobile[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
             elif not mobile[0] or len(mobile[0]) != 10:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-           
+            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
+
+            if not clientid or not client_seret:
+                return {STATUS: ERROR, ERROR_DES: 'Missing client credentials'}, 400
+
             ts = str(int(time.time()))
             plain_text_key_created = client_seret + clientid + mobile[0] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
+
             return {
                 STATUS: SUCCESS,
                 "post_data": {
@@ -1496,18 +1510,29 @@ class Validations:
                     'clientid': clientid,
                     'ts': ts,
                     'hmac': hmac
-                    
                 },
                 "headers": {}
             }, 200
+
         except Exception as e:
-            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400
-        
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400 
 
     
-    def verify_otp_v1(self, request):
-        mobile =  CommonLib.filter_input(request.values.get('mobile'))
-        otp =  CommonLib.filter_input(request.values.get('otp'))
+    def verify_otp_v1(self, request,org_id):
+        mobile_decrypted = CommonLib.aes_decryption_v2(request.values.get('mobile'), org_id[:16])
+        if mobile_decrypted is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile decryption failed"}, 400
+        mobile = CommonLib.filter_input(mobile_decrypted)
+        if mobile is None or mobile[0] is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile filtering failed"}, 400
+          
+        otp_decrypted = CommonLib.aes_decryption_v2(request.values.get('otp'), org_id[:16])
+        if otp_decrypted is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp decryption failed"}, 400
+        otp = CommonLib.filter_input(otp_decrypted)
+        if otp is None or otp[0] is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp filtering failed"}, 400
+        
         txn =  CommonLib.filter_input(request.values.get('txn'))
         try: 
             if mobile[1] == 400:

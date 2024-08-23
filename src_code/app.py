@@ -15,16 +15,13 @@ cors = CORS(app, origins=os.getenv('allowed_origin'))
 app.config['SERVER_NAME'] = None
 
 current_date = datetime.now().strftime("%Y-%m-%d")
-log_file_path = f"ORG-logs-{current_date}.log"
+log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
 logHandler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
-
-
-
 
 @app.route('/healthcheck', methods=['GET'])
 @app.route('/', methods=['GET'])
@@ -47,6 +44,7 @@ def before_request():
 from api.filelock import bp as filelock_bp
 # importing APIs
 from api.image import bp as image_bp
+from api.auth import bp as auth_bp
 # from api.lockpdf import bp as lockpdf_bp
 # from api.metadata import bp as metadata_bp
 from api.name_match import bp as name_match_bp
@@ -75,11 +73,18 @@ app.register_blueprint(gstin_bp, url_prefix='/gstin')
 app.register_blueprint(cin_bp, url_prefix='/cin')
 app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
+app.register_blueprint(auth_bp, url_prefix='/auth')
 
 
 @app.after_request
 def after_request(response):
     try:
+        if "healthcheck" in request.url:
+            return response
+        if getattr(g, 'after_request_logged', False):
+            return response
+        if g.after_request_logged:
+            return response
         response.headers['Content-Security-Policy'] = "default-src 'self'"
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -88,6 +93,9 @@ def after_request(response):
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
+        response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
+        response.headers['Expect-CT'] = 'max-age=86400, enforce'
         
         
         response_data = {
@@ -127,27 +135,5 @@ def handle_exception(e):
     response.status_code = 500
     return response
 
-
-@app.errorhandler(Exception)
-def handle_exception(e):
-    ''' final error excpetion handler'''
-    tb = traceback.format_exc()
-    log_data = {
-        'error': str(e),
-        'traceback': tb,
-        'time': datetime.utcnow().isoformat(),
-        'request': {
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True)
-        }
-    }
-    logger.error(log_data)
-    response = {STATUS: ERROR, ERROR_DES: "Internal Server Error"}
-    response.status_code = 500
-    return response
-
-
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
-app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug= os.getenv('debug_mode','').lower() == 'true')
+app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug=False)
