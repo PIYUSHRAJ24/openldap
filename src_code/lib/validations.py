@@ -1521,13 +1521,14 @@ class Validations:
         mobile = CommonLib.filter_input(mobile_decrypted)
         if mobile is None or mobile[0] is None:
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile filtering failed"}, 400
-
-        if mobile[1] == 400:
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
-        elif not mobile[0] or len(mobile[0]) != 10:
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-            
-        otp =  CommonLib.filter_input(request.values.get('otp'))
+          
+        otp_decrypted = CommonLib.aes_decryption_v2(request.values.get('otp'), org_id[:16])
+        if otp_decrypted is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp decryption failed"}, 400
+        otp = CommonLib.filter_input(otp_decrypted)
+        if otp is None or otp[0] is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp filtering failed"}, 400
+        
         txn =  CommonLib.filter_input(request.values.get('txn'))
         try: 
             if mobile[1] == 400:
