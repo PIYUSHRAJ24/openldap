@@ -607,7 +607,7 @@ def revoke_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-
+        post_data['digilockerid'] = did
         post_data['org_id'] = g.org_id
         post_data['updated_by'] = g.digilockerid
         post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
