@@ -1562,7 +1562,7 @@ def update_udyam_profile():
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
 
-        res, status_code = VALIDATIONS.is_valid_udcer(request)
+        res, status_code = VALIDATIONS.is_valid_udcer(request,g.org_id)
         if status_code != 200:
             logarray.update({RESPONSE:res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
