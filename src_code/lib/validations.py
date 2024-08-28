@@ -1900,8 +1900,8 @@ class Validations:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:get_udcer:: ' + str(e)}, 400
       
 
-    def is_valid_udcer(self, request):
-        res, status_code = self.get_udcer(request)
+    def is_valid_udcer(self, request,org_id):
+        res, status_code = self.get_udcer(request,org_id)
         if status_code != 200:
             return res, status_code
 
