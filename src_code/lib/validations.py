@@ -1252,6 +1252,11 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_210")}, 400
             elif access_id_1 and not self.is_valid_access_id(access_id_1):
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
+            
+            for a in g.org_access_rules:
+                if a.get('access_id') == access_id_1 and a.get('is_active') == "N":
+                   return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_212")}, 400 
+            
             post_data = {
                 'access_id': access_id_1,
                 # 'updated_on': updated_on,
