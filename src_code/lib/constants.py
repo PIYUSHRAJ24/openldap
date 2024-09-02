@@ -173,6 +173,10 @@ class Errors:
             'ERR_MSG_207': "Cannot save the Organisation PAN.",
             'ERR_MSG_208': "The GSTIN you entered is already registered with us.",
             'ERR_MSG_209': "An user with provided Aadhaar number is already registered with the entity.",
+            'ERR_MSG_210': "Access ID not found.",
+            'ERR_MSG_211': "Digilockerid not found.",
+            'ERR_MSG_212': "User already revoked.",
+            
 
             'UIDAI-K-100' : 'OTP is not valid. Please enter Correct OTP as sent by UIDAI.',
             'UIDAI-K-200' : 'Data is currently not available with UIDAI.',
