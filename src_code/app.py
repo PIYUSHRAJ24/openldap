@@ -58,6 +58,10 @@ from api.gstin import bp as gstin_bp
 from api.cin import bp as cin_bp
 from api.hmac_cin import bp as hmac_cin_bp
 from api.udyam import bp as udyam_bp
+from api.department import bp as department_bp
+from api.permission import bp as permission_bp
+from api.section import bp as section_bp
+from api.users import bp as users_bp
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
@@ -74,6 +78,10 @@ app.register_blueprint(cin_bp, url_prefix='/cin')
 app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
 app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(department_bp, url_prefix='/department')
+app.register_blueprint(permission_bp, url_prefix='/permission')
+app.register_blueprint(section_bp, url_prefix='/section')
+app.register_blueprint(users_bp, url_prefix='/users')
 
 
 @app.after_request
