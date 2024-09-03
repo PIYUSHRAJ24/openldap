@@ -58,12 +58,6 @@ from api.gstin import bp as gstin_bp
 from api.cin import bp as cin_bp
 from api.hmac_cin import bp as hmac_cin_bp
 from api.udyam import bp as udyam_bp
-<<<<<<< HEAD
-from api.department import bp as department_bp
-from api.permission import bp as permission_bp
-from api.section import bp as section_bp
-=======
->>>>>>> feature/assign_dept_issue
 from api.users import bp as users_bp
 
 # calling the APIs
