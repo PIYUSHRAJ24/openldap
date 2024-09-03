@@ -3,8 +3,8 @@ import re
 import hashlib
 import time
 import uuid
-from lib.commonlib import CommonLib
-from lib.constants import *
+from lib.commonlib_auth import CommonLib
+from lib.constants_auth import *
 from lib.mongolib import MongoLib
 from lib.redislib import RedisLib
 from lib.orglib import OrgLib

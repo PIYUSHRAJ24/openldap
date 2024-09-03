@@ -2,12 +2,12 @@ import base64
 import hashlib
 import jwt
 import requests
-from lib.constants import *
+from lib.constants_auth import *
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
-from lib.commonlib import CommonLib
+from lib.commonlib_auth import CommonLib
 from lib.secretsmanager import SecretManager
-from lib.validations import Validations
+from lib.validations_auth import Validations
 from lib.mongolib import MongoLib
 from lib.redislib import RedisLib
 
