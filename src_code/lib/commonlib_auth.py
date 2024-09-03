@@ -2,7 +2,7 @@ import re
 import hashlib
 import time
 from flask import url_for
-from lib.constants import *
+from lib.constants_auth import *
 import requests
 import json
 from Crypto.Cipher import AES
