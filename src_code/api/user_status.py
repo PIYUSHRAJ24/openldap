@@ -121,6 +121,7 @@ def check_user_status():
         res, status_code = MONGOLIB.org_eve(
             CONFIG["org_eve"]["collection_rules"], query, {}, limit=500
         )
+        
         response_status = res.get("status")
 
         if response_status == "success":
