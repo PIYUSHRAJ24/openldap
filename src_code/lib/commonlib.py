@@ -904,7 +904,7 @@ class CommonLib:
         
         return response.text    
     
-    def validate_hmac(self, clientid,ts,orgid,digilockerid,hmac):
+    def validate_hmac_partners(self, clientid,ts,orgid,digilockerid,hmac):
         crypt = Crypt("")
         secret = self.get_secret(clientid)
         salt = secret+clientid+ts+clientid+orgid+digilockerid
