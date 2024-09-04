@@ -5,11 +5,11 @@ from base64 import b64encode, b64decode
 import hashlib
 
 class Crypt:
-    def __init__(self, sec_key) :        
+    def __init__(self, sec_key):
         try:
-            self.secret_key= sec_key
-            self.precise_key=  bytearray((hashlib.md5(sec_key[:16].encode("utf-8")).hexdigest()).encode("utf-8"))
-            self.iv= bytearray(sec_key[:16].encode(), "utf-8")
+            self.secret_key = sec_key
+            self.precise_key = bytearray((hashlib.sha3_256(sec_key[:16].encode("utf-8")).hexdigest()).encode("utf-8"))
+            self.iv = bytearray(sec_key[:16].encode(), "utf-8")
         except Exception as e:
             print(str(e))
             
@@ -43,19 +43,19 @@ class Crypt:
         except Exception as e:
             return 400, {ERROR: "error", ERROR_DES: 'Exception: in Crypt.decrypt_data:: ' + str(e)}
     
-    def make_sha_256_hash(self, data= ""):
-        try :
-            if data is not None and ""!=data:
-                sha256_hash = hashlib.sha256()
-                sha256_hash.update(data.encode('utf-8'))
-                hash_result = sha256_hash.hexdigest()
+    def make_sha_256_hash(self, data="", salt=None):
+        try:
+            if data is not None and data != "":
+                sha3_256_hash = hashlib.sha3_256()
+                if salt:
+                    sha3_256_hash.update(salt.encode('utf-8'))
+                sha3_256_hash.update(data.encode('utf-8'))
+                hash_result = sha3_256_hash.hexdigest()
                 return 200, hash_result
             else:
-                return 400, {ERROR: "error", ERROR_DES: "Text must not none"}
+                return 400, {ERROR: "error", ERROR_DES: "Text must not be None"}
+        except hashlib.HashAlgorithmError as e:
+            return 400, {ERROR: "error", ERROR_DES: f"Hashing algorithm error: {str(e)}"}
         except Exception as e:
-            return 400, {ERROR: "error", ERROR_DES: "Text must not none:::" +str(e)}
-
-
-
+            return 400, {ERROR: "error", ERROR_DES: f"Hashing error: {str(e)}"}
         
-    

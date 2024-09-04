@@ -14,6 +14,7 @@ from lib.mongolib import MongoLib
 from assets.images import default_avatars
 from flask import render_template, request
 from thefuzz import fuzz
+from lib.cryptographer import Crypt			
 
 from lib.redislib import RedisLib
 rs = RedisLib()
@@ -902,3 +903,13 @@ class CommonLib:
         response = requests.post(end_point , data=post_data, headers=headers)
         
         return response.text    
+    
+    def validate_hmac(self, clientid,ts,orgid,digilockerid,hmac):
+        crypt = Crypt("")
+        secret = self.get_secret(clientid)
+        salt = secret+clientid+ts+clientid+orgid+digilockerid
+        status, generated_hmac = crypt.make_sha_256_hash(salt)        
+        if status != 200 and generated_hmac == hmac:
+            return generated_hmac, 200
+        else:
+            return False, 401
