@@ -109,9 +109,9 @@ class DriveJwt:
 
             if source == 'M':
                 payload["exp"] = ts + int(jwt_config.get('jwt_valid_upto_mobile') or 1800)
-            encoded = jwt.encode(payload, self.jwt_secret, algorithm="HS256")
-            encoded1 = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
-            return {"full":encoded, "token":encoded1} , 200
+            # encoded = jwt.encode(payload, self.jwt_secret, algorithm="HS256")
+            # encoded1 = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
+            return payload , 200
         except Exception as e:
             return {"status": "error", "error_description": 'Exception:LockerJwtvvvv:jwt_login:: ' + str(e)}, 400
 
