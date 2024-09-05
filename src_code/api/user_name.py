@@ -196,3 +196,49 @@ def get_token(adh):
             print(e)
             return str(e)
         return ""
+
+@bp.route("/usr_name", methods=["POST"])
+def usr_name():
+    try:
+        aadhar = request.form.get("aadhar")
+        mobile_no = request.form.get("mobile_no")
+        email = request.form.get("email")
+        if not aadhar and not mobile_no and not email:
+            return {
+                "status": "error",
+                "response": "Please enter a valid mobile number or aadhar number or email",
+            }, 400
+            
+        if aadhar:
+            adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
+            if adh and not re.match(r"^\d{12}$", adh):
+                return {"status": "error", "response": "Invalid Aadhaar number"}, 400
+        url = CONFIG["acs_api"]['url']+'/retrieve_account'
+        payload = {
+                "mobile":mobile_no,
+                "username":email,
+                "uid":adh
+            }
+        files={}
+        headers = {}
+
+        ts = str(int(time.time()))
+        client_id = CONFIG["acs_api"]['clientid']
+        client_secret = CONFIG["acs_api"]["client_secret"]
+        key = client_secret + client_id + ts
+        hash_object = hashlib.sha256(key.encode())
+        hmac = hash_object.hexdigest()
+
+        headers = {
+            'client-id': client_id,
+            'ts': ts,
+            'hmac': hmac
+        }
+        response = requests.request("GET", url, headers=headers, data=payload, files=files)
+        if response.status_code != 200:
+            return response
+
+        return response.json()
+
+    except Exception as e:
+        return {"status": "error", "response": str(e)}
