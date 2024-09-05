@@ -89,8 +89,8 @@ def validate_user():
 def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
-@bp.route("/retrieve_account", methods=["POST"])
-def retrieve_account():
+@bp.route("/retrieve_name", methods=["POST"])
+def retrieve_name():
     try:
         aadhar = request.form.get("aadhar")
         mobile_no = request.form.get("mobile_no")
@@ -200,28 +200,34 @@ def get_token(adh):
 @bp.route("/usr_name", methods=["POST"])
 def usr_name():
     try:
+        # Get the user data from the form or JSON payload
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
+
+        # If all fields are missing, return an error
         if not aadhar and not mobile_no and not email:
             return {
                 "status": "error",
-                "response": "Please enter a valid mobile number or aadhar number or email",
+                "response": "Please enter a valid mobile number, Aadhaar number, or email",
             }, 400
-            
+
+        # Aadhaar decryption and validation
+        adh = None
         if aadhar:
             adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
             if adh and not re.match(r"^\d{12}$", adh):
                 return {"status": "error", "response": "Invalid Aadhaar number"}, 400
-        url = CONFIG["acs_api"]['url']+'/retrieve_account'
-        payload = {
-                "mobile":mobile_no,
-                "username":email,
-                "uid":adh
-            }
-        files={}
-        headers = {}
 
+        # Prepare API URL and payload
+        url = CONFIG["acs_api"]['url'] + '/retrieve_account'
+        payload = {
+            "mobile": mobile_no,
+            "username": email,
+            "uid": adh
+        }
+
+        # Prepare headers with HMAC authentication
         ts = str(int(time.time()))
         client_id = CONFIG["acs_api"]['clientid']
         client_secret = CONFIG["acs_api"]["client_secret"]
@@ -234,11 +240,17 @@ def usr_name():
             'ts': ts,
             'hmac': hmac
         }
-        response = requests.request("GET", url, headers=headers, data=payload, files=files)
-        if response.status_code != 200:
-            return response
 
+        # Make the API request
+        response = requests.post(url, headers=headers, data=payload)
+
+        # Check the API response
+        if response.status_code != 200:
+            return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
+
+        # Return the JSON response from the API
         return response.json()
 
     except Exception as e:
-        return {"status": "error", "response": str(e)}
+        # Catch and return any errors
+        return {"status": "error", "response": str(e)}, 400
