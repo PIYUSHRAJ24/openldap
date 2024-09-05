@@ -27,7 +27,7 @@ REDISLIB = RedisLib()
 accounts_eve = CONFIG["accounts_eve"]
 # Configuration and blueprint setup
 logs_queue = "org_logs_PROD"
-bp = Blueprint("user_status", __name__)
+bp = Blueprint("user_name", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 data_vault = CONFIG["data_vault"]

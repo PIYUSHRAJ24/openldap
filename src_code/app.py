@@ -65,6 +65,7 @@ from api.permission import bp as permission_bp
 from api.section import bp as section_bp
 from api.users import bp as users_bp
 from api.user_status import bp as user_status_bp
+from api.user_name import bp as user_name_bp
 
 
 # calling the APIs
@@ -89,6 +90,7 @@ app.register_blueprint(permission_bp, url_prefix='/permission')
 app.register_blueprint(section_bp, url_prefix='/section')
 app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(user_status_bp, url_prefix='/status')
+app.register_blueprint(user_name_bp, url_prefix='/user_name')
 
 
 @app.after_request
