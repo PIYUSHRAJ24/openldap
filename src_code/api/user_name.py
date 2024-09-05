@@ -200,9 +200,9 @@ def get_token(adh):
 @bp.route("/usr_name", methods=["POST"])
 def usr_name():
     try:
-        aadhar = request.form.get("aadhar")
-        mobile_no = request.form.get("mobile_no")
-        email = request.form.get("email")
+        aadhar = request.form.get("uid")
+        mobile_no = request.form.get("mobile")
+        email = request.form.get("username")
         if not aadhar and not mobile_no and not email:
             return {
                 "status": "error",
@@ -234,7 +234,7 @@ def usr_name():
             'ts': ts,
             'hmac': hmac
         }
-        response = requests.request("GET", url, headers=headers, data=payload, files=files)
+        response = requests.request("POST", url, headers=headers, data=payload, files=files)
         if response.status_code != 200:
             return response
 
