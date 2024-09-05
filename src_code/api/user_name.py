@@ -234,7 +234,7 @@ def usr_name():
             'ts': ts,
             'hmac': hmac
         }
-        response = requests.request("POST", url, headers=headers, data=payload, files=files)
+        response = requests.request("GET", url, headers=headers, data=payload, files=files)
         if response.status_code != 200:
             return response
 
