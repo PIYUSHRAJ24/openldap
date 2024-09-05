@@ -53,7 +53,7 @@ def getjwt(post_data = None):
         clientid = request.values.get('clientid')
         digilockerid = request.values.get('digilockerid')
         source = request.values.get('source') or "web"
-        res, status_code = CommonLib().validate_hmac_partners(clientid,ts,clientid,orgid,digilockerid,hmac)
+        _, status_code = CommonLib().validate_hmac_partners(clientid,ts,clientid,orgid,digilockerid,hmac)
         if status_code != 200:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_122')}, 401
         jwtlib = DriveJwt(request, CONFIG)

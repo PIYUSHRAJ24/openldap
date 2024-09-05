@@ -104,23 +104,24 @@ def check_user_status():
 
     try:
 
-        if org_id:
-            # Retrieve all users (active and inactive) based on org_id
-            query = {"org_id": org_id}
-
-            # If we want to get only active users
-            if is_active is not None:
-                query["is_active"] = is_active
-
-        elif org_id and digilockerid:
+        if org_id and digilockerid:
             # Retrieve the information for a specific user based on access_id and org_id
             strtohash = org_id + digilockerid
             access_id = hashlib.md5(strtohash.encode()).hexdigest()
-            query = {"access_id": access_id, "org_id": org_id}
+            query = {"access_id": access_id}
+            
+        elif org_id:
+            # Retrieve all users (active and inactive) based on org_id
+            query = {"org_id": org_id}
+
+         # If we want to get only active users
+        if is_active is not None:
+            query["is_active"] = is_active   
 
         res, status_code = MONGOLIB.org_eve(
             CONFIG["org_eve"]["collection_rules"], query, {}, limit=500
         )
+        
         response_status = res.get("status")
 
         if response_status == "success":
