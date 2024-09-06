@@ -204,6 +204,9 @@ def usr_name():
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
+        client_id = request.values.get('clientid')
+        hmac = request.values.get('hmac')
+        ts = request.values.get('ts')
 
         # If all fields are missing, return an error
         if not aadhar and not mobile_no and not email:
@@ -224,7 +227,10 @@ def usr_name():
         payload = {
             "mobile": mobile_no,
             "username": email,
-            "uid": adh
+            "uid": adh,
+            "clientid": client_id,
+            "hmac": hmac,
+            "ts": ts
         }
 
         # Prepare headers with HMAC authentication
