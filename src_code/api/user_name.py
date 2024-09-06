@@ -244,11 +244,12 @@ def usr_name():
         headers = {
             'client-id': client_id,
             'ts': ts,
-            'hmac': hmac
+            'hmac': hmac,
+            'Content-Type': 'application/json'
         }
 
         # Make the API request
-        response = requests.post(url, headers=headers, data=payload)
+        response = requests.post(url, headers=headers, data=json.dumps(payload))
 
         # Check the API response
         if response.status_code != 200:
