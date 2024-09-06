@@ -108,11 +108,11 @@ def retrieve_name():
         
         # Aadhaar validation and processing
         if aadhar:
-            adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
-            if adh and not re.match(r"^\d{12}$", adh):
+            # adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
+            if aadhar and not re.match(r"^\d{12}$", aadhar):
                 return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
-            token = get_token(adh)
+            token = get_token(aadhar)
             if not token or len(token) != 36:
                 return {
                     "status": "error",
