@@ -219,10 +219,10 @@ def usr_name():
                 return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
         # Prepare API URL and payload
-        url = CONFIG["acs_api"]['url'] + '/retrieve_account/1.0'
+        url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
-        client_id = CONFIG["acs_api"]['clientid']
-        client_secret = CONFIG["acs_api"]["client_secret"]
+        client_id = CONFIG["acsapi"]['clientid']
+        client_secret = CONFIG["acsapi"]["client_secret"]
         key = client_secret + client_id + ts
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
@@ -243,6 +243,7 @@ def usr_name():
         print(payload)
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
+        print(json.loads(response.text))
         if response.status_code != 200:
             return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
 
