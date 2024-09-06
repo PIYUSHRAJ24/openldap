@@ -60,6 +60,8 @@ def validate_user():
             REQUEST: {},
         }
     )
+    
+    # exit()
     # g.org_id = request.headers.get("orgid")
 
     if dict(request.args):
@@ -77,7 +79,6 @@ def validate_user():
             return
 
         res, status_code = VALIDATIONS.hmac_authentication(request)
-
         if status_code != 200:
             return res, status_code
 
@@ -204,9 +205,6 @@ def usr_name():
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
-        client_id = request.values.get('clientid')
-        hmac = request.values.get('hmac')
-        ts = request.values.get('ts')
 
         # If all fields are missing, return an error
         if not aadhar and not mobile_no and not email:
@@ -216,42 +214,35 @@ def usr_name():
             }, 400
 
         # Aadhaar decryption and validation
-        adh = None
         if aadhar:
-            adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
-            if adh and not re.match(r"^\d{12}$", adh):
+            if aadhar and not re.match(r"^\d{12}$", aadhar):
                 return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
         # Prepare API URL and payload
-        url = CONFIG["acs_api"]['url'] + '/retrieve_account'
-        payload = {
-            "mobile": mobile_no,
-            "username": email,
-            "uid": adh,
-            "clientid": client_id,
-            "hmac": hmac,
-            "ts": ts
-        }
-
-        # Prepare headers with HMAC authentication
+        url = CONFIG["acs_api"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
         client_id = CONFIG["acs_api"]['clientid']
         client_secret = CONFIG["acs_api"]["client_secret"]
         key = client_secret + client_id + ts
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
-
+        payload = {
+            "mobile": mobile_no,
+            "username": email,
+            "uid": aadhar,
+            "clientid": client_id,
+            "hmac": hmac,
+            "ts": ts
+        }
+        # Prepare headers with HMAC authentication
         headers = {
             'client-id': client_id,
             'ts': ts,
-            'hmac': hmac,
-            'Content-Type': 'application/json'
+            'hmac': hmac
         }
-
+        print(payload)
         # Make the API request
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
-
-        # Check the API response
+        response = requests.post(url, headers=headers, params=payload, timeout=20)
         if response.status_code != 200:
             return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
 
