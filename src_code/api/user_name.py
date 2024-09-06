@@ -221,7 +221,7 @@ def usr_name():
         # Prepare API URL and payload
         url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
-        client_id = CONFIG["acsapi"]['clientid']
+        client_id = CONFIG["acsapi"]['client_id']
         client_secret = CONFIG["acsapi"]["client_secret"]
         key = client_secret + client_id + ts
         hash_object = hashlib.sha256(key.encode())
@@ -240,7 +240,6 @@ def usr_name():
             'ts': ts,
             'hmac': hmac
         }
-        print(payload)
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
         print(json.loads(response.text))
