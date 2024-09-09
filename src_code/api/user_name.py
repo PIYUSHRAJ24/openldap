@@ -93,9 +93,9 @@ def healthcheck():
 @bp.route("/retrieve_name", methods=["POST"])
 def retrieve_name():
     try:
-        aadhar = request.form.get("aadhar")
-        mobile_no = request.form.get("mobile_no")
-        email = request.form.get("email")
+        aadhar = request.form.get("uid")
+        mobile_no = request.form.get("mobile")
+        email = request.form.get("username")
 
         if not aadhar and not mobile_no and not email:
             return {
@@ -146,7 +146,7 @@ def retrieve_name():
 
         # Email validation and processing
         if email:
-            if not re.match(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$", email):
+            if not re.match(r"^[A-Za-z]+(?:\s[A-Za-z]+)?$", email):
                 return {"status": "error", "response": "Invalid email"}, 400
 
             query = {"user_alias": email}
