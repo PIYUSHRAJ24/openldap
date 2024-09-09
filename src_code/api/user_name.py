@@ -146,8 +146,8 @@ def retrieve_name():
 
         # Email validation and processing
         if email:
-            if not re.match(r"^[A-Za-z]+(?:\s[A-Za-z]+)?$", email):
-                return {"status": "error", "response": "Invalid email"}, 400
+            if not re.match(r"^[a-zA-Z0-9 \.\-\_\@]*$", email):
+                return {"status": "error", "response": "Invalid username"}, 400
 
             query = {"user_alias": email}
             resp, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr'], query, {"digilockerid": 1}, limit=1)
