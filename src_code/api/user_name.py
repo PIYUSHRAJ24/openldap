@@ -61,8 +61,6 @@ def validate_user():
         }
     )
     
-    # exit()
-    # g.org_id = request.headers.get("orgid")
 
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
@@ -165,7 +163,6 @@ def retrieve_name():
         
         if digilockerids:
             digilockerid = digilockerids.pop()
-            name = CommonLib.get_profile_details(digilockerid).get('username', '')
 
         # Get the name from digilockerid
         if digilockerid:
