@@ -105,6 +105,7 @@ def retrieve_name():
         digilockerid_mobile = None
         digilockerid_email = None
         name = None
+        digilockerid = None
         
         # Aadhaar validation and processing
         if aadhar:
