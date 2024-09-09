@@ -103,7 +103,9 @@ def retrieve_name():
                 "response": "Please enter a valid mobile number or aadhar number or email",
             }, 400
         
-        digilockerid = None
+        digilockerid_aadhar = None
+        digilockerid_mobile = None
+        digilockerid_email = None
         name = None
         
         # Aadhaar validation and processing
@@ -131,7 +133,7 @@ def retrieve_name():
 
             resp, code = MONGOLIB.accounts_eve_v2('users', where, {'digilockerid': 1})
             if code == 200:
-                digilockerid = resp["data"][0].get('digilockerid')
+                digilockerid_aadhar = resp["data"][0].get('digilockerid')
 
         # Mobile number validation and processing
         if mobile_no:
@@ -142,7 +144,7 @@ def retrieve_name():
             resp, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr'], query, {"digilockerid": 1}, limit=1)
             if status_code == 200 and resp["status"] == "success":
                 user_info = resp["response"][0]
-                digilockerid = user_info.get("digilockerid")
+                digilockerid_mobile = user_info.get("digilockerid")
 
         # Email validation and processing
         if email:
@@ -153,7 +155,17 @@ def retrieve_name():
             resp, status_code = MONGOLIB.accounts_eve(accounts_eve['collection_usr'], query, {"digilockerid": 1}, limit=1)
             if status_code == 200 and resp["status"] == "success":
                 user_info = resp["response"][0]
-                digilockerid = user_info.get("digilockerid")
+                digilockerid_email = user_info.get("digilockerid")
+        digilockerids = set(filter(None, [digilockerid_aadhar, digilockerid_mobile, digilockerid_email]))
+        if len(digilockerids) > 1:
+            return {
+                "status": "error",
+                "response": "Mismatch between digilockerid for Aadhaar, mobile number, and username.",
+            }, 400
+        
+        if digilockerids:
+            digilockerid = digilockerids.pop()
+            name = CommonLib.get_profile_details(digilockerid).get('username', '')
 
         # Get the name from digilockerid
         if digilockerid:
