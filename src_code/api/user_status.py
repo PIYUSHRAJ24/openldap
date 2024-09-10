@@ -7,6 +7,7 @@ import time
 import os
 import re
 import json
+import pymongo
 from datetime import datetime, timezone
 from flask import request, Blueprint, g, jsonify
 from lib.constants import *
@@ -27,7 +28,6 @@ RABBITMQ = RabbitMQ()
 RABBITMQLOGS = RabbitMQLogs()
 REDISLIB = RedisLib()
 
-# Configuration and blueprint setup
 logs_queue = "org_logs_PROD"
 bp = Blueprint("user_status", __name__)
 logarray = {}
@@ -61,8 +61,7 @@ def validate_user():
             REQUEST: {},
         }
     )
-    # g.org_id = request.headers.get("orgid")
-
+    g.org_id = request.headers.get("orgid")
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -96,6 +95,7 @@ def check_user_status():
     
     form_data = request.form
     org_id = form_data.get("org_id")
+    # org_id = g.org_id
     digilockerid = form_data.get("digilockerid")
     is_active = form_data.get("is_active")
 
@@ -105,16 +105,13 @@ def check_user_status():
     try:
 
         if org_id and digilockerid:
-            # Retrieve the information for a specific user based on access_id and org_id
             strtohash = org_id + digilockerid
             access_id = hashlib.md5(strtohash.encode()).hexdigest()
             query = {"access_id": access_id}
             
         elif org_id:
-            # Retrieve all users (active and inactive) based on org_id
             query = {"org_id": org_id}
 
-         # If we want to get only active users
         if is_active is not None:
             query["is_active"] = is_active   
 
@@ -168,3 +165,106 @@ def check_user_status():
         logarray.update(log_data)
         RABBITMQLOGS.send_to_queue(logarray, "Logstash_Xchange", logs_queue)
         return {STATUS: ERROR, ERROR_DES: "Technical error", RESPONSE: str(e)}, 400
+    
+@bp.route("/org_list", methods=["GET"])
+def org_list():
+    try:
+       
+        page = int(request.args.get("page", 1)) 
+        org_id = request.form.get("org_id")
+        limit = 2
+        skip = (page - 1) * limit 
+        # print(f"Fetching page {page}, skip={skip}, limit={limit}")  
+        if org_id :
+            query = {'org_id':org_id}    
+        else :
+            query = {}
+            
+        projection = {}       
+        res, status_code = MongoLib.org_eve_v2(CONFIG["org_eve"]["collection_details"], query, projection,  sort=[("org_id", 1)], limit=limit, page=skip)
+
+        response_status = res.get("status")
+
+        if response_status == "success" and status_code == 200:
+            records = res.get("response", [])
+            total_records = res.get("total", len(records))  
+            if not records:
+                return {
+                    STATUS: SUCCESS,
+                    RESPONSE: "No matching records found",
+                }, 404
+
+            response_data = []
+
+            for record in records:
+                org_id = record.get("org_id")
+                response_data.append({
+                    'org_id': org_id,
+                    'org_type': record.get("org_type"),
+                    'name': record.get("name"),
+                    'pan': record.get("pan"),
+                    'd_incorporation': record.get("d_incorporation"),
+                    'created_on': record.get("created_on"),
+                    'email': record.get("email"),
+                    'userifo': userinfo(org_id),  
+                    'verification_status': {
+                        'is_authorization_letter': 'Y' if record.get("is_authorization_letter") else 'N',
+                        'is_pan': 'Y' if record.get("pan") else 'N',
+                        'is_cin': 'Y' if record.get("ccin") else 'N'
+                    }
+                })
+
+            total_pages = (total_records + limit - 1) 
+            log_data = {RESPONSE: response_data}
+            logarray.update(log_data)
+            RABBITMQLOGS.send_to_queue(
+                logarray, "Logstash_Xchange", logs_queue
+            )
+
+            return {
+                STATUS: SUCCESS,
+                RESPONSE: response_data,
+                "pagination": {
+                    "current_page": page,
+                    "page_size": limit,
+                    "total_pages": total_pages,
+                    "total_records": total_records
+                }
+            }, 200
+
+        else:
+            return {STATUS: ERROR, ERROR_DES: "Failed to fetch data"}, 500
+
+    except Exception as e:
+        log_data = {RESPONSE: str(e)}
+        logarray.update(log_data)
+        RABBITMQLOGS.send_to_queue(logarray, "Logstash_Xchange", logs_queue)
+        return {STATUS: ERROR, ERROR_DES: "Technical error", RESPONSE: str(e)}, 400
+
+
+def userinfo(org_id):
+    query = {"org_id": org_id} 
+    res, status_code = MONGOLIB.org_eve(
+        CONFIG["org_eve"]["collection_rules"], query,{}
+    )
+    response_status = res.get("status")
+    if status_code == 200 and response_status == "success":
+        users_data = res.get("response", [])
+        digilockerids = [item['digilockerid'] for item in users_data]
+        userData = []    
+        for digilockerid in digilockerids:
+            profileDetails = CommonLib.get_profile_details({'digilockerid': digilockerid})
+            userData.append({
+                "digilockerid": digilockerid,
+                "name": profileDetails.get('username', ''),
+                "email": profileDetails.get('email', ''),
+                "mobile": profileDetails.get('mobile', '')
+            })
+        return userData if userData else []
+    else:
+        log_data = {RESPONSE: str(res)}
+        logarray.update(log_data)
+        RABBITMQLOGS.send_to_queue(logarray, "Logstash_Xchange", logs_queue)
+        print(f"Error fetching user info: {res.get('error', 'Unknown error')}")
+        return []
+    

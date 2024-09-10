@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 import hashlib
 import json, bcrypt, re
 import time
+import pymongo
 from requests import get, post, delete, patch
 import requests
 from requests.auth import HTTPBasicAuth
@@ -16,7 +17,7 @@ ids = CONFIG["ids"]
 
 class MongoLib:
     def __init__(self):
-        self.rs = RedisLib()
+        self.rs = RedisLib() 
 
     def get_hash(self, key):
         return hashlib.md5(((str(key)).strip()).encode()).hexdigest()
@@ -28,7 +29,7 @@ class MongoLib:
             return "1|" + hashed.decode("utf-8")
         except Exception as e:
             pass
-
+    
     def devices_eve(self, locker_id, collection, query, sort={}, limit=10):
         try:
             redis_key = "devices_" + locker_id
@@ -306,7 +307,67 @@ class MongoLib:
                 ERROR_DES: Errors.error("ERR_MSG_111"),
                 RESPONSE: "Exception:MongoLib:org_eve: " + str(e),
             }, 500
+                    
+    # data fetch with pagging      
+    def org_eve_v2(collection_name, query, projection, sort=None, limit=10, page=1):
+        try:
+            limit = int(limit)
+            page = int(page)
 
+            if sort is None:
+                sort = [("_id", 1)]
+
+            eve_query = (
+                collection_name
+                + "?where="
+                + json.dumps(query)
+                + "&projection="
+                + json.dumps(projection)
+                + "&max_results="
+                + str(limit)
+                + "&page="
+                + str(page)
+                + "&sort="
+                + json.dumps(sort)
+            )
+
+            eve_url = org_eve["url"] + eve_query
+            get_eve_data = get(
+                eve_url, auth=HTTPBasicAuth(org_eve["username"], org_eve["password"])
+            )
+            eve_resp_data = json.loads(get_eve_data.content)
+            if eve_resp_data.get("_meta") and eve_resp_data["_meta"]["total"] > 0:
+
+                def pop(data):
+                    try:
+                        data.pop("_id", None)
+                        data.pop("_created", None)
+                        data.pop("_updated", None)
+                        data.pop("_links", None)
+                    except Exception:
+                        pass
+                    return data
+
+                userdata = list(map(pop, eve_resp_data["_items"]))
+                res = {
+                    STATUS: SUCCESS,
+                    RESPONSE: userdata,
+                    "total": eve_resp_data["_meta"]["total"],
+                }
+                return res, 200
+            else:
+                return {
+                    STATUS: SUCCESS,
+                    ERROR_DES: Errors.error("ERR_MSG_110"),
+                    RESPONSE: "No records found",
+                }, 400
+        except Exception as e:
+            return {
+                STATUS: ERROR,
+                ERROR_DES: str(e),
+                RESPONSE: "An error occurred",
+            }, 500
+                          
     def org_eve_post(self, collection, data):
         try:
             eve_url = org_eve["url"] + collection
