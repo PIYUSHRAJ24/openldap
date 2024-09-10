@@ -61,7 +61,6 @@ def validate_user():
             REQUEST: {},
         }
     )
-    g.org_id = request.headers.get("orgid")
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -95,7 +94,6 @@ def check_user_status():
     
     form_data = request.form
     org_id = form_data.get("org_id")
-    # org_id = g.org_id
     digilockerid = form_data.get("digilockerid")
     is_active = form_data.get("is_active")
 
@@ -172,7 +170,7 @@ def org_list():
        
         page = int(request.args.get("page", 1)) 
         org_id = request.form.get("org_id")
-        limit = 2
+        limit = 10
         skip = (page - 1) * limit 
         # print(f"Fetching page {page}, skip={skip}, limit={limit}")  
         if org_id :
