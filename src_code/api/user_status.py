@@ -170,7 +170,7 @@ def org_list():
        
         page = int(request.args.get("page", 1)) 
         org_id = request.form.get("org_id")
-        limit = 10
+        limit = 20
         skip = (page - 1) * limit 
         # print(f"Fetching page {page}, skip={skip}, limit={limit}")  
         if org_id :
