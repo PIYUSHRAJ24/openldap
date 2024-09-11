@@ -1107,7 +1107,7 @@ class Validations:
             
             # if dept_id[1] == 400:
             #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
-            # elif dept_id == g.org_id:
+            # elif dept_id[0] == g.org_id:
             #     dept_id1= g.org_id
             # elif not dept_id[0] or self.is_valid_dept(dept_id[0]) == None:
             #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
@@ -1636,7 +1636,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
-            query = {'ccin': cin}
+            query = {'cin': cin}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
@@ -1656,14 +1656,11 @@ class Validations:
             name_decrypted = CommonLib.aes_decryption_v2(cin_name, org_id[:16])
             cin = cin_decrypted if cin_decrypted is not None else cin_no
             name = name_decrypted if name_decrypted is not None else cin_name
-            print("cin",cin)
-            print("cin_name",name)
             if not cin or not self.is_valid_cin(cin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
-            query = {'ccin': cin}
-            print("Is it called HEREEE", query)
+            query = {'cin': cin}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 200 and len(res[RESPONSE]) > 0:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
