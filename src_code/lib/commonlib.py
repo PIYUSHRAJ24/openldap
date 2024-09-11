@@ -14,6 +14,7 @@ from lib.mongolib import MongoLib
 from assets.images import default_avatars
 from flask import render_template, request
 from thefuzz import fuzz
+from lib.cryptographer import Crypt			
 
 from lib.redislib import RedisLib
 rs = RedisLib()
@@ -902,3 +903,25 @@ class CommonLib:
         response = requests.post(end_point , data=post_data, headers=headers)
         
         return response.text    
+    
+    def validate_hmac_partners(self, clientid, ts, orgid, digilockerid, hmac):
+        if not clientid:
+            return {STATUS: ERROR, ERROR_DES: "Invalid clientid"}, 400
+        if not ts:
+            return {STATUS: ERROR, ERROR_DES: "Invalid ts"}, 400
+        if not hmac:
+            return {STATUS: ERROR, ERROR_DES: "Invalid hmac"}, 400
+        if not orgid:
+            return {STATUS: ERROR, ERROR_DES: "Invalid orgid"}, 400
+        if not digilockerid:
+            return {STATUS: ERROR, ERROR_DES: "Invalid digilockerid"}, 400
+        secret = self.get_secret(clientid)
+        if not secret:
+            return {STATUS: ERROR, ERROR_DES: "Client is not registered"}, 400
+        salt = secret+clientid+ts+orgid+digilockerid
+        generated_hmac = hashlib.sha3_256(salt.encode()).hexdigest()
+        if generated_hmac == hmac:
+            return generated_hmac, 200
+        else:
+            return False, 401
+        

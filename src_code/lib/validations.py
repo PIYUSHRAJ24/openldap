@@ -40,6 +40,13 @@ class Validations:
     def is_valid_did(self, id):
         pattern = r'^[a-zA-Z0-9\-]{36}$'
         return re.fullmatch(pattern, id)
+    
+    def is_valid_access_id(self, id):
+        try:
+            pattern = r'^[a-zA-Z0-9\-]{32}$'
+            return re.fullmatch(pattern, id)
+        except Exception:
+            return False
 
     def is_valid_date(self, date):
         if date is not None:
@@ -600,7 +607,36 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authentication:' + str(e)}, 400
 
+    def hmac_authentication_sha3(self, request):
+        ''' Validate hmac details received over http request '''
+        
+        client_id = CommonLib.filter_input(request.headers.get("clientid"))
+        ts = CommonLib.filter_input(request.headers.get("ts"))
+        hmac = CommonLib.filter_input(request.headers.get("hmac"))
+        try:
+            if client_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "client_id", RESPONSE: client_id[0]}, 400
+            elif not client_id[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid client_id"}, 400
+            if ts[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "ts", RESPONSE: ts[0]}, 400
+            elif not ts[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid ts"}, 400
+            if hmac[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "hmac", RESPONSE: hmac[0]}, 400
+            elif not hmac[0]:
+                return {STATUS: ERROR, ERROR_DES: "Invalid hmac"}, 400
+            # creating hmac on server side stored secret
+            plain_text_key_created = CONFIG['credentials'].get(client_id[0], '') + client_id[0] + ts[0]
+            key_created = hashlib.sha3_256(plain_text_key_created.encode()).hexdigest()
+            if hmac[0] == key_created:
+                return {STATUS: SUCCESS, MESSAGE: 'Authenticated user found!'}, 200
+            else:
+                return{STATUS: ERROR, ERROR_DES: 'Unauthorised Access'}, 401
 
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::authenticationsha3:' + str(e)}, 400
+        
     def validate_org_details(self, request):
         org_alias = CommonLib.filter_input(request.json.get('org_alias'))
         org_type = CommonLib.filter_input(request.json.get('org_type'))
@@ -1235,24 +1271,23 @@ class Validations:
 
     def revoke_access(self, request):
         ''' Validate org access rules received over http request '''
-        digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
         access_id = CommonLib.filter_input(request.values.get('access_id') or request.args.get('access_id'))
         # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
-            if digilockerid[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "digilockerid", RESPONSE: digilockerid[0]}, 400
-            elif digilockerid[0] != None and self.is_valid_did(digilockerid[0]) == None:
-                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
-            if access_id[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
-            elif access_id[0] != None and not access_id[0]:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
-            if not (digilockerid[0] or access_id[0]):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_126")}, 400
+            access_id_1 = CommonLib.aes_decryption_v2(access_id[0], g.org_id[:16])
+            
+            if access_id_1 is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_210")}, 400
+            elif access_id_1 and not self.is_valid_access_id(access_id_1):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
+            
+            for a in g.org_access_rules:
+                if a.get('access_id') == access_id_1 and a.get('is_active') == "N":
+                   return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_212")}, 400 
+            
             post_data = {
-                'digilockerid': digilockerid[0],
-                'access_id': access_id[0],
+                'access_id': access_id_1,
                 # 'updated_on': updated_on,
                 'is_active': "N"
             }
@@ -1514,9 +1549,21 @@ class Validations:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:send_otp_v1:: ' + str(e)}, 400 
 
     
-    def verify_otp_v1(self, request):
-        mobile =  CommonLib.filter_input(request.values.get('mobile'))
-        otp =  CommonLib.filter_input(request.values.get('otp'))
+    def verify_otp_v1(self, request,org_id):
+        mobile_decrypted = CommonLib.aes_decryption_v2(request.values.get('mobile'), org_id[:16])
+        if mobile_decrypted is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile decryption failed"}, 400
+        mobile = CommonLib.filter_input(mobile_decrypted)
+        if mobile is None or mobile[0] is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile filtering failed"}, 400
+          
+        otp_decrypted = CommonLib.aes_decryption_v2(request.values.get('otp'), org_id[:16])
+        if otp_decrypted is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp decryption failed"}, 400
+        otp = CommonLib.filter_input(otp_decrypted)
+        if otp is None or otp[0] is None:
+            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_130") % "otp filtering failed"}, 400
+        
         txn =  CommonLib.filter_input(request.values.get('txn'))
         try: 
             if mobile[1] == 400:
@@ -1525,11 +1572,11 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
             if otp[0] is None or len(otp[0]) != 6:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_130')}, 400
-            if DEBUG_MODE and otp[0] != '123456':
-                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_131')}, 400
+            # if DEBUG_MODE and otp[0] != '123456':
+            #     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_131')}, 400
             if txn[0] is None or len(txn[0]) != 36:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_134')}, 400
-           
+            
             clientid = os.getenv('org_clientid')
             client_seret = os.getenv('org_client_secret')
             ts = str(int(time.time()))
@@ -1884,8 +1931,8 @@ class Validations:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:get_udcer:: ' + str(e)}, 400
       
 
-    def is_valid_udcer(self, request):
-        res, status_code = self.get_udcer(request)
+    def is_valid_udcer(self, request,org_id):
+        res, status_code = self.get_udcer(request,org_id)
         if status_code != 200:
             return res, status_code
 

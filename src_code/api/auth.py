@@ -44,11 +44,18 @@ except Exception as s:
 
 @bp.route('/getjwt', methods=['POST'])
 def getjwt(post_data = None):
-    try:
-        did = request.values.get('did')
+    try:        
+        #hmac = secret+clientid+ts+clientid+orgid+digilockerid
+        did = request.values.get('did') or ""
         orgid = request.values.get('orgid')
+        ts = request.values.get('ts')
+        hmac = request.values.get('hmac')
+        clientid = request.values.get('clientid')
         digilockerid = request.values.get('digilockerid')
-        source = request.values.get('source')
+        source = request.values.get('source') or "web"
+        _, status_code = CommonLib().validate_hmac_partners(clientid,ts,clientid,orgid,digilockerid,hmac)
+        if status_code != 200:
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_122')}, 401
         jwtlib = DriveJwt(request, CONFIG)
         jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)
         return jwtres, status_code

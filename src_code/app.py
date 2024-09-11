@@ -54,10 +54,19 @@ from api.otpservices import bp as otpservices_bp
 from api.pin import bp as pin_bp
 from api.signin import bp as signin_bp
 from api.pan import bp as pan_bp
+from api.hmac_pan import bp as hmac_pan_bp
 from api.gstin import bp as gstin_bp
 from api.cin import bp as cin_bp
 from api.hmac_cin import bp as hmac_cin_bp
 from api.udyam import bp as udyam_bp
+from api.hmac_udyam import bp as hmac_udyam_bp
+from api.department import bp as department_bp
+from api.permission import bp as permission_bp
+from api.section import bp as section_bp
+from api.users import bp as users_bp
+from api.user_status import bp as user_status_bp
+from api.user_name import bp as user_name_bp
+
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
@@ -72,8 +81,16 @@ app.register_blueprint(pan_bp, url_prefix='/pan')
 app.register_blueprint(gstin_bp, url_prefix='/gstin')
 app.register_blueprint(cin_bp, url_prefix='/cin')
 app.register_blueprint(hmac_cin_bp, url_prefix='/hmac_cin')
+app.register_blueprint(hmac_pan_bp, url_prefix='/hmac_pan')
+app.register_blueprint(hmac_udyam_bp, url_prefix='/hmac_udyam')
 app.register_blueprint(udyam_bp, url_prefix='/udyam')
 app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(department_bp, url_prefix='/department')
+app.register_blueprint(permission_bp, url_prefix='/permission')
+app.register_blueprint(section_bp, url_prefix='/section')
+app.register_blueprint(users_bp, url_prefix='/users')
+app.register_blueprint(user_status_bp, url_prefix='/status')
+app.register_blueprint(user_name_bp, url_prefix='/user_name')
 
 
 @app.after_request
