@@ -90,7 +90,7 @@ app.register_blueprint(permission_bp, url_prefix='/permission')
 app.register_blueprint(section_bp, url_prefix='/section')
 app.register_blueprint(users_bp, url_prefix='/users')
 app.register_blueprint(user_status_bp, url_prefix='/status')
-app.register_blueprint(user_name_bp, url_prefix='/user_name')
+app.register_blueprint(user_name_bp, url_prefix='/search/v1')
 
 
 @app.after_request

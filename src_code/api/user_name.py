@@ -27,7 +27,7 @@ REDISLIB = RedisLib()
 accounts_eve = CONFIG["accounts_eve"]
 # Configuration and blueprint setup
 logs_queue = "org_logs_PROD"
-bp = Blueprint("user_name", __name__)
+bp = Blueprint("search", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 data_vault = CONFIG["data_vault"]
@@ -209,25 +209,13 @@ def get_token(adh):
             return Errors.error('err_1201')+"[#1702]"
         return ""
 
-@bp.route("/usr_name", methods=["POST"])
-def usr_name():
+@bp.route("/user", methods=["POST"])
+def user():
     try:
         # Get the user data from the form or JSON payload
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
-
-        # If all fields are missing, return an error
-        if not aadhar and not mobile_no and not email:
-            return {
-                "status": "error",
-                "response": "Please enter a valid mobile number, Aadhaar number, or email",
-            }, 400
-
-        # Aadhaar decryption and validation
-        if aadhar:
-            if aadhar and not re.match(r"^\d{12}$", aadhar):
-                return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
         # Prepare API URL and payload
         url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
@@ -253,9 +241,8 @@ def usr_name():
         }
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
-        print(json.loads(response.text))
         if response.status_code != 200:
-            return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
+            return json.loads(response.text), response.status_code
 
         # Return the JSON response from the API
         return response.json()
