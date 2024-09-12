@@ -243,7 +243,7 @@ def user():
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
         if response.status_code != 200:
-            return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
+            return json.loads(response.text), response.status_code
 
         # Return the JSON response from the API
         return response.json()
