@@ -236,7 +236,7 @@ def user():
         # Prepare headers with HMAC authentication
         headers = {
             'client-id': client_id,
-            'ts': t,
+            'ts': ts,
             'hmac': hmac
         }
         # Make the API request
