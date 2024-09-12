@@ -218,18 +218,6 @@ def user():
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
 
-        # If all fields are missing, return an error
-        # if aadhar or mobile_no or email:
-        #     return {
-        #         "status": "error",
-        #         "response": "Please enter a valid mobile number or Aadhaar number, or email",
-        #     }, 400
-
-        # Aadhaar decryption and validation
-        # if aadhar is not None:
-        #     if aadhar and not re.match(r"^\d{12}$", aadhar):
-        #         return {"status": "error", "response": "Invalid Aadhaar number"}, 400
-
         # Prepare API URL and payload
         url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
@@ -254,7 +242,6 @@ def user():
         }
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
-        print(json.loads(response.text))
         if response.status_code != 200:
             return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
 
