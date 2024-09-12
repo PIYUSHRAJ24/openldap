@@ -59,7 +59,8 @@ def validate_user():
         g.org_id = jwtlib.org_id
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1500]"}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -138,9 +139,10 @@ def get_multiuser_clients():
             filtered_data = filter_data(usr)
 
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {
             "status": "error",
-            "response": f"An error occurred: {str(e)}",
+            "response": Errors.error('err_1201')+"[#1501]",
         }, 500
 
     return filtered_data, 200
@@ -218,7 +220,8 @@ def get_org_details_based_on_lockerid(lockerid=None):
         return response.json()
 
     except Exception as e:
-        return {"status": "error", "response": str(e)}
+        VALIDATIONS.log_exception(e)
+        return {"status": "error", "response": Errors.error('err_1201')+"[#1502]"}
 
 
 def get_users(str_value, user_type):
@@ -293,7 +296,8 @@ def get_users(str_value, user_type):
             return {"status": "error", "response": "No user data found"}, 404
 
     except Exception as e:
-        return {"status": "error", "response": str(e)}, 500
+        VALIDATIONS.log_exception(e)
+        return {"status": "error", "response": Errors.error('err_1201')+"[#1503]"}, 500
 
 
 def get_profilename(objList):

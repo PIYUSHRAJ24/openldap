@@ -76,7 +76,8 @@ def validate_user():
         if status_code != 200:
             return res, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12100]"}, 401
     
 
 @bp.route("/", methods=["GET", "POST"])
@@ -109,7 +110,8 @@ def update_cin():
         RABBITMQ.send_to_queue({"data": post_data}, "Organization_Xchange", "org_update_details_")
         return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
     except Exception as e:
-        return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
+        VALIDATIONS.log_exception(e)
+        return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#12101]"}), 400
 
 
 def ids_cin_verify(cin_no, cin_name):
@@ -155,4 +157,5 @@ def ids_cin_verify(cin_no, cin_name):
     except Exception as e:
         logarray.update({"error": str(e)})
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-        return {"status": "error", 'response': str(e)}, 500
+        VALIDATIONS.log_exception(e)
+        return {"status": "error", 'response': Errors.error('err_1201')+"[#12102]"}, 500
