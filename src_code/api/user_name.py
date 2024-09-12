@@ -27,7 +27,7 @@ REDISLIB = RedisLib()
 accounts_eve = CONFIG["accounts_eve"]
 # Configuration and blueprint setup
 logs_queue = "org_logs_PROD"
-bp = Blueprint("search/v1", __name__)
+bp = Blueprint("search", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 data_vault = CONFIG["data_vault"]
@@ -219,16 +219,16 @@ def user():
         email = request.form.get("username")
 
         # If all fields are missing, return an error
-        if aadhar or mobile_no or email:
-            return {
-                "status": "error",
-                "response": "Please enter a valid mobile number or Aadhaar number, or email",
-            }, 400
+        # if aadhar or mobile_no or email:
+        #     return {
+        #         "status": "error",
+        #         "response": "Please enter a valid mobile number or Aadhaar number, or email",
+        #     }, 400
 
         # Aadhaar decryption and validation
-        if aadhar is not None:
-            if aadhar and not re.match(r"^\d{12}$", aadhar):
-                return {"status": "error", "response": "Invalid Aadhaar number"}, 400
+        # if aadhar is not None:
+        #     if aadhar and not re.match(r"^\d{12}$", aadhar):
+        #         return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
         # Prepare API URL and payload
         url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
