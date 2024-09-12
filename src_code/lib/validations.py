@@ -2099,6 +2099,7 @@ class Validations:
 
         # Format the log data
         log_data = {
+            'error_type': "Exception",
             'error': str(e),
             'traceback': traceback.format_exc(),
             'function': function_name,
