@@ -1,5 +1,7 @@
+import inspect
 import re
 import ast
+import traceback
 import uuid
 import json
 import time
@@ -16,6 +18,8 @@ from lib.redislib import RedisLib
 from lib.mongolib import MongoLib
 from lib.commonlib import CommonLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
+import logging
+from pythonjsonlogger import jsonlogger
 
 
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
@@ -23,6 +27,14 @@ logs_queue = 'org_logs_PROD'
 logarray = {}
 REDISLIB = RedisLib()
 MONGOLIB = MongoLib()
+current_date = datetime.now().strftime("%Y-%m-%d")
+log_file_path = f"ORG-AUTH-logs-{current_date}.log"
+logHandler = logging.FileHandler(log_file_path)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
 
 class Validations:
     def __init__(self):
@@ -2076,4 +2088,27 @@ class Validations:
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
+        
+    @staticmethod    
+    def log_exception(e):
+    # Get the current stack and frame
+        frame = inspect.currentframe()
+        stack_trace = inspect.stack()[1]
+        
+        # Capture function name, file name, and line number
+        function_name = stack_trace.function
+        filename = stack_trace.filename
+        line_number = stack_trace.lineno
+
+        # Format the log data
+        log_data = {
+            'error': str(e),
+            'traceback': traceback.format_exc(),
+            'function': function_name,
+            'filename': filename,
+            'line_number': line_number,
+            'time': datetime.utcnow().isoformat()
+        }
+        # Log the error
+        logger.error(log_data)
             
