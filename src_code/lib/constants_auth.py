@@ -299,6 +299,7 @@ class Errors:
             'err_118' : 'Some technical error occured, Please try again. [#118]',
             'err_119' : 'Oops,something went wrong.Please try again.',
             'err_1200' : 'Your OTP has expired. Please click Resend OTP link below to generate a new OTP and try again.',
+            'err_1201' : 'An unexpected issue occurred. Please try again later.',
             
         }
         return msgs.get(code, '')

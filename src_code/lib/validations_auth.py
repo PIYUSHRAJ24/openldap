@@ -1,8 +1,11 @@
 from datetime import datetime
+import inspect
 import json
+import logging
 import re
 import hashlib
 import time
+import traceback
 import uuid
 from lib.commonlib_auth import CommonLib
 from lib.constants_auth import *
@@ -12,6 +15,7 @@ from lib.orglib import OrgLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 from flask import g
 import ast
+from pythonjsonlogger import jsonlogger
 
 
 logs_queue = 'org_logs_PROD'
@@ -21,6 +25,14 @@ RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
 ORGLIB = OrgLib()
 MONGOLIB = MongoLib()
 REDISLIB = RedisLib()
+current_date = datetime.now().strftime("%Y-%m-%d")
+log_file_path = f"ORG-AUTH-logs-{current_date}.log"
+logHandler = logging.FileHandler(log_file_path)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
 
 class Validations:
     def __init__(self):
@@ -2392,7 +2404,31 @@ class Validations:
         for entry in data:
             if entry.get('dept_id') == dept_id and entry.get('sec_id') == sec_id:
                 count += 1
-        return count    
+        return count
+    
+    @staticmethod    
+    def log_exception(e):
+    # Get the current stack and frame
+        frame = inspect.currentframe()
+        stack_trace = inspect.stack()[1]
+        
+        # Capture function name, file name, and line number
+        function_name = stack_trace.function
+        filename = stack_trace.filename
+        line_number = stack_trace.lineno
+
+        # Format the log data
+        log_data = {
+            'error_type': "Exception",
+            'error': str(e),
+            'traceback': traceback.format_exc(),
+            'function': function_name,
+            'filename': filename,
+            'line_number': line_number,
+            'time': datetime.utcnow().isoformat()
+        }
+        # Log the error
+        logger.error(log_data)
                     
                     
 

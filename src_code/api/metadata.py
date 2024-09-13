@@ -89,6 +89,7 @@ def validate():
         res = {STATUS: ERROR, ERROR_DES: "Technical Issue.(#401)"+str(e), "step":"before_req"}
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'metadata')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, 401
 
 
@@ -165,6 +166,7 @@ def update():
         res.pop('step')
         return res, code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {"status": "error", "message": "Technical Issue (#T-400)"}, 400
 
 
@@ -176,4 +178,5 @@ def get_file(path, file_name, ops=None):
         else:
             return {"status": "success","ContentType":ContentType,"Body":Body}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to locate file.(#400)"}

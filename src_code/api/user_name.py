@@ -226,18 +226,16 @@ def user():
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
         payload = {
-            "mobile": mobile_no,
-            "username": email,
-            "uid": aadhar,
+            "mobile": mobile_no or '',
+            "username": email or '',
+            "uid": aadhar or '',
             "clientid": client_id,
             "hmac": hmac,
             "ts": ts
         }
         # Prepare headers with HMAC authentication
         headers = {
-            'client-id': client_id,
-            'ts': ts,
-            'hmac': hmac
+            'Content-Type': "application/x-www-form-urlencoded"
         }
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)

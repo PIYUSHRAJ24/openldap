@@ -9,8 +9,12 @@ This API is for resize image
 import base64
 from flask import request 
 from PIL import Image
+from lib.constants import *
+from lib.validations import Validations
 from flask import Blueprint, request
 import time
+
+VALIDATIONS = Validations()
 bp = Blueprint('image', __name__)
 import datetime
 
@@ -46,5 +50,6 @@ def img_resize():
         
         return {"status":"success", "msg":"file resized","base64":converted_string.decode()}
     except Exception as e:
-        return {"status":"error", "msg":"something went wrong", "actual_err":str(e)}
+        VALIDATIONS.log_exception(e)
+        return {"status":"error", "msg":"something went wrong", "actual_err": Errors.error('err_1201')+"[#12400]"}
 

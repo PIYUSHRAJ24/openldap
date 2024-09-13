@@ -38,7 +38,8 @@ def validate_user():
         else:
             return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12600]"}, 401
 
 
 @bp.route('/v1', methods=['POST'])
@@ -67,7 +68,8 @@ def v1():
         else:
             return {STATUS: ERROR, "match": match}, 200
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "v1: " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: "v1: " + Errors.error('err_1201')+"[#12601]"}, 401
 
 @bp.route('/v2', methods=['POST'])
 def v2():
@@ -81,7 +83,8 @@ def v2():
         res = process.extract(name, [original_name])
         return {STATUS: SUCCESS, "match": res}, 200
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "v2: " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: "v2: " + Errors.error('err_1201')+"[#12602]"}, 401
 
 def name_match_v3(name, original_name):
     try:
@@ -111,4 +114,5 @@ def name_match_v3(name, original_name):
             return {STATUS: ERROR, "match": match}
 
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "v2: " + str(e)}
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: "v2: " + Errors.error('err_1201')+"[#12603]"}

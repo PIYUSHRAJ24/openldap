@@ -76,6 +76,7 @@ def validate():
         else:
             return jwtres, status_code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Technical Issue.(#401)"}, 400
 
 def checklock(file_path,file_name):
@@ -147,6 +148,7 @@ def lock():
                 os.remove(path_from_local)
         return {STATUS:SUCCESS,"response":res}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "lock exception(#L-400)"}, 400
 
 
@@ -167,6 +169,7 @@ def file_lock_core(temp_folder, file_name_hash, user_password):
         pdf_in_file.close()
         return {STATUS:SUCCESS}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "lock exception: " + str(e)}, 400
 
 def updatemeta(path, file_name, metadata):
@@ -181,6 +184,7 @@ def updatemeta(path, file_name, metadata):
         CONNECTORS3.file_upload_obj(path, file_name+'.json', json.dumps(decoded))
         return {"status": "success","Description":'updated'}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to locate file.(#M-404)"}, 400
 
 def get_file(path, file_name):
@@ -191,6 +195,7 @@ def get_file(path, file_name):
         else:
             return {"status": "success","ContentType":ContentType,"Body":Body}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "get_image: " + str(e)}, 400
 
 def file_upload(path_from_local, path_to_s3, file_name_upload):
@@ -205,4 +210,5 @@ def file_upload(path_from_local, path_to_s3, file_name_upload):
         rmq.log_stash_logeer(logarray, 'org_drive_logs', 'filelock')
         return upload_res,status_code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to upload file.(#400)", "actual_error":str(e)}, 400
