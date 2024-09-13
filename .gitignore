@@ -20,3 +20,4 @@ desktop.ini
 .pydevproject
 src_code/opt/enc_temp
 test.py
+*.log
