@@ -240,7 +240,10 @@ def user():
         # Make the API request
         response = requests.post(url, headers=headers, data=payload, timeout=20)
         if response.status_code != 200:
-            return json.loads(response.text), response.status_code
+            a = json.loads(response.text)
+            a['payload'] =payload
+            a['url']=url
+            return a, response.status_code 
 
         # Return the JSON response from the API
         return response.json()
