@@ -199,7 +199,6 @@ def user():
             "hmac": hmac,
             "ts": ts
         }
-        print(payload)
         # Prepare headers with HMAC authentication
         headers = {
             'Content-Type': "application/x-www-form-urlencoded"
