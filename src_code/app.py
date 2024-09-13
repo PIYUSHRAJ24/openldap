@@ -5,6 +5,7 @@ import dotenv
 import logging
 from pythonjsonlogger import jsonlogger
 import traceback
+import sys
 dotenv.load_dotenv()
 from flask import Flask
 from flask_cors import CORS
@@ -18,6 +19,21 @@ current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
+
+def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
+    error_log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'CRITICAL',
+        'event': 'uncaught_exception',
+        'error_type': exc_type.__name__,
+        'error': str(exc_value),
+        'traceback': ''.join(traceback.format_tb(exc_traceback)),
+        'transaction_id': getattr(g, 'transaction_id', 'N/A')
+    }
+    logger.critical(json.dumps(error_log_data))
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+
+sys.excepthook = log_uncaught_exceptions
 logHandler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(logHandler)
@@ -26,20 +42,44 @@ logger.setLevel(logging.INFO)
 @app.route('/healthcheck', methods=['GET'])
 @app.route('/', methods=['GET'])
 def healthcheck():
+    log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'INFO',
+        'event': 'healthcheck',
+        'status': 'success',
+        'transaction_id': getattr(g, 'transaction_id', 'N/A')
+    }
+    logger.info(json.dumps(log_data))
     return {"status": "success"}, 200
 
 @app.before_request
 def before_request():
     ''' before request'''
-    g.after_request_logged = False
-    request_data = {
-        'time_start': datetime.utcnow().isoformat(),
-        'method': request.method,
-        'url': request.url,
-        'headers': dict(request.headers),
-        'body': request.get_data(as_text=True)
-    }
-    request.logger_data = request_data
+    try:
+        g.start_time = time.time()
+        g.after_request_logged = False
+        g.transaction_id = request.headers.get('X-REQUEST-ID', str(uuid.uuid4()))
+        log_data = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'level': 'INFO',
+            'event': 'request_started',
+            'method': request.method,
+            'url': request.url,
+            'headers': dict(request.headers),
+            'body': request.get_data(as_text=True),
+            'transaction_id': g.transaction_id
+        }
+        logger.info(json.dumps(log_data))
+    except Exception as e:
+        error_log_data = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'level': 'ERROR',
+            'event': 'before_request_error',
+            'error': str(e),
+            'traceback': traceback.format_exc(),
+            'transaction_id': getattr(g, 'transaction_id', 'N/A')
+        }
+        logger.error(json.dumps(error_log_data))
 
 from api.filelock import bp as filelock_bp
 # importing APIs
@@ -96,13 +136,47 @@ app.register_blueprint(user_name_bp, url_prefix='/search/v1')
 @app.after_request
 def after_request(response):
     try:
-        if "healthcheck" in request.url:
+        if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
             return response
-        if getattr(g, 'after_request_logged', False):
-            return response
-        if g.after_request_logged:
-            return response
+        
+        g.after_request_logged = True
         response.headers['Content-Security-Policy'] = "default-src 'self'"
+        response.headers['X-REQUEST-ID'] = getattr(g, 'transaction_id', str(uuid.uuid4()))
+        
+        duration = time.time() - getattr(g, 'start_time', time.time())
+        log_data = {
+            'timestamp': datetime.utcnow().isoformat(),
+            'level': 'INFO',
+            'event': 'request_completed',
+            'method': request.method,
+            'url': request.url,
+            'status_code': response.status_code,
+            'duration': duration,
+            'headers': dict(response.headers),
+            'transaction_id': getattr(g, 'transaction_id', 'N/A')
+        }
+        logger.info(json.dumps(log_data))
+        
+        # Log successful responses
+        if 200 <= response.status_code < 300:
+            success_log_data = {
+                'timestamp': datetime.utcnow().isoformat(),
+                'level': 'INFO',
+                'event': 'successful_response',
+                'method': request.method,
+                'url': request.url,
+                'status_code': response.status_code,
+                'transaction_id': getattr(g, 'transaction_id', 'N/A')
+            }
+            logger.info(json.dumps(success_log_data))
+        
+        # Original logging logic
+        response_data = {
+            'status_code': response.status_code,
+            'headers': dict(response.headers),
+            'body': response.get_data(as_text=True)
+        }
+        logger.info(f"Outgoing response: {json.dumps(response_data)}")
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
@@ -135,22 +209,88 @@ def after_request(response):
 def handle_exception(e):
     tb = traceback.format_exc()
     log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'ERROR',
+        'event': 'unhandled_exception',
         'error': str(e),
+        'error_type': type(e).__name__,
         'traceback': tb,
-        'time': datetime.utcnow().isoformat(),
         'request': {
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
             'body': request.get_data(as_text=True)
-        }
+        },
+        'user': getattr(g, 'user', None),
+        'endpoint': request.endpoint,
+        'args': request.args.to_dict(),
+        'form': request.form.to_dict(),
+        'json': request.json if request.is_json else None,
+        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
+        'ip_address': request.remote_addr
     }
-    logger.error(log_data)
+    
+    # Log to file
+    logger.error(json.dumps(log_data))
 
     # Return a generic error response
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
     response.status_code = 500
     return response
+
+def log_auth_event(event_type, user_id, success, error=None):
+    log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'INFO' if success else 'ERROR',
+        'event': f'auth_{event_type}',
+        'user_id': user_id,
+        'success': success,
+        'error': error,
+        'ip_address': request.remote_addr,
+        'user_agent': request.user_agent.string,
+        'transaction_id': getattr(g, 'transaction_id', 'N/A')
+    }
+    if success:
+        logger.info(json.dumps(log_data))
+    else:
+        logger.error(json.dumps(log_data))
+
+def log_db_operation(operation, table, success, error=None, additional_info=None):
+    log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'INFO' if success else 'ERROR',
+        'event': 'db_operation',
+        'operation': operation,
+        'table': table,
+        'success': success,
+        'error': error,
+        'additional_info': additional_info,
+        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
+        'user_id': getattr(g, 'user_id', 'N/A')
+    }
+    if success:
+        logger.info(json.dumps(log_data))
+    else:
+        logger.error(json.dumps(log_data))
+
+def log_external_service_call(service, operation, success, error=None, response_time=None, status_code=None):
+    log_data = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'level': 'INFO' if success else 'ERROR',
+        'event': 'external_service_call',
+        'service': service,
+        'operation': operation,
+        'success': success,
+        'error': error,
+        'response_time': response_time,
+        'status_code': status_code,
+        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
+        'user_id': getattr(g, 'user_id', 'N/A')
+    }
+    if success:
+        logger.info(json.dumps(log_data))
+    else:
+        logger.error(json.dumps(log_data))
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
 app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug=False)
