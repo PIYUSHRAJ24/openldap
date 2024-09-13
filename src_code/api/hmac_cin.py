@@ -139,7 +139,7 @@ def ids_cin_verify(cin_no, cin_name):
             'orgid': g.org_id,
             'Content-Type': 'application/json'
         }
-        curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=5)
+        curl_result = requests.post(curlurl, headers=headers, data=fields, timeout=60)
         response = curl_result.json()
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
         logarray.update(log)
