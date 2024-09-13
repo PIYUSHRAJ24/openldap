@@ -72,7 +72,7 @@ def validate_user():
         bypass_urls = ('healthcheck')
         if request.path.split('/')[1] in bypass_urls:
             return
-        res, status_code = VALIDATIONS.hmac_authentication_sha3(request)
+        res, status_code = VALIDATIONS.hmac_authentication(request)
         if status_code != 200:
             return res, status_code
     except Exception as e:
