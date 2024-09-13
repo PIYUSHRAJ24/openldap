@@ -48,40 +48,6 @@ def validate_user():
     }
     request.logger_data = request_data
 
-    logarray.update(
-        {
-            ENDPOINT: request.path,
-            HEADER: {
-                "user-agent": request.headers.get("User-Agent"),
-                "clientid": request.headers.get("clientid"),
-                "ts": request.headers.get("ts"),
-                "hmac": request.headers.get("hmac"),
-            },
-            REQUEST: {},
-        }
-    )
-    if dict(request.args):
-        logarray[REQUEST].update(dict(request.args))
-    if dict(request.values):
-        logarray[REQUEST].update(dict(request.values))
-    if request.headers.get("Content-Type") == "application/json":
-        logarray[REQUEST].update(dict(request.json))  # type: ignore
-
-    try:
-        if request.method == "OPTIONS":
-            return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = "healthcheck"
-        if request.path.split("/")[1] in bypass_urls:
-            return
-
-        res, status_code = VALIDATIONS.hmac_authentication(request)
-        if status_code != 200:
-            return res, status_code
-
-    except Exception as e:
-        VALIDATIONS.log_exception(e)
-        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1700]"}, 401
-
 
 @bp.route("/", methods=["GET", "POST"])
 def healthcheck():
@@ -238,9 +204,9 @@ def user():
             'Content-Type': "application/x-www-form-urlencoded"
         }
         # Make the API request
-        response = requests.post(url, headers=headers, params=payload, timeout=20)
+        response = requests.post(url, headers=headers, data=payload, timeout=20)
         if response.status_code != 200:
-            return json.loads(response.text), response.status_code
+            return json.loads(response.text), response.status_code 
 
         # Return the JSON response from the API
         return response.json()
