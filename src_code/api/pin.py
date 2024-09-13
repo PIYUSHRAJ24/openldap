@@ -6,6 +6,7 @@ from lib.mongolib import MongoLib
 from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
 from api.org_activity import activity_insert
+from lib.validations import Validations
 from lib.commonlib import CommonLib
 from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
@@ -15,6 +16,7 @@ MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
 REDISLIB = RedisLib()
+VALIDATIONS = Validations()
 
 logs_queue = "org_auth_update_"
 bp = Blueprint("pin", __name__)
@@ -120,7 +122,8 @@ def validate():
 
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("err_1201")+"[#1400]"}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -169,6 +172,7 @@ def set_pin():
     try:
         res, status_code = MONGOLIB.org_eve_post("org_auth", data)
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         if "duplicate key error" in str(e).lower():
             return {
                 "status": "error",
@@ -249,6 +253,7 @@ def get_pin_from_response(response):
                 if isinstance(pin_entry, dict) and "pin" in pin_entry:
                     return pin_entry["pin"]
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         print(f"Error extracting PIN: {str(e)}")
     return None
 
@@ -321,6 +326,7 @@ def verify_dob():
         return {"status": "error", "response": "Invalid date format"}, 400
 
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {
             "status": "error",
             "response": f"An error occurred : {str(e)}",
@@ -398,6 +404,7 @@ def reset_pin():
         res, status_code = MONGOLIB.org_eve_update("org_auth", data, auth_id)
 
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {
             "status": "error",
             "response": f"An error occurred: {str(e)}",
@@ -441,6 +448,7 @@ def get_profile_info(digilockerid):
         return {"status": "success", "response": response.json(), "code": 200}
 
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {
             "status": "error",
             "response": f"An error occurred: {str(e)}",

@@ -81,7 +81,8 @@ def validate_user():
             return res, status_code
 
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1800]"}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -162,7 +163,8 @@ def check_user_status():
         log_data = {RESPONSE: str(e)}
         logarray.update(log_data)
         RABBITMQLOGS.send_to_queue(logarray, "Logstash_Xchange", logs_queue)
-        return {STATUS: ERROR, ERROR_DES: "Technical error", RESPONSE: str(e)}, 400
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1801]"}, 400
     
 @bp.route("/org_list", methods=["GET"])
 def org_list():
@@ -237,7 +239,8 @@ def org_list():
         log_data = {RESPONSE: str(e)}
         logarray.update(log_data)
         RABBITMQLOGS.send_to_queue(logarray, "Logstash_Xchange", logs_queue)
-        return {STATUS: ERROR, ERROR_DES: "Technical error", RESPONSE: str(e)}, 400
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1802]"}, 400
 
 
 def userinfo(org_id):

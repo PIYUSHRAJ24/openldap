@@ -77,7 +77,8 @@ def validate_user():
             return res, status_code
 
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1600]"}, 401
     
 
 @bp.route("/", methods=["GET", "POST"])
@@ -123,7 +124,8 @@ def update_udyam():
         log_data = {RESPONSE: e}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
-        return jsonify({"status": "error", "error_description": "Technical error", "response": str(e)}), 400
+        VALIDATIONS.log_exception(e)
+        return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#1601]"}), 400
 
 
 def ids_udyam_verify(udyam_no, mobile):
@@ -178,7 +180,8 @@ def ids_udyam_verify(udyam_no, mobile):
         logarray.update({"error": str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-        return {"status": "error", 'error_description': str(e)}, 500
+        VALIDATIONS.log_exception(e)
+        return {"status": "error", 'error_description': Errors.error('err_1201')+"[#1602]"}, 500
 
 @bp.after_request
 def after_request(response):

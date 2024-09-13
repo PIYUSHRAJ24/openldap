@@ -115,7 +115,8 @@ def validate():
 
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1100]"}, 401
 
 
 @bp.route('/', methods=['GET', 'POST'])
@@ -174,6 +175,7 @@ def get_details():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -199,6 +201,7 @@ def get_authorization_letter():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -232,6 +235,7 @@ def update_details(post_data = None):
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -268,6 +272,7 @@ def get_users():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 @bp.route('/get_access_rules', methods=['GET'])
@@ -293,6 +298,7 @@ def get_access_rules():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -307,6 +313,7 @@ def get_designation():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -396,6 +403,7 @@ def create_access_rules():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -481,6 +489,7 @@ def create_access_rules_v2():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -558,6 +567,7 @@ def transfer_access():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -636,6 +646,7 @@ def revoke_access():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -698,6 +709,7 @@ def grant_access():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -771,6 +783,7 @@ def assign_access():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -807,6 +820,7 @@ def update_avatar():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -829,6 +843,7 @@ def get_avatar():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -867,6 +882,7 @@ def send_otp_v1():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 @bp.route('/verify_mobile_otp', methods=['POST'])
@@ -900,6 +916,7 @@ def verify_otp_v1():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -972,6 +989,7 @@ def send_email_otp():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1027,6 +1045,7 @@ def verify_email_otp():
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1039,6 +1058,7 @@ def search_entity():
         results = ELASTICLIB.search_cin(query)
         return jsonify({'results': results})
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return jsonify({'results': []})
 
 
@@ -1064,6 +1084,7 @@ def search_regulators():
                     }]
                 }
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "No Data Found(#EX-400)"}, 400
 
 
@@ -1144,6 +1165,7 @@ def get_user_request():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1179,6 +1201,7 @@ def get_user_requests():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 @bp.route('/get_user_access_requests', methods=['GET'])
@@ -1222,6 +1245,7 @@ def get_user_access_requests():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1276,6 +1300,7 @@ def cancel_user_request():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1346,6 +1371,7 @@ def create_org_user():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1383,6 +1409,7 @@ def update_cin_profile():
                 except requests.exceptions.ReadTimeout:
                     logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: Errors.error("ERR_MSG_155")+" - mca read timed out"}})
                     RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+                    VALIDATIONS.log_exception(e)
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_155")}, 400
 
         if response.status_code != 200:
@@ -1436,12 +1463,14 @@ def update_cin_profile():
                 except requests.exceptions.ReadTimeout:
                     logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: Errors.error("ERR_MSG_164")+" - mca read timed out"}})
                     RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+                    VALIDATIONS.log_exception(e)
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_155")}, 400
 
         original_name = ''
         try:
             res = json.loads(response.text)
         except Exception:
+            VALIDATIONS.log_exception(e)
             res = {}
 
         if response.status_code != 200:
@@ -1484,6 +1513,7 @@ def update_cin_profile():
         print(f"Exception occurred: {e}")
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1518,6 +1548,7 @@ def update_icai_profile():
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
@@ -1550,6 +1581,7 @@ def esign_consent_get():
     except Exception as e:
         res = {STATUS: ERROR, RESPONSE: str(e) + "[#002]"}
         RABBITMQ_LOGSTASH.log_stash_logeer(res, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
         res[RESPONSE] = Errors.error('ERR_MSG_111') + "[#002]"
         return res, 400
 
@@ -1613,6 +1645,7 @@ def update_udyam_profile():
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         print(e)
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 @bp.after_request
@@ -1641,6 +1674,7 @@ def after_request(response):
         logger.info(log_data)
         return response
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         print(f"Logging error: {str(e)}")
     return response
 

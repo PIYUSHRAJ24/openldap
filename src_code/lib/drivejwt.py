@@ -56,7 +56,8 @@ class DriveJwt:
             bs = AES.block_size
             return s + (bs - len(s) % bs) * chr(bs - len(s) % bs)
         except Exception as e:
-            return str(e)
+            VALIDATIONS.log_exception(e)
+            return Errors.error('err_1201')+'[#1000]'
 
     def aes_encryption(self, raw,secret_key):
         try:
@@ -66,7 +67,8 @@ class DriveJwt:
             cipher = AES.new(secret_key, AES.MODE_CBC, iv)
             return base64.b64encode(cipher.encrypt(raw.encode())).decode('utf-8').replace('+', '---')
         except Exception as e:
-            return str(e)
+            VALIDATIONS.log_exception(e)
+            return Errors.error('err_1201')+"[#1001]"
 
 
     @staticmethod
@@ -77,8 +79,9 @@ class DriveJwt:
             aes_obj = AES.new(secret_key, AES.MODE_CBC, iv)
             return unpad(aes_obj.decrypt(encode_cipher), AES.block_size).decode('utf-8')
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             print({STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:aes_decryption:: ' + str(e)})
-            return str(e)
+            return Errors.error('err_1201')+"[#1002]"
 
     def jwt_generate(self, digilockerid, did, orgid, source='web'):
         try:
@@ -113,7 +116,8 @@ class DriveJwt:
             # encoded1 = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
             return payload , 200
         except Exception as e:
-            return {"status": "error", "error_description": 'Exception:LockerJwtvvvv:jwt_login:: ' + str(e)}, 400
+            VALIDATIONS.log_exception(e)
+            return {"status": "error", "response": Errors.error('err_1201')+"[#1003]"}, 400
 
     def jwt_login(self):
         try:
@@ -147,7 +151,9 @@ class DriveJwt:
                 path += folder + '/'
             return path, 200
         except Exception as e:
-            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_206'), RESPONSE: 'DriveJwt:jwt_login:: ' + str(e)}, 401
+            VALIDATIONS.log_exception(e)
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+'[#1004]'}, 401
+            # return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_206'), RESPONSE: 'DriveJwt:jwt_login:: ' + str(e)}, 401
 
     def jwt_login_org(self):
         try:
@@ -167,7 +173,9 @@ class DriveJwt:
                 return sec, code
             return path, 200
         except Exception as e:
-            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_206'), RESPONSE: 'DriveJwt:jwt_login_org:: ' + str(e)}, 401
+            VALIDATIONS.log_exception(e)
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+'[#1005]'}, 401
+            # return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_206'), RESPONSE: 'DriveJwt:jwt_login_org:: ' + str(e)}, 401
 
     def get_role(self):
         query = {'org_id': self.org_id}
@@ -227,4 +235,5 @@ class DriveJwt:
             else:
                 return {STATUS: ERROR, ERROR_DES: "Invalid refresh token"}, 401
         except Exception as e:
-            return {STATUS: ERROR, ERROR_DES: 'Error refreshing token'}, 500
+            VALIDATIONS.log_exception(e)
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+'[#1006]'}, 500
