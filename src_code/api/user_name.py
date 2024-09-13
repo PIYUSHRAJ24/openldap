@@ -238,7 +238,7 @@ def user():
             'Content-Type': "application/x-www-form-urlencoded"
         }
         # Make the API request
-        response = requests.post(url, headers=headers, params=payload, timeout=20)
+        response = requests.post(url, headers=headers, data=payload, timeout=20)
         if response.status_code != 200:
             return json.loads(response.text), response.status_code
 
