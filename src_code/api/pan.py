@@ -55,7 +55,8 @@ def validate_user():
             return res, status_code
 
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("err_1201")+"[#1300]"}, 401
 
 
 @bp.route('/verify_pan', methods=['POST'])
@@ -114,7 +115,8 @@ def verify_pan():
     except Exception as t:
         logarray.update({RESPONSE: str(t)})
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_184'), RESPONSE: str(t)}, 400
+        VALIDATIONS.log_exception(t)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_184')+"[#1301]"}, 400
 
         
 
@@ -178,5 +180,6 @@ def verify_icai():
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111'), RESPONSE: response.text}, 400
         logarray.update({RESPONSE: res})
         RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(response.text)
         return {STATUS: ERROR, ERROR_DES: res.get('errorDescription') or Errors.error('ERR_MSG_111'), RESPONSE: res.get('error') or res}, response.status_code
     return {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_101')}, 200

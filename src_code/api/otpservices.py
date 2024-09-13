@@ -78,7 +78,8 @@ def validate():
         else:
             return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1200]"}, 401
 
 @bp.route('/send_otp',methods =['POST'])
 def send_otp():
@@ -100,7 +101,8 @@ def send_otp():
         res = AADHAAR_CONNECTOR.send_aadhaar_otp(uid, txnId, org_client_id, org_txn, function_name, 'yes', partner_name, app_name, orgid)
         return res
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111"), RESPONSE: str(e)}
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111")+"[#1201]"}
 
         
 @bp.route('/verify_otp', methods=['POST'])
@@ -157,7 +159,8 @@ def verify_otp():
                 ERROR_DES: res_data['error_description'] #OTP not valid. Please enter Correct OTP as sent by UIDAI.[#K-100]
             }
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111"), RESPONSE: str(e)}
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111")+"[#1202]"}
     
 @bp.route('/send_otp/1.0',methods =['POST'])
 def send_aadhaar_otp1():
@@ -177,7 +180,8 @@ def send_aadhaar_otp1():
     except Exception as e:
         logarray.update({"response": str(e)})
         RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
-        return {STATUS: ERROR, ERROR_DES: str(e)}
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("err_1201")+"[#1203]"}
         
 @bp.route('/verify_otp/1.0', methods=['POST'])
 def verify_aadhaar_otp1():
@@ -213,7 +217,8 @@ def verify_aadhaar_otp1():
     except Exception as e:
         logarray.update({"response": str(e)})
         RABBITMQ.send_to_logstash(logarray, 'Logstash_Xchange', 'org_logs_')
-        return {STATUS: ERROR, ERROR_DES: str(e)}
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error("err_1201")+"[#1204]"}
 
 @bp.after_request
 def after_request(response):

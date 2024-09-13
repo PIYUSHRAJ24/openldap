@@ -62,6 +62,7 @@ def validate():
         res = {STATUS: ERROR, ERROR_DES: "Technical Issue.(#401)", "step":"before_req"}
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'filelock')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, 401
 
 def encrypt(text=None, password=None):
@@ -115,6 +116,7 @@ def decrypt():
         g.logs['actual_error'] = str(e)
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'filelock')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, code
 
 @bp.route('/file_lock', methods=['POST'])
@@ -127,6 +129,7 @@ def file_lock():
         g.logs['actual_error'] = str(e)
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'filelock')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, 404
     try:
         secret = g.org_id[:16]
@@ -167,6 +170,7 @@ def file_lock():
         g.logs['actual_error'] = str(e)
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'filelock')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
     try:
@@ -185,6 +189,7 @@ def file_lock():
         g.logs['actual_error'] = str(e)
         rmq.log_stash_logeer({**res, **g.logs}, rmq_queue, 'filelock')
         res.pop('step')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 def updatemeta(path, file_name, metadata):
@@ -199,6 +204,7 @@ def updatemeta(path, file_name, metadata):
         rmq.log_stash_logeer({"Activity_update": "updatemeta", RESPONSE: act_resp}, rmq_queue, 'updatemeta')
         return {"status": "success","Description":'updated'}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to locate file.(#M-404)"}, 400
 
 def get_file(path, file_name, ops=None):
@@ -209,6 +215,7 @@ def get_file(path, file_name, ops=None):
         else:
             return {"status": "success","ContentType":ContentType,"Body":Body}
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to locate file.(#400)"}, 400
 
 def file_upload(path_from_local, path_to_s3, file_name_upload, file):
@@ -221,4 +228,5 @@ def file_upload(path_from_local, path_to_s3, file_name_upload, file):
         updatemeta(path_to_s3, file_name_upload, metadata)
         return upload_res, status_code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Unable to upload file.(#400)", "actual_error":str(e)}, 400

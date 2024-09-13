@@ -60,6 +60,7 @@ def getjwt(post_data = None):
         jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)
         return jwtres, status_code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 @bp.route('/refreshjwt', methods=['POST'])
@@ -74,5 +75,6 @@ def refreshjwt(post_data = None):
         jwtres, status_code = jwtlib.refresh_jwt(refresh_token, digilockerid, did, orgid, source)
         return jwtres, status_code
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400   
     

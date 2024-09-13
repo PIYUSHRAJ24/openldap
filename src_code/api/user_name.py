@@ -27,7 +27,7 @@ REDISLIB = RedisLib()
 accounts_eve = CONFIG["accounts_eve"]
 # Configuration and blueprint setup
 logs_queue = "org_logs_PROD"
-bp = Blueprint("search/v1", __name__)
+bp = Blueprint("search", __name__)
 logarray = {}
 CONFIG = dict(CONFIG)
 data_vault = CONFIG["data_vault"]
@@ -60,10 +60,6 @@ def validate_user():
             REQUEST: {},
         }
     )
-    
-    # exit()
-    # g.org_id = request.headers.get("orgid")
-
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -83,7 +79,8 @@ def validate_user():
             return res, status_code
 
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(HMAC): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1700]"}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -183,9 +180,10 @@ def retrieve_name():
             }, 400
 
     except Exception as e:
+        VALIDATIONS.log_exception(e)
         return {
             "status": "error",
-            "response": f"An error occurred: {str(e)}",
+            "response": Errors.error('err_1201')+"[#1701]",
         }, 400
 
 def get_token(adh):
@@ -206,8 +204,9 @@ def get_token(adh):
             else:
                 return response.text
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             print(e)
-            return str(e)
+            return Errors.error('err_1201')+"[#1702]"
         return ""
 
 @bp.route("/user", methods=["POST"])
@@ -217,18 +216,6 @@ def user():
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
-
-        # If all fields are missing, return an error
-        if aadhar or mobile_no or email:
-            return {
-                "status": "error",
-                "response": "Please enter a valid mobile number or Aadhaar number, or email",
-            }, 400
-
-        # Aadhaar decryption and validation
-        if aadhar is not None:
-            if aadhar and not re.match(r"^\d{12}$", aadhar):
-                return {"status": "error", "response": "Invalid Aadhaar number"}, 400
 
         # Prepare API URL and payload
         url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
@@ -252,13 +239,13 @@ def user():
         }
         # Make the API request
         response = requests.post(url, headers=headers, params=payload, timeout=20)
-        print(json.loads(response.text))
         if response.status_code != 200:
-            return {"status": "error", "response": "Failed to retrieve account"}, response.status_code
+            return json.loads(response.text), response.status_code
 
         # Return the JSON response from the API
         return response.json()
 
     except Exception as e:
         # Catch and return any errors
-        return {"status": "error", "response": str(e)}, 400
+        VALIDATIONS.log_exception(e)
+        return {"status": "error", "response": Errors.error('err_1201')+"[#1703]"}, 400
