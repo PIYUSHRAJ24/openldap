@@ -2107,7 +2107,14 @@ class Validations:
             'line_number': line_number,
             'time': datetime.utcnow().isoformat(),
             'method': request.method,
-            'url': request.url
+            'url': request.url,
+            'user': getattr(g, 'user', None),
+            'endpoint': request.endpoint,
+            'args': request.args.to_dict(),
+            'form': request.form.to_dict(),
+            'json': request.json if request.is_json else None,
+            'transaction_id': getattr(g, 'transaction_id', 'N/A'),
+            'ip_address': request.remote_addr
         }
         # Log the error
         logger.error(log_data)
