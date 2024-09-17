@@ -49,7 +49,7 @@ def healthcheck():
 
 @app.route('/orgcount', methods=['GET'])
 def orgcount():
-    return {"status": "success", "data" : "173"}, 200
+    return {"status": "success", "data" : {"org": 173, "ids" : 4500455}}, 200
 
 @app.before_request
 def before_request():
