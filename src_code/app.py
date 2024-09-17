@@ -233,59 +233,5 @@ def handle_exception(e):
     response.status_code = 500
     return response
 
-def log_auth_event(event_type, user_id, success, error=None):
-    log_data = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'level': 'INFO' if success else 'ERROR',
-        'event': f'auth_{event_type}',
-        'user_id': user_id,
-        'success': success,
-        'error': error,
-        'ip_address': request.remote_addr,
-        'user_agent': request.user_agent.string,
-        'transaction_id': getattr(g, 'transaction_id', 'N/A')
-    }
-    if success:
-        logger.info(json.dumps(log_data))
-    else:
-        logger.error(json.dumps(log_data))
-
-def log_db_operation(operation, table, success, error=None, additional_info=None):
-    log_data = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'level': 'INFO' if success else 'ERROR',
-        'event': 'db_operation',
-        'operation': operation,
-        'table': table,
-        'success': success,
-        'error': error,
-        'additional_info': additional_info,
-        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
-        'user_id': getattr(g, 'user_id', 'N/A')
-    }
-    if success:
-        logger.info(json.dumps(log_data))
-    else:
-        logger.error(json.dumps(log_data))
-
-def log_external_service_call(service, operation, success, error=None, response_time=None, status_code=None):
-    log_data = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'level': 'INFO' if success else 'ERROR',
-        'event': 'external_service_call',
-        'service': service,
-        'operation': operation,
-        'success': success,
-        'error': error,
-        'response_time': response_time,
-        'status_code': status_code,
-        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
-        'user_id': getattr(g, 'user_id', 'N/A')
-    }
-    if success:
-        logger.info(json.dumps(log_data))
-    else:
-        logger.error(json.dumps(log_data))
-
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
 app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug=False)
