@@ -170,7 +170,7 @@ def ids_gstin_verify(gstin_no, gstin_name):
             'Content-Type': 'application/json'
         }
                 
-        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=5)
+        curl_result = requests.post(curlurl, headers=headers, data=fields,timeout=60)
        
         response = curl_result.json()      
         log = {'url': curlurl, 'req': fields, 'res': response, 'head': headers}
