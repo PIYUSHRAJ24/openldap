@@ -47,6 +47,10 @@ logger.setLevel(logging.INFO)
 def healthcheck():
     return {"status": "success"}, 200
 
+@app.route('/orgcount', methods=['GET'])
+def orgcount():
+    return {"status": "success", "data" : {"org": 173, "ids" : 4500455}}, 200
+
 @app.before_request
 def before_request():
     ''' before request'''
@@ -132,6 +136,8 @@ app.register_blueprint(user_name_bp, url_prefix='/search/v1')
 def after_request(response):
     try:
         if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
+            return response
+        if "orgcount" in request.url or getattr(g, 'after_request_logged', False):
             return response
         
         g.after_request_logged = True
