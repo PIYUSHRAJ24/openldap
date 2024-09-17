@@ -65,7 +65,7 @@ class DriveJwt:
             return unpad(aes_obj.decrypt(encode_cipher), AES.block_size).decode('utf-8')
         except Exception as e:
             VALIDATIONS.log_exception(e)
-            print({STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:aes_decryption:: ' + str(e)})
+            print({STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#2000]"})
             return ''
 
     def jwt_login(self):
@@ -103,7 +103,7 @@ class DriveJwt:
             return path, 200
         except Exception as e:
             VALIDATIONS.log_exception(e)
-            return {STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:jwt_login:: ' + str(e)}, 401
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#2001]"}, 401
 
     def jwt_login_org(self):
         try:
@@ -139,7 +139,7 @@ class DriveJwt:
             return path, 200
         except Exception as e:
             VALIDATIONS.log_exception(e)
-            return {STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:jwt_login_org:: ' + str(e)}, 401
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#2002]"}, 401
 
     def get_role(self):
         
@@ -297,7 +297,7 @@ class DriveJwt:
             return department_list, 200
         except Exception as e:
             VALIDATIONS.log_exception(e)
-            return {"error": str(e)}, 500
+            return {"error": Errors.error('err_1201')+"[#2003]"}, 500
 
     def get_redis_sec(self):
         # Retrieve cached department structure from Redis

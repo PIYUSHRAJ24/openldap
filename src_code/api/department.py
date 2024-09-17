@@ -29,7 +29,7 @@ MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 RABBITMQLOGS = RabbitMQLogs()
 REDISLIB = RedisLib()
-ELASTICLIB = ElasticLib()
+# ELASTICLIB = ElasticLib()
 
 accounts_eve = CONFIG['accounts_eve']
 org_eve = CONFIG['org_eve']
