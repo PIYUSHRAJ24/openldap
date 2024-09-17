@@ -1,4 +1,7 @@
+import json
 import os
+import time
+import uuid
 from flask import Blueprint, request, g
 from datetime import datetime
 import dotenv
@@ -226,7 +229,7 @@ def handle_exception(e):
     logger.error(json.dumps(log_data))
 
     # Return a generic error response
-    response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
+    response = {"status": "ERROR", "error_description": "Internal Server Error"}
     response.status_code = 500
     return response
 

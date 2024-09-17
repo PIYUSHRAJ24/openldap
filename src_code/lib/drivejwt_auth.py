@@ -64,6 +64,7 @@ class DriveJwt:
             aes_obj = AES.new(secret_key, AES.MODE_CBC, iv)
             return unpad(aes_obj.decrypt(encode_cipher), AES.block_size).decode('utf-8')
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             print({STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:aes_decryption:: ' + str(e)})
             return ''
 
@@ -101,6 +102,7 @@ class DriveJwt:
                 path += folder + '/'
             return path, 200
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             return {STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:jwt_login:: ' + str(e)}, 401
 
     def jwt_login_org(self):
@@ -136,6 +138,7 @@ class DriveJwt:
                 return rss, code
             return path, 200
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             return {STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:jwt_login_org:: ' + str(e)}, 401
 
     def get_role(self):
@@ -293,6 +296,7 @@ class DriveJwt:
             self.rs.set(self.org_id + '_org_structure', json.dumps(department_list))
             return department_list, 200
         except Exception as e:
+            VALIDATIONS.log_exception(e)
             return {"error": str(e)}, 500
 
     def get_redis_sec(self):
