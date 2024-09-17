@@ -75,7 +75,8 @@ def validate():
             else:
                 return jwtres, status_code
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)+' [#001]'}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201') + '[#12700]'}, 401
 
 
 
@@ -96,7 +97,8 @@ def activity_insert():
         return res, code
         
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "activity_insert: " + str(e)}, 400
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201') + '[#12701]'}, 400
 
 def activity_insert(ac_type, subject, user, org_id, doc_name="",role_id= "",user_affected="",subjectparams = ""):
     try:     
@@ -141,7 +143,8 @@ def activity_insert(ac_type, subject, user, org_id, doc_name="",role_id= "",user
         else:
             return {STATUS: False, ERROR_DES: Errors.error("ERR_MSG_111"), RESPONSE: "org_activity_insert: activity_service_inactive" },400
     except Exception as e:
-        return {STATUS: False, ERROR_DES: "activity_insert: " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: False, ERROR_DES: Errors.error('err_1201') + '[#12702]'}, 401
 
 @bp.route('/fetch/<id>', methods=['GET'])
 def fetch_get(id = None) :

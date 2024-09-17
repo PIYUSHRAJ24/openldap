@@ -74,7 +74,8 @@ def validate_user():
 
         
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13000]"}, 401
     
 @staticmethod
 def ds_fn_roles(act, access_id):
@@ -95,6 +96,7 @@ def ds_fn_roles(act, access_id):
         
     except Exception as e:
         print({STATUS: ERROR, ERROR_DES: str(e)})
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Failed to verify user permission."}, 400
 
 @bp.route('/list', methods=['POST'])
@@ -115,9 +117,10 @@ def list_department():
                 
         return {STATUS: SUCCESS, RESPONSE: data}, 200
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13001]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 @bp.route('/update', methods=['POST'])
@@ -147,9 +150,10 @@ def update():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "update_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13002]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 
@@ -176,9 +180,10 @@ def create():
         # activity_insert("created_by","signup",did,post_data['org_id'],post_data['name']) # type: ignore
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "create_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13003]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/view', methods=['POST'])
@@ -207,9 +212,10 @@ def view():
                 
         return {STATUS: SUCCESS, RESPONSE: data}, 200
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13004]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/user_permission', methods=['POST'])
@@ -263,7 +269,8 @@ def user_permission():
         # activity_insert("created_by","signup",did,post_data['org_id'],post_data['name']) # type: ignore
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "create_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13005]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400

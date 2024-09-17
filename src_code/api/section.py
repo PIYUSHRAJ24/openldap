@@ -73,7 +73,8 @@ def validate_user():
             
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Exception(JWT): " + str(e)}, 401
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12900]"}, 401
 
 @staticmethod
 def ds_fn_roles(act,access_id):
@@ -103,6 +104,7 @@ def ds_fn_roles(act,access_id):
         
     except Exception as e:
         print({STATUS: ERROR, ERROR_DES: str(e)})
+        VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: "Failed to verify user permission."}, 400
 
 @bp.route('/get', methods=['POST'])
@@ -128,9 +130,10 @@ def get():
         return {STATUS: SUCCESS, RESPONSE: des}, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12901]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
     
@@ -182,9 +185,10 @@ def list_section():
                 
         return {STATUS: SUCCESS, RESPONSE: data}, 200
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12902]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/get_users', methods=['POST'])
@@ -207,9 +211,10 @@ def get_users():
                 })
         return {STATUS: SUCCESS, RESPONSE: data}, status_code
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12903]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/get_users_count', methods=['POST'])
@@ -228,9 +233,10 @@ def get_users_count():
         return {STATUS: SUCCESS, RESPONSE: count}, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12904]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 @bp.route('/section_count', methods=['POST'])
@@ -243,9 +249,10 @@ def section_count():
         return {STATUS: SUCCESS, RESPONSE: count}, 200
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_dept_count: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12905]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 @bp.route('/get_sec_count', methods=['POST'])
@@ -265,9 +272,10 @@ def get_dept_count():
         return {STATUS: SUCCESS, RESPONSE: count}, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12906]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/list_users', methods=['POST'])
@@ -301,9 +309,10 @@ def list_users():
                 
         return {STATUS: SUCCESS, RESPONSE: data}, 200
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "get_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12907]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/update', methods=['POST'])
@@ -364,9 +373,10 @@ def update():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "update_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12908]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 
 
@@ -509,9 +519,10 @@ def create():
         return rules_res, status_code1
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "create_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12909]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/assign', methods=['POST'])
@@ -580,9 +591,10 @@ def assign():
             
         return resd, status_code
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "assign_section: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#129010]"}
         logarray.update({RESPONSE: res})
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/role_update', methods=['POST'])
@@ -620,9 +632,10 @@ def role_update():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "update_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12911]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
 @bp.route('/revoke', methods=['POST'])
 def revoke():
@@ -666,9 +679,10 @@ def revoke():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "update_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12912]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/active', methods=['POST'])
@@ -708,9 +722,10 @@ def active():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "active_details: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#129013]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/n_active', methods=['POST'])
@@ -774,9 +789,10 @@ def n_active():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "inactive_section: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12914]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
     
 @bp.route('/y_active', methods=['POST'])
@@ -839,7 +855,8 @@ def y_active():
         return resp, status_code
         
     except Exception as e:
-        res = {STATUS: ERROR, ERROR_DES: "inactive_section: " + str(e)}
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#12915]"}
         logarray.update(res)
         RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
         return res, 400
