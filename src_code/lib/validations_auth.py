@@ -13,7 +13,7 @@ from lib.mongolib import MongoLib
 from lib.redislib import RedisLib
 from lib.orglib import OrgLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
-from flask import g
+from flask import g, request
 import ast
 from pythonjsonlogger import jsonlogger
 
@@ -2425,7 +2425,9 @@ class Validations:
             'function': function_name,
             'filename': filename,
             'line_number': line_number,
-            'time': datetime.utcnow().isoformat()
+            'time': datetime.utcnow().isoformat(),
+            'method': request.method,
+            'url': request.url
         }
         # Log the error
         logger.error(log_data)

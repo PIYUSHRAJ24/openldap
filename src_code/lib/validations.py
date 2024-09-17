@@ -10,7 +10,7 @@ import uuid
 import hashlib
 import requests
 import xml.etree.ElementTree as ET
-from flask import g
+from flask import g, request
 from thefuzz import fuzz
 from lib.constants import *
 from datetime import datetime
@@ -2105,7 +2105,9 @@ class Validations:
             'function': function_name,
             'filename': filename,
             'line_number': line_number,
-            'time': datetime.utcnow().isoformat()
+            'time': datetime.utcnow().isoformat(),
+            'method': request.method,
+            'url': request.url
         }
         # Log the error
         logger.error(log_data)
