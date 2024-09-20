@@ -83,7 +83,13 @@ def validate():
                 return res, status_code
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             return
-
+        if request.path.split('/')[-1] in ("activate", "deactivate"):
+            res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
+            if status_code != 200:
+                return res, status_code
+            g.org_id = res['orgid']
+            return
+        
         jwtlib = DriveJwt(request, CONFIG)
         if request.path.split('/')[-1] in org_bypass_urls:
             jwtres, status_code = jwtlib.jwt_login()
@@ -1647,7 +1653,26 @@ def update_udyam_profile():
         print(e)
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
 
+@bp.route('/activate', methods=['POST'])
+def activate():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+@bp.route('/deactivate', methods=['POST'])
+def deactivate():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "N"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+    
 @bp.after_request
 def after_request(response):
     try:
