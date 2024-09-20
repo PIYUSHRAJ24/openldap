@@ -216,7 +216,7 @@ class DriveJwt:
             if res is not None:
                 return json.loads(res), 200
             
-            url = CONFIG["acsapi"]["url"] + "/" + 'org/get_details'
+            url = CONFIG["acsapi_dl"]["url"] + "/" + 'org/get_details'
             payload = {}
             headers = {
             'device-security-id': self.device_security_id,
