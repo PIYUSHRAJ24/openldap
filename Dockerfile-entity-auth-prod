@@ -12,6 +12,7 @@ COPY src_code/ /opt/entity_auth-py
 COPY config_prod/appconfig/.env /opt/entity_auth-py/
 COPY config_prod/ /opt/entity_auth-py/config
 COPY config_prod/appconfig/server.py /usr/local/lib/python3.11/http/
+COPY config_prod/filebeat.yml /etc/filebeat/filebeat.yml
 
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
