@@ -610,16 +610,16 @@ def active():
             logarray.update({RESPONSE: res})
             RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
             return res, status_code
-        for post_data in res['post_data']:
-            access_id = post_data.pop('access_id',None)
-            resp, status_code = MONGOLIB.org_eve_update(CONFIG["org_eve"]["collection_rules"], post_data, access_id)
-            if status_code != 200:
-                logarray.update({RESPONSE: resp})
-                RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-                return resp, status_code
-            dept_name = g.dept_details.get(res['dept_id'],{}).get("name","")
-            activity_insert("active_department","active_department",g.digilockerid,
-                            g.org_id,dept_name,'',res['digilockerid'],'')
+        post_data = res['post_data']
+        access_id = post_data.pop('access_id',None)
+        resp, status_code = MONGOLIB.org_eve_update(CONFIG["org_eve"]["collection_rules"], post_data, access_id)
+        if status_code != 200:
+            logarray.update({RESPONSE: resp})
+            RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+            return resp, status_code
+        dept_name = g.dept_details.get(res['dept_id'],{}).get("name","")
+        activity_insert("active_department","active_department",g.digilockerid,
+                        g.org_id,dept_name,'',res['digilockerid'],'')
         res_org = REDISLIB.get(g.org_id + '_org_structure')
         if res_org:
             REDISLIB.remove(g.org_id + '_org_structure')

@@ -1270,29 +1270,41 @@ class Validations:
 
         dept_id = CommonLib.filter_input(request.values.get('dept_id'))
         digilockerid = CommonLib.filter_input(request.values.get('digilockerid'))
+
         if digilockerid[1] == 400:
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "digilockerid", RESPONSE: digilockerid[0]}, 400
-        elif digilockerid[0] and not self.is_valid_did(digilockerid[0]):
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
+        elif digilockerid[0]:
+            digilocker_id = CommonLib.aes_decryption_v2(digilockerid[0], g.org_id[:16])
+            if digilocker_id is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_218")}, 400
+            elif not self.is_valid_did(digilocker_id):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
+            
         if dept_id[1] == 400:
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
-        elif dept_id[0] and not self.is_valid_dept(dept_id[0]):
-            return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_138")}, 400
+        elif dept_id[0]:
+            deptid = CommonLib.aes_decryption_v2(dept_id[0], g.org_id[:16])
+            if deptid is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_1351")}, 400
+            elif not self.is_valid_dept(deptid):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_1381")}, 400
         
-        access_id = hashlib.md5((g.org_id+g.digilockerid).encode()).hexdigest()
-        dept_access_id = hashlib.md5((g.org_id+g.digilockerid+dept_id[0]).encode()).hexdigest()
+        # access_id = hashlib.md5((g.org_id+g.digilockerid).encode()).hexdigest()
+        # dept_access_id = hashlib.md5((g.org_id+g.digilockerid+dept_id[0]).encode()).hexdigest()
         has_permission = False
         user_exists = False
         new_user_access_id = hashlib.md5((g.org_id+digilockerid[0]).encode()).hexdigest()
         new_user_dept_access_id = hashlib.md5((g.org_id+digilockerid[0]+dept_id[0]).encode()).hexdigest()
-        post_data = []
+
         for access_rule in g.org_access_rules:
             
             # Logged In user validation
-            if access_rule['access_id'] == access_id and access_rule['rule_id'] == "ORGR001" and access_rule['is_active'] == "Y":
+            if g.role == "ORGR001":
                 has_permission = True
-            if access_rule['access_id'] == dept_access_id and access_rule['rule_id'] in ("ORGR001", "ORGR003") and access_rule['is_active'] == "Y":
-                has_permission = True
+            # if access_rule['access_id'] == access_id and access_rule['rule_id'] == "ORGR001" and access_rule['is_active'] == "Y":
+            #     has_permission = True
+            # if access_rule['access_id'] == dept_access_id and access_rule['rule_id'] in ("ORGR001", "ORGR003") and access_rule['is_active'] == "Y":
+            #     has_permission = True
             # New department user validation
             if access_rule['access_id'] == new_user_access_id and access_rule['is_active'] == "Y":
                 user_exists = True
@@ -1308,14 +1320,13 @@ class Validations:
         if not user_exists:
             res = {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_188")}
             return res, 400
-        post_data.append(
-        {
-        'is_active': "Y",
-        'updated_on': datetime.now().strftime(D_FORMAT),
-        'updated_by': g.digilockerid,
-        'access_id': new_user_dept_access_id
-        }
-        )
+        post_data = {
+            'is_active': "Y",
+            'updated_on': datetime.now().strftime(D_FORMAT),
+            'updated_by': g.digilockerid,
+            'access_id': new_user_dept_access_id
+            }
+        
         return {'post_data': post_data, 'dept_id': dept_id[0], 'digilockerid':digilockerid[0]},200
     
     def assign_users_org_section(self, request):
