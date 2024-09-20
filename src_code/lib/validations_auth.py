@@ -1293,8 +1293,8 @@ class Validations:
         # dept_access_id = hashlib.md5((g.org_id+g.digilockerid+dept_id[0]).encode()).hexdigest()
         has_permission = False
         user_exists = False
-        new_user_access_id = hashlib.md5((g.org_id+digilockerid[0]).encode()).hexdigest()
-        new_user_dept_access_id = hashlib.md5((g.org_id+digilockerid[0]+dept_id[0]).encode()).hexdigest()
+        new_user_access_id = hashlib.md5((g.org_id+digilocker_id).encode()).hexdigest()
+        new_user_dept_access_id = hashlib.md5((g.org_id+digilocker_id+deptid).encode()).hexdigest()
 
         for access_rule in g.org_access_rules:
             
@@ -1327,7 +1327,7 @@ class Validations:
             'access_id': new_user_dept_access_id
             }
         
-        return {'post_data': post_data, 'dept_id': dept_id[0], 'digilockerid':digilockerid[0]},200
+        return {'post_data': post_data, 'dept_id': deptid, 'digilockerid': digilocker_id},200
     
     def assign_users_org_section(self, request):
 
