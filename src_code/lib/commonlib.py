@@ -431,7 +431,7 @@ class CommonLib:
             res = rs.get(x['digilockerid']+'_org_profile_details')
             if res:
                 return json.loads(res)
-            client_id = CONFIG['acsapi']['client_id']
+            client_id = CONFIG['acsapi_dl']['client_id']
             ts = str(int(time.time()))
             plain_text_key_created = CONFIG['credentials'].get(client_id, '') + client_id + x['digilockerid'] + ts
             hmac = hashlib.sha256(plain_text_key_created.encode()).hexdigest()
@@ -442,7 +442,7 @@ class CommonLib:
                 'hmac': hmac,
                 'resident_photo': "yes"
             }
-            res = requests.post(CONFIG['acsapi']['url']+'/profile/1.0', post_data)
+            res = requests.post(CONFIG['acsapi_dl']['url']+'/profile/1.0', post_data)
             try:
                 resp = json.loads(res.text)
                 if res.status_code >= 200 and res.status_code < 300:
