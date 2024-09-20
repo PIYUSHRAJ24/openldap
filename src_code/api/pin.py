@@ -423,7 +423,7 @@ def reset_pin():
 
 def get_profile_info(digilockerid):
     try:
-        client_id = CONFIG["acsapi"]["client_id"]
+        client_id = CONFIG["acsapi_dl"]["client_id"]
         ts = str(int(time.time()))
         plain_text_key_created = (
             CONFIG["credentials"].get(client_id, "") + client_id + digilockerid + ts
@@ -438,7 +438,7 @@ def get_profile_info(digilockerid):
         }
 
         response = requests.post(
-            CONFIG["acsapi"]["url"] + "/profile/1.2", data=post_data
+            CONFIG["acsapi_dl"]["url"] + "/profile/1.2", data=post_data
         )
         response.raise_for_status()
 

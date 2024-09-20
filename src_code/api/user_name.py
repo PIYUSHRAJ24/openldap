@@ -184,10 +184,10 @@ def user():
         email = request.form.get("username")
 
         # Prepare API URL and payload
-        url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
+        url = CONFIG["acsapi_dl"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
-        client_id = CONFIG["acsapi"]['client_id']
-        client_secret = CONFIG["acsapi"]["client_secret"]
+        client_id = CONFIG["acsapi_dl"]['client_id']
+        client_secret = CONFIG["acsapi_dl"]["client_secret"]
         key = client_secret + client_id + ts
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
