@@ -225,7 +225,7 @@ def activitylist_response(rowitems, rowcount = '') :
         "user_activated","user_deactivated","assign_role","mobile_updated","email_updated","transfer_ownership","file_locked",
         "file_deleted","file_renamed","uri_saved","uri_deleted","share_self","share_to","move_self","icai_updated","cin_updated",
         "udyam_updated","request_created","request_cancelled","download_shared","esign_consent","create_department",
-        "access_department","update_department","department_assign","revoke_department","create_section","access_section",
+        "access_department","update_department","department_assign","revoke_department","active_department","create_section","access_section",
         "update_section","assign_section","revoke_section"
     }
     activity_response = []
@@ -289,6 +289,7 @@ def translation(app, subject,user,user_affected= "", filename="", role_id="",val
 			"update_department": username + ' updated '+ (prepared_params or '') + ' Department',
 			"department_assign": username + ' added a new ' + (role_id or '') + username_affected + ' to ' + (prepared_params or '') + ' Department',
 			"revoke_department": username + ' revoked access for ' + (prepared_params or '') + ' department from ' + username_affected,
+            "active_department": username + ' Active access for ' + (prepared_params or '') + ' department from ' + username_affected,
 			"create_section": username + ' added '+ (prepared_params or '') + ' Section to ' + (value or '') + ' Department',
 			"access_section": username + ' is now the admin of ' + (prepared_params or '') + ' Section in ' + (value or '') + ' Department',
 			"update_section": username + ' updated '+ (prepared_params or '') + ' Section in ' + (value or '') + ' Department',
