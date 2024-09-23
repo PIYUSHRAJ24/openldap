@@ -145,3 +145,22 @@ class ElasticLib:
             return self.es.index(index=ENTITY_INDEX, id=doc_id, document=data)
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: str(e)}
+
+    def entity_count(self):
+        try:
+            search_query = {
+                "query": {
+                    "match_all": {}
+                },
+                "size": 0
+            }
+            
+            response = self.es.search(index=ENTITY_INDEX, body=search_query)
+            
+            # Extract the total count from the response
+            total_count = response['hits']['total']['value']
+            
+            return {STATUS:"success", "data" : {"org": int(total_count), "ids" : 4500455}}, 200
+        except Exception as e:
+            print(f"Error in entity_count: {str(e)}")
+            return {STATUS:"error", "data" : {"org": 0, "ids" : 4500455}}, 400
