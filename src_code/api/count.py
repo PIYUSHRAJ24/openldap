@@ -41,6 +41,6 @@ def validate_user():
         return {STATUS: ERROR, ERROR_DES: Errors.error("err_1201")+"[#1300]"}, 401
 
 
-@bp.route('/orgcount', methods=['POST'])
+@bp.route('/orgcount', methods=['GET', 'POST'])
 def orgcount():
     return ELASTICLIB.entity_count()
