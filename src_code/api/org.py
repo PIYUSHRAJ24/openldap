@@ -673,12 +673,18 @@ def grant_access():
             return res, status_code
 
         post_data = res['post_data']
-        did = post_data['digilockerid']
-
-        rule_id, designation = '', ''
+        # did = post_data['digilockerid']
+        access_id = post_data['access_id']
+        if access_id not in [d['access_id'] for d in g.org_access_rules]: # type: ignore
+            res = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_157')}
+            logarray.update({RESPONSE: res})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return res, 400
+        
+        rule_id, designation, did = '', '',''
         for r in g.org_access_rules:
-            if r['digilockerid'] == did:
-                rule_id, designation = r['rule_id'], r.get('designation')
+            if r['access_id'] == access_id:
+                rule_id, designation, did = r['rule_id'], r.get('designation'), r.get('digilockerid')
 
         # Admin accounts can be only granted access by other admins
         if rule_id == 'ORGR001' and g.role != 'ORGR001':
@@ -686,7 +692,7 @@ def grant_access():
             logarray.update({RESPONSE: res})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, 400
-
+        post_data['digilockerid'] = did
         post_data['org_id'] = g.org_id
         post_data['updated_by'] = g.digilockerid
         post_data['updated_on'] = datetime.datetime.now().strftime(D_FORMAT)
@@ -697,14 +703,14 @@ def grant_access():
             return res, status_code
         logarray.update({RESPONSE: {"org_rules_update": res}})
 
-        if rule_id == 'ORGR001' and designation == "director":
-            data1 = {'org_id': g.org_id, 'dir_info': [{'digilocker_id': did, 'is_active' : 'Y'}]}
-            res, status_code = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
-            if status_code != 200:
-                logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
-                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-                return res, status_code
-            logarray[RESPONSE].update({"org_details_update": res})
+        # if rule_id == 'ORGR001' and designation == "director":
+        #     data1 = {'org_id': g.org_id, 'dir_info': [{'digilocker_id': did, 'is_active' : 'Y'}]}
+        #     res, status_code = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
+        #     if status_code != 200:
+        #         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
+        #         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        #         return res, status_code
+        #     logarray[RESPONSE].update({"org_details_update": res})
 
         res = {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_103')}
         logarray[RESPONSE].update(res)
