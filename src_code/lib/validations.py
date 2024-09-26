@@ -1195,11 +1195,10 @@ class Validations:
             elif access_id[0] != None and not access_id[0]:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
             
-            if dept_id[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
-            elif dept_id[0] == g.org_id:
+            
+            if dept_id == g.org_id:
                 dept_org_id = g.org_id
-            elif dept_id[0] and not self.is_valid_dept(dept_id[0]):
+            elif dept_id and not self.is_valid_dept(dept_id):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
 
             if designation[1] == 400:
@@ -1256,7 +1255,7 @@ class Validations:
                 post_data['dept_id'] = dept_org_id
                 post_data['user_type'] = "default"
             else:
-                post_data['dept_id'] = dept_id[0] 
+                post_data['dept_id'] = dept_id 
 
             if operation == 'C2':
                 post_data['aadhaar'] = aadhaar_dec # type: ignore
