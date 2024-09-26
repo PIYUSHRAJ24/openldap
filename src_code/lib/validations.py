@@ -1188,12 +1188,12 @@ class Validations:
             elif access_id[0] != None and not access_id[0]:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
             
-            # if dept_id[1] == 400:
-            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
-            # elif dept_id[0] == g.org_id:
-            #     dept_id1= g.org_id
-            # elif not dept_id[0] or self.is_valid_dept(dept_id[0]) == None:
-            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
+            if dept_id[1] == 400:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
+            elif dept_id[0] == g.org_id:
+                dept_org_id = g.org_id
+            elif not dept_id[0] or self.is_valid_dept(dept_id[0]) == None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
 
             if designation[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
@@ -1245,11 +1245,11 @@ class Validations:
                 'updated_by': g.digilockerid
                 # 'updated_on': updated_on,
             }
-            if dept_id == g.org_id:
-                post_data['dept_id'] = dept_id
+            if dept_org_id == g.org_id:
+                post_data['dept_id'] = dept_org_id
                 post_data['user_type'] = "default"
             else:
-                post_data['dept_id'] = "" 
+                post_data['dept_id'] = dept_id[0] 
 
             if operation == 'C2':
                 post_data['aadhaar'] = aadhaar_dec # type: ignore
