@@ -1199,7 +1199,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "dept_id", RESPONSE: dept_id[0]}, 400
             elif dept_id[0] == g.org_id:
                 dept_org_id = g.org_id
-            elif not dept_id[0] or self.is_valid_dept(dept_id[0]) == None:
+            elif dept_id[0] and not self.is_valid_dept(dept_id[0]):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_207")}, 400
 
             if designation[1] == 400:
