@@ -59,6 +59,13 @@ class Validations:
             return re.fullmatch(pattern, id)
         except Exception:
             return False
+    
+    def is_valid_dept(self, id):
+        try:
+            pattern = r'^[a-zA-Z0-9\-]{32}$'
+            return re.fullmatch(pattern, id)
+        except Exception:
+            return False
 
     def is_valid_date(self, date):
         if date is not None:
