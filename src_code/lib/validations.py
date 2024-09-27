@@ -1195,7 +1195,7 @@ class Validations:
             elif access_id[0] != None and not access_id[0]:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
             
-            
+            dept_org_id = None
             if dept_id == g.org_id:
                 dept_org_id = g.org_id
             elif dept_id and not self.is_valid_dept(dept_id):
