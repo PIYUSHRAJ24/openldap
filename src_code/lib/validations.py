@@ -1759,9 +1759,7 @@ class Validations:
                             {"udyam": cin}
                         ]
                     }
-                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
-                if status_code == 200 and len(res[RESPONSE]) > 0:
-                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}, 406
+                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}     
             elif type == "pan":
                 query = {
                         "$or": [
@@ -1769,9 +1767,7 @@ class Validations:
                             {"pan": cin}
                         ]
                     }
-                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
-                if status_code == 200 and len(res[RESPONSE]) > 0:
-                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}, 406
+                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}
             elif type == "cin":
                 query = {
                         "$or": [
@@ -1779,9 +1775,11 @@ class Validations:
                             {"ccin": cin}
                         ]
                     }
-                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
-                if status_code == 200 and len(res[RESPONSE]) > 0:
-                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
+                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}
+
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+            if status_code == 200 and len(res[RESPONSE]) > 0:
+                return msg, 406    
             else:
                 return {STATUS: SUCCESS, 'cin': cin, 'org_type': type}, 200
         except Exception as e:
