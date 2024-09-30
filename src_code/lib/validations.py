@@ -1748,7 +1748,7 @@ class Validations:
             type_decrypted = CommonLib.aes_decryption_v2(org_type[0], org_id[:16])
             cin = cin_decrypted if cin_decrypted is not None else cin_no
             type = type_decrypted if type_decrypted is not None else type_decrypted
-            if not cin or not self.is_valid_cin(cin):
+            if not cin or not (self.is_valid_cin(cin) or self.is_valid_udyam(cin) or self.is_valid_pan(cin)):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not type :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
