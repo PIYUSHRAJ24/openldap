@@ -1737,6 +1737,58 @@ class Validations:
                 return {STATUS: SUCCESS, 'cin': cin, 'name': name}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
+    
+    def is_valid_cin_pan_udyam(self, request, org_id):
+        ''' check valid CIN'''
+        try:
+            org_id = CommonLib.filter_input(request.values.get('org_id'))
+            cin_no = CommonLib.filter_input(request.values.get('cin'))
+            org_type = CommonLib.filter_input(request.values.get('org_type'))
+            cin_decrypted = CommonLib.aes_decryption_v2(cin_no[0], org_id[:16])
+            type_decrypted = CommonLib.aes_decryption_v2(org_type[0], org_id[:16])
+            cin = cin_decrypted if cin_decrypted is not None else cin_no
+            type = type_decrypted if type_decrypted is not None else type_decrypted
+            if not cin or not self.is_valid_cin(cin):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
+            if not type :
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
+            if type == "msme":
+                query = {'cin': cin}
+                query = {
+                        "$or": [
+                            {"cin": cin},
+                            {"udyam": cin}
+                        ]
+                    }
+                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+                if status_code == 200 and len(res[RESPONSE]) > 0:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}, 406
+            elif type == "pan":
+                query = {'cin': cin}
+                query = {
+                        "$or": [
+                            {"cin": cin},
+                            {"pan": cin}
+                        ]
+                    }
+                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+                if status_code == 200 and len(res[RESPONSE]) > 0:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}, 406
+            elif type == "cin":
+                query = {'cin': cin}
+                query = {
+                        "$or": [
+                            {"cin": cin},
+                            {"ccin": cin}
+                        ]
+                    }
+                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+                if status_code == 200 and len(res[RESPONSE]) > 0:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
+            else:
+                return {STATUS: SUCCESS, 'cin': cin, 'org_type': type}, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::verify_details:' + str(e)}, 400
 
     def is_valid_cin_v3(self, request, org_id):
         ''' check valid CIN HMAC based '''

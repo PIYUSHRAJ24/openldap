@@ -126,6 +126,25 @@ def update_cin():
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#1901]"}), 400
+    
+@bp.route("/verify_details", methods=["POST"])
+def verify_details():
+    
+    try:
+        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request)
+        if res[STATUS] == ERROR:
+            return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
+        cin_no = res.get('cin')
+        org_type = res.get('org_type')
+        if not cin_no:
+            return jsonify({"status": "error", "response": "CIN number not provided"}), 400
+        if not org_type:
+            return jsonify({"status": "error", "response": "CIN name not provided"}), 400
+        
+        return res, 200
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#1903]"}), 400
 
 
 def ids_cin_verify(cin_no, cin_name):
