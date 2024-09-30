@@ -1741,7 +1741,7 @@ class Validations:
     def is_valid_cin_pan_udyam(self, request, org_id):
         ''' check valid CIN'''
         try:
-            org_id = CommonLib.filter_input(request.values.get('org_id'))
+            # org_id = CommonLib.filter_input(request.values.get('org_id'))
             cin_no = CommonLib.filter_input(request.values.get('cin'))
             org_type = CommonLib.filter_input(request.values.get('org_type'))
             cin_decrypted = CommonLib.aes_decryption_v2(cin_no[0], org_id[:16])
