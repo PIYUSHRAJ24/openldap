@@ -1753,7 +1753,6 @@ class Validations:
             if not type :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
             if type == "msme":
-                query = {'cin': cin}
                 query = {
                         "$or": [
                             {"cin": cin},
@@ -1764,7 +1763,6 @@ class Validations:
                 if status_code == 200 and len(res[RESPONSE]) > 0:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}, 406
             elif type == "pan":
-                query = {'cin': cin}
                 query = {
                         "$or": [
                             {"cin": cin},
@@ -1775,7 +1773,6 @@ class Validations:
                 if status_code == 200 and len(res[RESPONSE]) > 0:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}, 406
             elif type == "cin":
-                query = {'cin': cin}
                 query = {
                         "$or": [
                             {"cin": cin},
