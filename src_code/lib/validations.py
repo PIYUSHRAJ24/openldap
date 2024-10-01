@@ -1738,7 +1738,7 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
     
-    def is_valid_cin_pan_udyam(self, request, org_id):
+    def is_valid_cin_pan_udyam(self, request):
         ''' check valid CIN'''
         try:
             # org_id = CommonLib.filter_input(request.values.get('org_id'))
@@ -1769,7 +1769,7 @@ class Validations:
                 if type in error_map:
                     return {STATUS: ERROR, ERROR_DES: Errors.error(error_map[type])}, 406
             else:
-                return {STATUS: SUCCESS}, 200
+                return {STATUS: SUCCESS, RESPONSE: True}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::verify_details:' + str(e)}, 400
 
