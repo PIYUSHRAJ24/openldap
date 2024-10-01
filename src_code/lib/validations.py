@@ -1752,34 +1752,22 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not type :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
-            if type == "msme":
-                query = {
+            query = {
                         "$or": [
                             {"cin": cin},
-                            {"udyam": cin}
-                        ]
-                    }
-                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}     
-            elif type == "pan":
-                query = {
-                        "$or": [
-                            {"cin": cin},
-                            {"pan": cin}
-                        ]
-                    }
-                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}
-            elif type == "cin":
-                query = {
-                        "$or": [
-                            {"cin": cin},
+                            {"udyam": cin},
+                            {"pan": cin},
                             {"ccin": cin}
                         ]
                     }
-                msg = {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}
-
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 200 and len(res[RESPONSE]) > 0:
-                return msg, 406    
+                if type == "msme":
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}, 406     
+                elif type == "pan":
+                    return{STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}, 406
+                elif type == "cin":
+                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')},406  
             else:
                 return {STATUS: SUCCESS, 'cin': cin, 'org_type': type}, 200
         except Exception as e:
