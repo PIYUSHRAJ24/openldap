@@ -1484,25 +1484,7 @@ class Validations:
             return 200, [file_name, file]
 
         except Exception as e:
-            return 400, {'status': 'error', 'error_description': 'Exception:Validations:upload_file_validation::' + str(e)} 
-
-   
-    def get_txn(self, org_id):
-        try:
-            if len(org_id) == 36:
-                res = MONGOLIB.accounts_eve(
-                    CONFIG["org_eve"]["collection_details"],
-                    {'org_id': org_id},
-                    projection={'_id': 0, 'org_id': 1}
-                )
-                for data in res:
-                    if data:
-                        return str(uuid.uuid4())
-                return org_id
-            else:
-                return str(uuid.uuid4())
-        except Exception as e:
-            return str(uuid.uuid4())
+            return 400, {'status': 'error', 'error_description': 'Exception:Validations:upload_file_validation::' + str(e)}
 
     def valid_txn(self, txn):
         try:
@@ -1738,7 +1720,7 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
     
-    def is_valid_cin_pan_udyam(self, request):
+    def is_valid_cin_pan_udyam(self, request, txn):
         ''' check valid CIN'''
         try:
             # org_id = CommonLib.filter_input(request.values.get('org_id'))
@@ -1746,6 +1728,8 @@ class Validations:
             org_type = CommonLib.filter_input(request.values.get('org_type'))
             cin = cin_no[0]
             type = org_type[0]
+            orgid = self.get_txn(str(txn))
+
             if not cin or not (self.is_valid_cin(cin) or self.is_valid_udyam(cin) or self.is_valid_pan(cin)):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not type :
@@ -1769,7 +1753,7 @@ class Validations:
                 if type in error_map:
                     return {STATUS: ERROR, ERROR_DES: Errors.error(error_map[type])}, 406
             else:
-                return {STATUS: SUCCESS, RESPONSE: True}, 200
+                return {STATUS: SUCCESS, RESPONSE: True, "txn":orgid}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::verify_details:' + str(e)}, 400
 

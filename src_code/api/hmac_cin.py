@@ -118,10 +118,11 @@ def verify_details():
     
     try:
         txn = str(uuid.uuid4())
-        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request)
+        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request, txn)
         if res[STATUS] == ERROR:
             return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
-        return {STATUS: SUCCESS, "txn":txn}, 200
+        
+        return {STATUS: SUCCESS, "txn": res["txn"]}, 200
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#12103]"}), 400
