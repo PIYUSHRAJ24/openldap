@@ -1762,14 +1762,16 @@ class Validations:
                     }
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 200 and len(res[RESPONSE]) > 0:
-                if type == "msme":
-                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_196')}, 406     
-                elif type == "pan":
-                    return{STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_214')}, 406
-                elif type == "cin":
-                    return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')},406  
+                error_map = {
+                    "msme": 'ERR_MSG_196',
+                    "pan": 'ERR_MSG_214',
+                    "cin": 'ERR_MSG_182'
+                }
+
+                if type in error_map:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error(error_map[type])}, 406
             else:
-                return {STATUS: SUCCESS, 'cin': cin, 'org_type': type}, 200
+                return {STATUS: SUCCESS}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::verify_details:' + str(e)}, 400
 
