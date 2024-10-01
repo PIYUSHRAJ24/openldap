@@ -176,6 +176,8 @@ class Errors:
             'ERR_MSG_210': "Access ID not found.",
             'ERR_MSG_211': "Digilockerid not found.",
             'ERR_MSG_212': "User already revoked.",
+            'ERR_MSG_213': "User already Active.",
+            "ERR_MSG_214": "The PAN Number you entered is already registered with us.",
             
 
             'UIDAI-K-100' : 'OTP is not valid. Please enter Correct OTP as sent by UIDAI.',

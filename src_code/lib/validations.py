@@ -1348,31 +1348,30 @@ class Validations:
 
     def grant_access(self, request):
         ''' Validate org access rules received over http request '''
-        digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
+        # digilockerid =  CommonLib.filter_input(request.values.get('digilockerid') or request.args.get('digilockerid'))
         access_id = CommonLib.filter_input(request.values.get('access_id') or request.args.get('access_id'))
         rule_name =  CommonLib.filter_input(request.values.get('rule_name') or request.args.get('rule_name'))
         # updated_on = datetime.datetime.now().strftime(D_FORMAT) # add this to worker
         
         try:
-            if digilockerid[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "digilockerid", RESPONSE: digilockerid[0]}, 400
-            elif digilockerid[0] != None and self.is_valid_did(digilockerid[0]) == None:
-                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_104")}, 400
-            if access_id[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "access_id", RESPONSE: access_id[0]}, 400
-            elif access_id[0] != None and not access_id[0]:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
-            if not (digilockerid[0] or access_id[0]):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_126")}, 400
-            if rule_name[1] == 400:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "rule_name", RESPONSE: rule_name[0]}, 400
-            elif rule_name[0] != None and not rule_name[0]:
+            access_id_1 = CommonLib.aes_decryption_v2(access_id[0], g.org_id[:16])
+            rule_name_1 = CommonLib.aes_decryption_v2(rule_name[0], g.org_id[:16])
+            
+            if access_id_1 is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_210")}, 400
+            elif access_id_1 and not self.is_valid_access_id(access_id_1):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_141")}, 400
+            
+            for a in g.org_access_rules:
+                if a.get('access_id') == access_id_1 and a.get('is_active') == "Y":
+                   return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_213")}, 400 
+            
+            if rule_name_1 is None:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_136")}, 400
+            rule_id = Roles.rule_name(rule_name_1)
             post_data = {
-                'digilockerid': digilockerid[0],
-                'access_id': access_id[0],
-                'rule_name': rule_name[0],
-                # 'updated_on': updated_on,
+                'access_id': access_id_1,
+                'rule_id': rule_id,
                 'is_active': "Y"
             }
             return {
@@ -1738,6 +1737,44 @@ class Validations:
                 return {STATUS: SUCCESS, 'cin': cin, 'name': name}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
+    
+    def is_valid_cin_pan_udyam(self, request, org_id):
+        ''' check valid CIN'''
+        try:
+            # org_id = CommonLib.filter_input(request.values.get('org_id'))
+            cin_no = CommonLib.filter_input(request.values.get('cin'))
+            org_type = CommonLib.filter_input(request.values.get('org_type'))
+            cin_decrypted = CommonLib.aes_decryption_v2(cin_no[0], org_id[:16])
+            # type_decrypted = CommonLib.aes_decryption_v2(org_type[0], org_id[:16])
+            cin = cin_decrypted if cin_decrypted is not None else cin_no
+            # type = type_decrypted if type_decrypted is not None else type_decrypted
+            type = org_type[0]
+            if not cin or not (self.is_valid_cin(cin) or self.is_valid_udyam(cin) or self.is_valid_pan(cin)):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
+            if not type :
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
+            query = {
+                        "$or": [
+                            {"cin": cin},
+                            {"udyam": cin},
+                            {"pan": cin},
+                            {"ccin": cin}
+                        ]
+                    }
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+            if status_code == 200 and len(res[RESPONSE]) > 0:
+                error_map = {
+                    "msme": 'ERR_MSG_196',
+                    "pan": 'ERR_MSG_214',
+                    "cin": 'ERR_MSG_182'
+                }
+
+                if type in error_map:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error(error_map[type])}, 406
+            else:
+                return {STATUS: SUCCESS}, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::verify_details:' + str(e)}, 400
 
     def is_valid_cin_v3(self, request, org_id):
         ''' check valid CIN HMAC based '''
