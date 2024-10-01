@@ -1744,10 +1744,7 @@ class Validations:
             # org_id = CommonLib.filter_input(request.values.get('org_id'))
             cin_no = CommonLib.filter_input(request.values.get('cin'))
             org_type = CommonLib.filter_input(request.values.get('org_type'))
-            cin_decrypted = CommonLib.aes_decryption_v2(cin_no[0], org_id[:16])
-            # type_decrypted = CommonLib.aes_decryption_v2(org_type[0], org_id[:16])
-            cin = cin_decrypted if cin_decrypted is not None else cin_no
-            # type = type_decrypted if type_decrypted is not None else type_decrypted
+            cin = cin_no[0]
             type = org_type[0]
             if not cin or not (self.is_valid_cin(cin) or self.is_valid_udyam(cin) or self.is_valid_pan(cin)):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
