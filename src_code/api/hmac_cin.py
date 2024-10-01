@@ -117,7 +117,7 @@ def update_cin():
 def verify_details():
     
     try:
-        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request, g.org_id)
+        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request)
         if res[STATUS] == ERROR:
             return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
         return res, 200
