@@ -1676,12 +1676,30 @@ def activate():
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-
+    
 
 @bp.route('/deactivate', methods=['POST'])
 def deactivate():
     try:
         return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "N"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+@bp.route('/approve', methods=['POST'])
+def approve():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+@bp.route('/disapprove', methods=['POST'])
+def disapprove():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "N"}}, 'Organization_Xchange', 'org_update_details_')
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
