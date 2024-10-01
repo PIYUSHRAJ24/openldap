@@ -1728,7 +1728,7 @@ class Validations:
             org_type = CommonLib.filter_input(request.values.get('org_type'))
             cin = cin_no[0]
             type = org_type[0]
-            orgid = self.get_txn(str(txn))
+            orgid = self.get_txn(txn)
 
             if not cin or not (self.is_valid_cin(cin) or self.is_valid_udyam(cin) or self.is_valid_pan(cin)):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
