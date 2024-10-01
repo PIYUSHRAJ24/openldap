@@ -120,13 +120,6 @@ def verify_details():
         res, status_code = VALIDATIONS.is_valid_cin_pan_udyam(request, g.org_id)
         if res[STATUS] == ERROR:
             return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
-        cin_no = res.get('cin')
-        org_type = res.get('org_type')
-        if not cin_no:
-            return jsonify({"status": "error", "response": "CIN number not provided"}), 400
-        if not org_type:
-            return jsonify({"status": "error", "response": "CIN name not provided"}), 400
-        
         return res, 200
     except Exception as e:
         VALIDATIONS.log_exception(e)
