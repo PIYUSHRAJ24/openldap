@@ -169,10 +169,14 @@ def get_details():
                 r['icai'] = None # type: ignore
             if not r.get('udyam'): # type: ignore
                 r['udyam'] = None # type: ignore
-            if not r.get('is_active'): # type: ignore
-                r['is_active'] = 'N' # type: ignore
-            if not r.get('is_approved'): # type: ignore
-                r['is_approved'] = 'N' # type: ignore
+            r['org_status'] = {}
+            r['org_status']['is_active'] = r.get('is_active', 'N')
+            r['org_status']['is_approved'] = r.get('is_approved', 'PENDING')
+            if r.get('approved_on'):
+                r['org_status']['approved_on'] = datetime.datetime.strptime(r['approved_on'], D_FORMAT).strftime("%d/%m/%Y")
+            if r.get('deactivated_on'):
+                r['org_status']['deactivated_on'] = datetime.datetime.strptime(r['deactivated_on'], D_FORMAT).strftime("%d/%m/%Y")
+            r['org_status']['remarks'] = r.get('remarks')
             r.pop('consent', None) # type: ignore
             cres = esign_consent_get()
             g.consent_time = cres[0].get('consent_time', '')
