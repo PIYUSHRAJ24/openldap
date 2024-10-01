@@ -83,7 +83,7 @@ def validate():
                 return res, status_code
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate"):
+        if request.path.split('/')[-1] in ("activate", "deactivate","approve","approve"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
