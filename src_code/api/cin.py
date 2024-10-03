@@ -127,7 +127,6 @@ def update_cin():
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#1901]"}), 400
 
-
 def ids_cin_verify(cin_no, cin_name):
     try:
         ids_api_url = CONFIG["ids"]["url"]

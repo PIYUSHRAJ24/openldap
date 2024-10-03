@@ -83,7 +83,7 @@ def validate():
                 return res, status_code
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate"):
+        if request.path.split('/')[-1] in ("activate", "deactivate","approve","approve"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
@@ -169,6 +169,14 @@ def get_details():
                 r['icai'] = None # type: ignore
             if not r.get('udyam'): # type: ignore
                 r['udyam'] = None # type: ignore
+            r['org_status'] = {}
+            r['org_status']['is_active'] = r.get('is_active', 'N')
+            r['org_status']['is_approved'] = r.get('is_approved', 'PENDING')
+            if r.get('approved_on'):
+                r['org_status']['approved_on'] = datetime.datetime.strptime(r['approved_on'], D_FORMAT).strftime("%d/%m/%Y")
+            if r.get('deactivated_on'):
+                r['org_status']['deactivated_on'] = datetime.datetime.strptime(r['deactivated_on'], D_FORMAT).strftime("%d/%m/%Y")
+            r['org_status']['remarks'] = r.get('remarks')
             r.pop('consent', None) # type: ignore
             cres = esign_consent_get()
             g.consent_time = cres[0].get('consent_time', '')
@@ -1670,12 +1678,30 @@ def activate():
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
-
+    
 
 @bp.route('/deactivate', methods=['POST'])
 def deactivate():
     try:
         return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "N"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+@bp.route('/approve', methods=['POST'])
+def approve():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+@bp.route('/disapprove', methods=['POST'])
+def disapprove():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "N"}}, 'Organization_Xchange', 'org_update_details_')
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
