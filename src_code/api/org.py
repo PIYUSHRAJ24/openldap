@@ -315,8 +315,8 @@ def get_access_rules():
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
     
-@bp.route('/get_access_rules/v2', methods=['GET'])
-def get_access_rules():
+@bp.route('/get_access_rules_v2', methods=['GET'])
+def get_access_rules_v2():
     logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
     try:
         user_details=[]
