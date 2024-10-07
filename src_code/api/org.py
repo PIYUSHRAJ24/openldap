@@ -193,6 +193,37 @@ def get_details():
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
+@bp.route('/entity/details', methods=['GET'])
+def get_details_partner():
+    req = {'org_id': g.org_id}
+    logarray.update({ENDPOINT: 'get_details', REQUEST: req})
+    try:
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
+        if status_code != 200:
+            logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return res, status_code
+        
+        resp = {}
+        for r in res[RESPONSE]:
+            resp['pan'] = r.get('pan') or None
+            resp['udyam'] = r.get('udyam') or None
+            resp['cin'] = r.get('ccin') or None
+            resp['mobile'] = r.get('mobile') or None
+            resp['email'] = r.get('email') or None
+            resp['dt_of_enc'] = r.get('d_incorporation') or None
+            resp['name'] = r.get('name') or None
+            resp['gstin'] = r.get('gstin') or None
+        log_data = {RESPONSE: resp}
+        logarray.update(log_data)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return resp, status_code
+    except Exception as e:
+        logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
 @bp.route('/get_authorization_letter', methods=['GET'])
 def get_authorization_letter():
     req = {'org_id': g.org_id}
