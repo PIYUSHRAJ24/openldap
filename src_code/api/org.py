@@ -317,7 +317,7 @@ def get_access_rules():
     
 @bp.route('/get_access_rules_v2', methods=['GET'])
 def get_access_rules_v2():
-    logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
+    logarray.update({ENDPOINT: 'get_access_rules_v2', REQUEST: {'org_id': g.org_id}})
     try:
         # Collecting user details
         user_details,status_code = get_access_rules()
