@@ -304,7 +304,29 @@ def get_access_rules():
                 "dept_name": g.dept_details.get(x.get('dept_id'),{}).get("name",""),
                 "sec_name": g.sec_details.get(x.get('sec_id'),{}).get("name","")
             })
+        
+        res = {STATUS: SUCCESS, RESPONSE: user_details}
+        logarray.update(res)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return res, 200
+    except Exception as e:
+        logarray.update({STATUS: ERROR, RESPONSE: str(e)})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+@bp.route('/get_access_rules_v2', methods=['GET'])
+def get_access_rules_v2():
+    logarray.update({ENDPOINT: 'get_access_rules', REQUEST: {'org_id': g.org_id}})
+    try:
+        # Collecting user details
+        user_details,status_code = get_access_rules()
+        if status_code != 200:
+            logarray.update({STATUS: ERROR, RESPONSE: user_details})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return user_details, 400
 
+        # Check for encryption based on query parameter (e.g., ?version=2)
         version = request.args.get('version', '2')  # Default to version 2 if not provided
         if version == '2':
             # Convert user_details to string (JSON format) for encryption
@@ -314,11 +336,13 @@ def get_access_rules():
         else:
             # Plain user details for version 1
             response_data = user_details
-        
+
+        # Prepare and return the response
         res = {STATUS: SUCCESS, RESPONSE: response_data}
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
+
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
