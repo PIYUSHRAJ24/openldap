@@ -47,6 +47,7 @@ def validate_user():
         "body": request.get_data(as_text=True),
     }
     request.logger_data = request_data
+    g.org_id = request.headers.get("orgid")
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -178,23 +179,33 @@ def get_token(adh):
 @bp.route("/user", methods=["POST"])
 def user():
     try:
+        adh = None
+        mobile = None
+        user_name = None
         # Get the user data from the form or JSON payload
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
-
+        if aadhar:
+            adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
+        elif mobile_no:
+            mobile = CommonLib.aes_decryption_v2(mobile_no, g.org_id[:16])
+        elif email:
+            user_name = CommonLib.aes_decryption_v2(email, g.org_id[:16])
+        else:
+            return {"status": "error", "response": "Please enter a valid mobile number or aadhar number or email"}, 400
         # Prepare API URL and payload
-        url = CONFIG["acsapi_dl"]['url'] + '/retrieve_account/1.0'
+        url = CONFIG["acsapi"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
-        client_id = CONFIG["acsapi_dl"]['client_id']
-        client_secret = CONFIG["acsapi_dl"]["client_secret"]
+        client_id = CONFIG["acsapi"]['client_id']
+        client_secret = CONFIG["acsapi"]["client_secret"]
         key = client_secret + client_id + ts
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
         payload = {
-            "mobile": mobile_no or '',
-            "username": email or '',
-            "uid": aadhar or '',
+            "mobile": mobile or '',
+            "username": user_name or '',
+            "uid": adh or '',
             "clientid": client_id,
             "hmac": hmac,
             "ts": ts
@@ -207,9 +218,16 @@ def user():
         response = requests.post(url, headers=headers, data=payload, timeout=20)
         if response.status_code != 200:
             return json.loads(response.text), response.status_code 
-
-        # Return the JSON response from the API
-        return response.json()
+        
+        response_data = response.json()
+        status = response_data.get("status")
+        data = json.dumps(response_data.get("data"))
+        encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
+        encrypted_response = {
+            "status": status,
+            "data": encrypted_data
+        }
+        return encrypted_response
 
     except Exception as e:
         # Catch and return any errors
