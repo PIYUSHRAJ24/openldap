@@ -193,6 +193,37 @@ def get_details():
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
+@bp.route('/entity/details', methods=['GET'])
+def get_details_partner():
+    req = {'org_id': g.org_id}
+    logarray.update({ENDPOINT: 'get_details', REQUEST: req})
+    try:
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
+        if status_code != 200:
+            logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return res, status_code
+        
+        resp = {}
+        for r in res[RESPONSE]:
+            resp['pan'] = r.get('pan') or None
+            resp['udyam'] = r.get('udyam') or None
+            resp['cin'] = r.get('ccin') or None
+            resp['mobile'] = r.get('mobile') or None
+            resp['email'] = r.get('email') or None
+            resp['dt_of_enc'] = r.get('d_incorporation') or None
+            resp['name'] = r.get('name') or None
+            resp['gstin'] = r.get('gstin') or None
+        log_data = {RESPONSE: resp}
+        logarray.update(log_data)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return resp, status_code
+    except Exception as e:
+        logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
 @bp.route('/get_authorization_letter', methods=['GET'])
 def get_authorization_letter():
     req = {'org_id': g.org_id}
@@ -309,6 +340,40 @@ def get_access_rules():
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
+    except Exception as e:
+        logarray.update({STATUS: ERROR, RESPONSE: str(e)})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+@bp.route('/get_access_rules_v2', methods=['GET'])
+def get_access_rules_v2():
+    logarray.update({ENDPOINT: 'get_access_rules_v2', REQUEST: {'org_id': g.org_id}})
+    try:
+        # Collecting user details
+        user_details,status_code = get_access_rules()
+        if status_code != 200:
+            logarray.update({STATUS: ERROR, RESPONSE: user_details})
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+            return user_details, 400
+
+        # Check for encryption based on query parameter (e.g., ?version=2)
+        version = request.args.get('version', '2')  # Default to version 2 if not provided
+        if version == '2':
+            # Convert user_details to string (JSON format) for encryption
+            user_details_str = json.dumps(user_details)
+            # Encrypt user details string
+            response_data = CommonLib.aes_encryption(user_details_str, g.org_id[:16])
+        else:
+            # Plain user details for version 1
+            response_data = user_details
+
+        # Prepare and return the response
+        res = {STATUS: SUCCESS, RESPONSE: response_data}
+        logarray.update(res)
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        return res, 200
+
     except Exception as e:
         logarray.update({STATUS: ERROR, RESPONSE: str(e)})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
