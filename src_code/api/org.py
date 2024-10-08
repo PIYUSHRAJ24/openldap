@@ -77,7 +77,7 @@ def validate():
             return
         org_bypass_urls = ('create_org_user')
         g.endpoint = request.path
-        if request.path.split('/')[-1] in ("get_user_request","get_details_partner"):
+        if request.path.split('/')[-1] in ("get_user_request","details"):
             res, status_code = CommonLib().validation_rules(request, True)
             if status_code != 200:
                 return res, status_code
