@@ -77,13 +77,14 @@ def validate():
             return
         org_bypass_urls = ('create_org_user')
         g.endpoint = request.path
-        if request.path.split('/')[-1] == "get_user_request":
+        if request.path.split('/')[-1] in ("get_user_request","get_details_partner"):
             res, status_code = CommonLib().validation_rules(request, True)
             if status_code != 200:
                 return res, status_code
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
+            g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate","approve","approve"):
+        if request.path.split('/')[-1] in ("activate", "deactivate","approve","disapprove"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
