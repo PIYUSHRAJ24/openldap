@@ -82,8 +82,9 @@ def validate():
             if status_code != 200:
                 return res, status_code
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
+            g.org_id, _ = res['orgid']
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate","approve","approve"):
+        if request.path.split('/')[-1] in ("activate", "deactivate", "approve", "disapprove"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
@@ -206,14 +207,12 @@ def get_details_partner():
         
         resp = {}
         for r in res[RESPONSE]:
-            resp['pan'] = r.get('pan') or None
-            resp['udyam'] = r.get('udyam') or None
-            resp['cin'] = r.get('ccin') or None
-            resp['mobile'] = r.get('mobile') or None
-            resp['email'] = r.get('email') or None
-            resp['dt_of_enc'] = r.get('d_incorporation') or None
-            resp['name'] = r.get('name') or None
-            resp['gstin'] = r.get('gstin') or None
+            resp['doi'] = datetime.datetime.strptime(r['d_incorporation'], D_FORMAT).strftime("%d-%m-%Y")
+            resp['email'] = r.get('email')
+            resp['entitylockerid'] = g.org_id
+            resp['mobile'] = r.get('mobile')
+            resp['name'] = r.get('name')
+            resp['verified_by'] = r.get('org_type')
         log_data = {RESPONSE: resp}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
