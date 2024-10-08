@@ -77,4 +77,41 @@ def refreshjwt(post_data = None):
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400   
+
+
+@bp.route('/token', methods=['POST'])
+def token(post_data = None):
+    try:        
+        #hmac = secret+clientid+ts+clientid+orgid+digilockerid
+        did = request.headers.get('device-security-id') or ""
+        orgid = request.headers.get('orgid')
+        ts = request.headers.get('ts')
+        hmac = request.headers.get('hmac')
+        clientid = request.headers.get('clientid')
+        digilockerid = request.headers.get('user')
+        source = request.headers.get('source') or "web"
+        _, status_code = CommonLib().validate_hmac_partners_256(clientid,ts,clientid,orgid,digilockerid,hmac)
+        if status_code != 200:
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_122')}, 401
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)
+        return jwtres, status_code
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+@bp.route('/refresh', methods=['POST'])
+def refresh(post_data = None):
+    try:
+        did = request.headers.get('device-security-id') or ""
+        orgid = request.headers.get('orgid')
+        refresh_token = request.headers.get('refresh-token')
+        digilockerid = request.headers.get('user')
+        source = request.headers.get('source') or "web"
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.refresh_jwt(refresh_token, digilockerid, did, orgid, source)
+        return jwtres, status_code
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400   
     
