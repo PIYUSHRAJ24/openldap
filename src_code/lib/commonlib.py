@@ -515,8 +515,8 @@ class CommonLib:
 
             if res[RESPONSE][0].get('request_status') == "created": # type: ignore
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_179")}, 400
-
-            access_post_data = {
+            access_post_data = []
+            first_record = {
                 'org_id': res[RESPONSE][0]['org_id'], # type: ignore
                 'digilockerid': digilockerid,
                 'access_id': hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid).encode()).hexdigest(), # type: ignore
@@ -527,10 +527,24 @@ class CommonLib:
                 'updated_on': datetime.datetime.now().strftime(D_FORMAT)
             }
             if res[RESPONSE][0].get('dept_id','') == g.org_id:
-                access_post_data['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0]['org_id']).encode()).hexdigest()
-                access_post_data['user_type'] = res[RESPONSE][0].get('user_type','')
+                first_record['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0]['org_id']).encode()).hexdigest()
+                first_record['user_type'] = res[RESPONSE][0].get('user_type','')
+                access_post_data.append(first_record)
             else:
-                access_post_data['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid).encode()).hexdigest()
+                access_post_data.append(first_record)
+                second_record = {
+                    'org_id': res[RESPONSE][0]['org_id'], # type: ignore,
+                    'digilockerid': digilockerid,
+                    'is_active': 'Y',
+                    'rule_id': res[RESPONSE][0]['rule_id'], # type: ignore,
+                    'designation': res[RESPONSE][0].get('designation'), # type: ignore,
+                    'updated_by': res[RESPONSE][0].get('updated_by'), # type: ignore,
+                    'updated_on': datetime.datetime.now().strftime(D_FORMAT),
+                    'dept_id': res[RESPONSE][0].get('dept_id'),
+                    'access_id' : hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0].get('dept_id')).encode()).hexdigest()
+                    }
+                access_post_data.append(second_record)
+                
 
             cin = res[RESPONSE][0].get('cin') # type: ignore
             din = res[RESPONSE][0].get('din') # type: ignore
@@ -550,7 +564,8 @@ class CommonLib:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_205')}, 400
 
             # Same accounts can not be added
-            query = {'org_id': access_post_data['org_id']} # type: ignore
+
+            query = {'org_id': access_post_data[0]['org_id']} # type: ignore
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_rules"], query, {}, limit=500)
             if status_code == 400:
                 return render_template(FORCED_ACCESS_TEMPLATE), 401
@@ -563,7 +578,7 @@ class CommonLib:
                 self.update_request(transaction_id, "duplicate", True)
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_156')}, 400
 
-            if access_post_data['designation'] == "director" and self.is_valid_cin(cin):
+            if access_post_data[0]['designation'] == "director" and self.is_valid_cin(cin):
                 if not din[0] or len(din[0]) != 8:
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_145")}, 400
                 res, status_code = self.director_name_match(cin, din, digilockerid)
