@@ -33,21 +33,59 @@ CONFIG = dict(CONFIG)
 data_vault = CONFIG["data_vault"]
 secrets = json.loads(SecretManager.get_secret())
 
+try:
+    CONFIG["JWT_SECRET"] = secrets.get("aes_secret", os.getenv("JWT_SECRET"))
+except Exception:
+    CONFIG["JWT_SECRET"] = os.getenv("JWT_SECRET")  # for local
+
 
 @bp.before_request
 def validate_user():
     """
-    HMAC Authentication
+    JWT Authentication
     """
-    request_data = {
-        "time_start": datetime.utcnow().isoformat(),
-        "method": request.method,
-        "url": request.url,
-        "headers": dict(request.headers),
-        "body": request.get_data(as_text=True),
-    }
-    request.logger_data = request_data
-    g.org_id = request.headers.get("orgid")
+    try:
+        if request.method == 'OPTIONS':
+            return {"status": "error", "error_description": "OPTIONS OK"}
+
+        bypass_urls = ('healthcheck')
+        if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
+            return
+        g.endpoint = request.path
+        if request.path.split('/')[-1] == "get_user_request":
+            res, status_code = CommonLib().validation_rules(request, True)
+            if status_code != 200:
+                return res, status_code
+            logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
+            return
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.jwt_login()
+        if status_code != 200:
+            return jwtres, status_code
+        g.path = jwtres
+        g.jwt_token = jwtlib.jwt_token
+        g.did = jwtlib.device_security_id
+        g.digilockerid = jwtlib.digilockerid
+        g.org_id = jwtlib.org_id
+        g.role = jwtlib.user_role
+        g.org_access_rules = jwtlib.org_access_rules
+        g.org_user_details = jwtlib.org_user_details
+        g.consent_time = ''
+        consent_bypass_urls = ('user')
+        if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
+            consent_status, consent_code = esign_consent_get()
+            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            try:
+                datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+            except Exception:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+            g.consent_time = consent_status.get('consent_time')
+
+        logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#1900]"}, 401
 
 
 @bp.route("/", methods=["GET", "POST"])
@@ -179,21 +217,21 @@ def get_token(adh):
 @bp.route("/user", methods=["POST"])
 def user():
     try:
-        adh = None
-        mobile = None
-        user_name = None
+        # adh = None
+        # mobile = None
+        # user_name = None
         # Get the user data from the form or JSON payload
         aadhar = request.form.get("uid")
         mobile_no = request.form.get("mobile")
         email = request.form.get("username")
-        if aadhar:
-            adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
-        elif mobile_no:
-            mobile = CommonLib.aes_decryption_v2(mobile_no, g.org_id[:16])
-        elif email:
-            user_name = CommonLib.aes_decryption_v2(email, g.org_id[:16])
-        else:
-            return {"status": "error", "response": "Please enter a valid mobile number or aadhar number or email"}, 400
+        # if aadhar:
+        #     adh = CommonLib.aes_decryption_v2(aadhar, g.org_id[:16])
+        # elif mobile_no:
+        #     mobile = CommonLib.aes_decryption_v2(mobile_no, g.org_id[:16])
+        # elif email:
+        #     user_name = CommonLib.aes_decryption_v2(email, g.org_id[:16])
+        # else:
+        #     return {"status": "error", "response": "Please enter a valid mobile number or aadhar number or email"}, 400
         # Prepare API URL and payload
         url = CONFIG["acsapi_dl"]['url'] + '/retrieve_account/1.0'
         ts = str(int(time.time()))
@@ -203,9 +241,9 @@ def user():
         hash_object = hashlib.sha256(key.encode())
         hmac = hash_object.hexdigest()
         payload = {
-            "mobile": mobile or '',
-            "username": user_name or '',
-            "uid": adh or '',
+            "mobile": mobile_no or '',
+            "username": email or '',
+            "uid": aadhar or '',
             "clientid": client_id,
             "hmac": hmac,
             "ts": ts
@@ -220,14 +258,14 @@ def user():
             return json.loads(response.text), response.status_code 
         
         response_data = response.json()
-        status = response_data.get("status")
-        data = json.dumps(response_data.get("data"))
-        encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
-        encrypted_response = {
-            "status": status,
-            "data": encrypted_data
-        }
-        return encrypted_response
+        # status = response_data.get("status")
+        # data = json.dumps(response_data.get("data"))
+        # # encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
+        # encrypted_response = {
+        #     "status": status,
+        #     "data": data
+        # }
+        return response_data
 
     except Exception as e:
         # Catch and return any errors
