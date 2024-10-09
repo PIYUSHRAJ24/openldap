@@ -262,7 +262,7 @@ def translation(app, subject,user,user_affected= "", filename="", role_id="",val
             "metadata_add": username + ' added File information for ' + prepared_params,
             "metadata_update": username + ' updated file information for ' + prepared_params + ' to ' + (value or ''),
             "doc_type_update": username + ' updated doc type for ' + prepared_params + ' to ' + (value or ''),  
-            "user_added": username + ' added ' + username_affected +' with %s access'%(role_id.capitalize() if role_id else ''),
+            "user_added": username + ' added ' + username_affected +' with %s access'%(role_id.capitalize() if role_id else '') + ' of' + (value or '') + 'Department',
             "user_activated":username + ' activated ' + username_affected,
             "user_deactivated":username + ' deactivated ' + username_affected,
             "assign_role":username + ' assigned ' + (role_id or '') +' access to ' + username_affected,

@@ -1413,6 +1413,7 @@ def create_org_user():
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
             return res, status_code
         din = res['din']
+        name = res['name_dept']
         rule_id = None
         rule_name = None
         for post_data in res['post_data']:
@@ -1448,7 +1449,7 @@ def create_org_user():
         res = {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_100')}
         logarray[RESPONSE].update(res)
         act_resp = activity_insert("user_added","user_added",post_data['updated_by'], # type: ignore
-            g.org_id,user_affected=g.digilockerid,role_id=rule_name)
+            g.org_id,doc_name=name,user_affected=g.digilockerid,role_id=rule_name)
         logarray[RESPONSE].update({"activity_update": act_resp[0]})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         REDISLIB.remove(g.digilockerid+'_org_add_user_verify_otp')

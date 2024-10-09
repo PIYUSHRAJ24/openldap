@@ -530,6 +530,7 @@ class CommonLib:
                 first_record['access_id'] = hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0]['org_id']).encode()).hexdigest()
                 first_record['user_type'] = res[RESPONSE][0].get('user_type','')
                 access_post_data.append(first_record)
+                name_dept = "Default"
             else:
                 access_post_data.append(first_record)
                 second_record = {
@@ -544,8 +545,11 @@ class CommonLib:
                     'access_id' : hashlib.md5((res[RESPONSE][0]['org_id']+digilockerid+res[RESPONSE][0].get('dept_id')).encode()).hexdigest()
                     }
                 access_post_data.append(second_record)
-                
-
+                res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_dept"], {'org_id': g.org_id}, {"dept_id":1, "name":1, "description":1, "is_active":1}, limit=500)
+                if status_code == 200:
+                    for d in res[RESPONSE]:
+                        if d['dept_id'] == res[RESPONSE][0].get('dept_id'): # type: ignore
+                            name_dept = d['name']
             cin = res[RESPONSE][0].get('cin') # type: ignore
             din = res[RESPONSE][0].get('din') # type: ignore
             
@@ -584,7 +588,7 @@ class CommonLib:
                 res, status_code = self.director_name_match(cin, din, digilockerid)
                 if status_code != 200:
                     return res, status_code
-            return {STATUS: SUCCESS, 'post_data': access_post_data, 'din': din}, 200 # type: ignore
+            return {STATUS: SUCCESS, 'post_data': access_post_data, 'din': din, 'name_dept':name_dept}, 200 # type: ignore
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_111"),RESPONSE: 'Exception:Commonlib:create_org_user::' + str(e)}, 500
 
