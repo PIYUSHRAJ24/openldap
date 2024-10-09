@@ -114,7 +114,7 @@ class DriveJwt:
                 payload["exp"] = ts + int(jwt_config.get('jwt_valid_upto_mobile') or 1800)
             encoded = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
             # encoded1 = jwt.encode(access_token, self.jwt_secret, algorithm="HS256")
-            return encoded , 200
+            return {"status": "success", "token": encoded} , 200
         except Exception as e:
             VALIDATIONS.log_exception(e)
             return {"status": "error", "response": Errors.error('err_1201')+"[#1003]"}, 400
