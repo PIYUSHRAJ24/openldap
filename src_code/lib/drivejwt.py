@@ -116,6 +116,7 @@ class DriveJwt:
                     "orgid":orgid,
                     "username":self.aes_encryption(digilockerid, secret),
                     "digilockerid":digilockerid,
+                    "orgid" :orgid,
                     "didsign":self.aes_encryption(did, secret),
                     "is_active":self.aes_encryption(is_active,secret),
                     "is_approved":self.aes_encryption(is_approved,secret)

@@ -44,10 +44,11 @@ except Exception as s:
 
 @bp.route('/getjwt', methods=['POST'])
 def getjwt(post_data = None):
-    try:        
+    try: 
+               
         #hmac = secret+clientid+ts+clientid+orgid+digilockerid
         did = request.values.get('did') or ""
-        orgid = request.values.get('orgid')
+        orgid = request.headers.get('orgid') or request.headers.get('Orgid')
         ts = request.values.get('ts')
         hmac = request.values.get('hmac')
         clientid = request.values.get('clientid')
