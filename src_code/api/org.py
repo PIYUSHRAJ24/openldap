@@ -1742,7 +1742,7 @@ def move_data_attempts_prod(org_id):
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
         if status_code == 200:
             post_data_details = {}
-            r = res[RESPONSE]     
+            r = res[RESPONSE][0]     
             post_data_details['is_approved'] = "YES"
             post_data_details['is_active'] = "N" 
             post_data_details['created_by'] = r.get('created_by','')
