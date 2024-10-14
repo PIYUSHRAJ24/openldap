@@ -72,7 +72,7 @@ def validate():
 
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = ('healthcheck', 'get_count')
+        bypass_urls = ('healthcheck', 'get_count', 'activate')
         if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
             return
         org_bypass_urls = ('create_org_user')
@@ -84,7 +84,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate","approve","disapprove"):
+        if request.path.split('/')[-1] in ("deactivate","approve","disapprove"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
@@ -152,7 +152,7 @@ def get_details():
     req = {'org_id': g.org_id}
     logarray.update({ENDPOINT: 'get_details', REQUEST: req})
     try:
-        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
+        res, status_code = MONGOLIB.org_eve(post_data_details["collection_details"], req, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1736,10 +1736,83 @@ def update_udyam_profile():
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
     
 
+def move_data_attempts_prod(org_id):
+    try:
+        req = {'org_id': org_id}
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
+        if status_code != 200:
+            post_data_details = {}
+            for r in res[RESPONSE]:               
+                post_data['is_approved'] = "YES"
+                post_data_details['is_active'] = "N" 
+                post_data_details['created_by'] = r.get('created_by','')
+                post_data_details['org_alias'] = r.get('org_alias', '')
+                post_data_details['org_type'] = r.get('org_type', '').lower()
+                post_data_details['name'] = r.get('name', '')
+                post_data_details['pan'] = r.get('pan', '').upper()
+                post_data_details['ccin'] = r.get('ccin', '').upper()
+                post_data_details['udyam'] = r.get('udyam', '').upper()
+                post_data_details['mobile'] = r.get('mobile', '')
+                post_data_details['email'] = r.get('email', '').lower()
+                post_data_details['d_incorporation'] = r.get('d_incorporation', '')
+                post_data_details['created_on'] = datetime.now().strftime(D_FORMAT)
+                post_data_details['din'] = r.get('din', '')
+                post_data_details['cin'] = r.get('cin', '').upper()
+                post_data_details['gstin'] = r.get('gstin', '').upper()
+                post_data_details['roc'] = r.get('roc', '')
+                post_data_details['icai'] = r.get('icai', '')
+                post_data_details['dir_info'] = r.get('dir_info',[])
+                post_data_details['authorization_letter'] = r.get('d_incorporation', '')
+                post_data_details['consent'] = r.get('consent', '')
+                post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
+                
+                res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
+                if status_code_di != 200:
+                    return res_di, status_code_di               
+                    
+                access_post_data = {
+                    'org_id': org_id,
+                    'digilockerid': r.get('created_by',''),
+                    'access_id': hashlib.md5((org_id+r.get('created_by','')).encode()).hexdigest(),
+                    'is_active': "Y",
+                    'rule_id': 'ORGR001',
+                    'designation': 'director',
+                    'updated_by': r.get('created_by',''),
+                    'updated_on': datetime.now().strftime(D_FORMAT)
+        
+                }
+                rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
+                if status_code != 200:
+                    return res, status_code
+                
+                activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
+            
+    except Exception as e:
+        return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
+
+
+
 @bp.route('/activate', methods=['POST'])
 def activate():
     try:
-        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+        '''
+        1. get the request from API setu for approval 
+        2. fetch the details from org_attempts and copy it to org_details, acccess_rules and activity
+        3. send request to issue documents for org
+        
+        '''
+        data_moved = move_data_attempts_prod(g.org_id)
+        if data_moved['status'] == 'success':
+            #send request for 
+            
+            #send to 
+            return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+            
+        
+        
+        
+            
+        
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
