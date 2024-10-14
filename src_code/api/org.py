@@ -1750,17 +1750,41 @@ def move_data_attempts_prod(org_id):
             post_data_details['org_type'] = r.get('org_type', '').lower()
             post_data_details['name'] = r.get('name', '')
             post_data_details['pan'] = r.get('pan', '').upper()
-            post_data_details['ccin'] = r.get('ccin', '').upper()
-            post_data_details['udyam'] = r.get('udyam', '').upper()
-            post_data_details['mobile'] = r.get('mobile', '')
-            post_data_details['email'] = r.get('email', '').lower()
+            if r.get('ccin', None):
+                post_data_details['ccin'] = r.get('ccin').upper()
+            
+            if r.get('udyam', None):
+                post_data_details['udyam'] = r.get('udyam').upper()
+            
+            if r.get('mobile', None):
+                post_data_details['mobile'] = r.get('mobile')
+            
+            if r.get('email', None):
+                post_data_details['email'] = r.get('email').lower()
+                
             post_data_details['d_incorporation'] = r.get('d_incorporation', '')
             post_data_details['created_on'] = datetime.datetime.now().strftime(D_FORMAT)
-            post_data_details['din'] = r.get('din', '')
-            post_data_details['cin'] = r.get('cin', '').upper()
-            post_data_details['gstin'] = r.get('gstin', '').upper()
-            post_data_details['roc'] = r.get('roc', '')
-            post_data_details['icai'] = r.get('icai', '')
+            
+            din = r.get('din')
+            if din:
+                post_data_details['din'] = din
+
+            cin = r.get('cin')
+            if cin:
+                post_data_details['cin'] = cin.upper()
+
+            gstin = r.get('gstin')
+            if gstin:
+                post_data_details['gstin'] = gstin.upper()
+
+            roc = r.get('roc')
+            if roc:
+                post_data_details['roc'] = roc
+
+            icai = r.get('icai')
+            if icai:
+                post_data_details['icai'] = icai
+                
             post_data_details['dir_info'] = r.get('dir_info',[])
             post_data_details['authorization_letter'] = r.get('d_incorporation', '')
             post_data_details['consent'] = r.get('consent', '')
