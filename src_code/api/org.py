@@ -1734,7 +1734,80 @@ def update_udyam_profile():
         print(e)
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+def ids_verify(verification_type, data):
+    try:
+        ids_api_url = CONFIG["ids"]["url"]
+        if verification_type == "cin":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_cin_din"
+            required_fields = ["cin", "din", "director_gender","director_name","director_dob"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "CIN details required"}), 400
+        elif verification_type == "pan":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_pan"
+            required_fields = ["d_incorporation", "name", "pan"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "PAN details required"}), 400
+        elif verification_type == "udyam":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_udcer"
+            required_fields = ["udyam_number", "mobile"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "UDYAM details required"}), 400
+        else:
+            return jsonify({"status": "error", "response": "Invalid verification type"}), 400
+
+        ids_clientid = CONFIG["ids"]["client_id"]
+        ids_clientsecret = CONFIG["ids"]["client_secret"]
+        ts = str(int(time.time()))
+        key = f"{ids_clientsecret}{ids_clientid}{g.org_id}{ts}"
+        hmac = hashlib.sha256(key.encode()).hexdigest()
+
+        headers = {
+            'ts': ts,
+            'clientid': ids_clientid,
+            'hmac': hmac,
+            'orgid': g.org_id,
+            'upload_documents': 'Y',
+            'Content-Type': 'application/json'
+        }
+        curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+        response = curl_result.json()       
+
+        code = curl_result.status_code
+        if code == 200 and response.get('status') == 'success':
+            return {'status': 'success', 'response': response['msg']}, code
+        elif 400 <= code <= 499 or code == 503:
+            return {'status': 'error', 'response': response['msg']}, code
+        else:
+            return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
     
+    except Exception as e:
+        return {"status": "error", 'response': str(e)}, 500
+
+
+def pull_all_ids(data):
+    if r.get('ccin', None):
+        payload = {'cin': data.get('ccin').upper(), 
+                "din": data.get('din'),
+                "director_name": data['user_details']['full_name'], 
+                "director_dob": data['user_details']['dob'], 
+                "director_gender": data['user_details']['gender'],
+                "skip_din_check": "N"}
+        return ids_verify('cin', payload)
+    
+    if r.get('udyam', None):
+        payload = {"mobile": data['udyam'],
+                   "udyam_number": data['mobile']
+                   }
+        return ids_verify('udyam', payload)
+    
+    if r.get('pan', None):
+        payload = {"pan": data['pan'],
+                   "name": data['name'],
+                   "d_incorporation": data['d_incorporation'],
+                   }
+        return ids_verify('pan', payload)    
+        
 
 def move_data_attempts_prod(org_id):
     try:
@@ -1749,7 +1822,8 @@ def move_data_attempts_prod(org_id):
             post_data_details['org_alias'] = r.get('org_alias', '')
             post_data_details['org_type'] = r.get('org_type', '').lower()
             post_data_details['name'] = r.get('name', '')
-            post_data_details['pan'] = r.get('pan', '').upper()
+            if r.get('pan', None):
+                post_data_details['pan'] = r.get('pan', '').upper()
             if r.get('ccin', None):
                 post_data_details['ccin'] = r.get('ccin').upper()
             
@@ -1815,6 +1889,10 @@ def move_data_attempts_prod(org_id):
             did = post_data_details.get('created_by')
             data = {'data': {'digilockerid': did, 'org_id': [org_id]}}
             RABBITMQ.send_to_queue(data, 'Organization_Xchange', 'org_add_org_user_')
+            
+            # pull the issued documents to the account 
+            
+            pull_all_ids(r)
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
