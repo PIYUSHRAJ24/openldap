@@ -3,7 +3,7 @@ from flask import request, Blueprint
 from lib.constants import *
 from lib.elasticlib import ElasticLib
 
-ELASTICLIB = ElasticLib()
+# ELASTICLIB = ElasticLib()
 bp = Blueprint('count', __name__)
 logarray = {}
 

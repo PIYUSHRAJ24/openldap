@@ -2144,7 +2144,18 @@ class Validations:
             }, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:verify_pan:: ' + str(e)}, 400
+
+    @staticmethod
+    def org_id_hmac_authentication(org_id):
+        try:
+            if len(org_id) != 36 and org_id is None:
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org_id"}, 400
+            else:
+                return {STATUS: SUCCESS}, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations:org_id_hmac_authentication:: ' + str(e)}, 400
         
+       
     @staticmethod    
     def log_exception(e):
     # Get the current stack and frame

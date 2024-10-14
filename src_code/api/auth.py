@@ -22,7 +22,7 @@ from assets.images import default_avatars
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
-ELASTICLIB = ElasticLib()
+# ELASTICLIB = ElasticLib()
 VALIDATIONS = Validations()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()

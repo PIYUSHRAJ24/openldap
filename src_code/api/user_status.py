@@ -61,6 +61,10 @@ def validate_user():
             REQUEST: {},
         }
     )
+    g.org_id = request.headers.get("orgid")
+    res, status_code = VALIDATIONS.org_id_hmac_authentication(g.org_id)
+    if status_code != 200:
+        return res, status_code
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
