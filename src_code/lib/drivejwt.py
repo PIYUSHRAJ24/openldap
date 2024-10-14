@@ -84,8 +84,9 @@ class DriveJwt:
             return Errors.error('err_1201')+"[#1002]"
 
     def jwt_generate(self, digilockerid, did, orgid, source='web'):
+        '''digilockerid, did, orgid, source'''
         try:
-            query = {'org_id': self.org_id}
+            query = {'org_id': orgid}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_176')}, 401
