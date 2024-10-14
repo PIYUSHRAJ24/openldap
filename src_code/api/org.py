@@ -1784,8 +1784,13 @@ def move_data_attempts_prod(org_id):
             rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
             if status_code != 200:
                 return res, status_code
-            
+            ''' Sending Activity '''
             ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
+            ''' Link org_id with DigiLocker '''
+            
+            did = post_data_details.get('created_by')
+            data = {'data': {'digilockerid': did, 'org_id': [org_id]}}
+            RABBITMQ.send_to_queue(data, 'Organization_Xchange', 'org_add_org_user_')
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
