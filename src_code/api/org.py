@@ -1740,54 +1740,54 @@ def move_data_attempts_prod(org_id):
     try:
         req = {'org_id': org_id}
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
-        if status_code != 200:
+        if status_code == 200:
             post_data_details = {}
-            for r in res[RESPONSE]:               
-                post_data_details['is_approved'] = "YES"
-                post_data_details['is_active'] = "N" 
-                post_data_details['created_by'] = r.get('created_by','')
-                post_data_details['org_alias'] = r.get('org_alias', '')
-                post_data_details['org_type'] = r.get('org_type', '').lower()
-                post_data_details['name'] = r.get('name', '')
-                post_data_details['pan'] = r.get('pan', '').upper()
-                post_data_details['ccin'] = r.get('ccin', '').upper()
-                post_data_details['udyam'] = r.get('udyam', '').upper()
-                post_data_details['mobile'] = r.get('mobile', '')
-                post_data_details['email'] = r.get('email', '').lower()
-                post_data_details['d_incorporation'] = r.get('d_incorporation', '')
-                post_data_details['created_on'] = datetime.datetime.now().strftime(D_FORMAT)
-                post_data_details['din'] = r.get('din', '')
-                post_data_details['cin'] = r.get('cin', '').upper()
-                post_data_details['gstin'] = r.get('gstin', '').upper()
-                post_data_details['roc'] = r.get('roc', '')
-                post_data_details['icai'] = r.get('icai', '')
-                post_data_details['dir_info'] = r.get('dir_info',[])
-                post_data_details['authorization_letter'] = r.get('d_incorporation', '')
-                post_data_details['consent'] = r.get('consent', '')
-                post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
+            r = res[RESPONSE]     
+            post_data_details['is_approved'] = "YES"
+            post_data_details['is_active'] = "N" 
+            post_data_details['created_by'] = r.get('created_by','')
+            post_data_details['org_alias'] = r.get('org_alias', '')
+            post_data_details['org_type'] = r.get('org_type', '').lower()
+            post_data_details['name'] = r.get('name', '')
+            post_data_details['pan'] = r.get('pan', '').upper()
+            post_data_details['ccin'] = r.get('ccin', '').upper()
+            post_data_details['udyam'] = r.get('udyam', '').upper()
+            post_data_details['mobile'] = r.get('mobile', '')
+            post_data_details['email'] = r.get('email', '').lower()
+            post_data_details['d_incorporation'] = r.get('d_incorporation', '')
+            post_data_details['created_on'] = datetime.datetime.now().strftime(D_FORMAT)
+            post_data_details['din'] = r.get('din', '')
+            post_data_details['cin'] = r.get('cin', '').upper()
+            post_data_details['gstin'] = r.get('gstin', '').upper()
+            post_data_details['roc'] = r.get('roc', '')
+            post_data_details['icai'] = r.get('icai', '')
+            post_data_details['dir_info'] = r.get('dir_info',[])
+            post_data_details['authorization_letter'] = r.get('d_incorporation', '')
+            post_data_details['consent'] = r.get('consent', '')
+            post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
+            
+            res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
+            if status_code_di != 200:
+                return res_di, status_code_di               
                 
-                res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
-                if status_code_di != 200:
-                    return res_di, status_code_di               
-                    
-                access_post_data = {
-                    'org_id': org_id,
-                    'digilockerid': r.get('created_by',''),
-                    'access_id': hashlib.md5((org_id+r.get('created_by','')).encode()).hexdigest(),
-                    'is_active': "Y",
-                    'rule_id': 'ORGR001',
-                    'designation': 'director',
-                    'updated_by': r.get('created_by',''),
-                    'updated_on': datetime.datetime.now().strftime(D_FORMAT)
-        
-                }
-                rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
-                if status_code != 200:
-                    return res, status_code
-                
-                ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
-                
-                return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
+            access_post_data = {
+                'org_id': org_id,
+                'digilockerid': r.get('created_by',''),
+                'access_id': hashlib.md5((org_id+r.get('created_by','')).encode()).hexdigest(),
+                'is_active': "Y",
+                'rule_id': 'ORGR001',
+                'designation': 'director',
+                'updated_by': r.get('created_by',''),
+                'updated_on': datetime.datetime.now().strftime(D_FORMAT)
+    
+            }
+            rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
+            if status_code != 200:
+                return res, status_code
+            
+            ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
+            
+            return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
         return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
 
