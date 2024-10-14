@@ -1808,17 +1808,11 @@ def activate():
         
         '''
         g.org_id = request.values.get('org_id')
-        data_moved = move_data_attempts_prod(g.org_id)
+        data_moved, code = move_data_attempts_prod(g.org_id)
         if data_moved['status'] == 'success':
-            #send request for 
-            
-            #send to 
             return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
             
-        
-        
-        
-            
+        return data_moved, code
         
     except Exception as e:
         REDISLIB.set('Debug_activate_001', str(e), 3600)
