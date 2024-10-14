@@ -1800,9 +1800,12 @@ def pull_all_ids(data, org_id):
             b = ids_verify('udyam', payload, org_id)
         
         if data.get('pan', None):
+            dt_object = datetime.datetime.strptime(data['d_incorporation'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            # Format in dd-mm-yyyy (this will return a string)
+            formatted_date = dt_object.strftime("%d-%m-%Y")
             payload = {"pan": data['pan'],
                     "name": data['name'],
-                    "d_incorporation": data['d_incorporation'],
+                    "d_incorporation": formatted_date,
                     }
             c = ids_verify('pan', payload, org_id)    
             
