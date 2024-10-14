@@ -1743,7 +1743,7 @@ def move_data_attempts_prod(org_id):
         if status_code != 200:
             post_data_details = {}
             for r in res[RESPONSE]:               
-                post_data['is_approved'] = "YES"
+                post_data_details['is_approved'] = "YES"
                 post_data_details['is_active'] = "N" 
                 post_data_details['created_by'] = r.get('created_by','')
                 post_data_details['org_alias'] = r.get('org_alias', '')
@@ -1755,7 +1755,7 @@ def move_data_attempts_prod(org_id):
                 post_data_details['mobile'] = r.get('mobile', '')
                 post_data_details['email'] = r.get('email', '').lower()
                 post_data_details['d_incorporation'] = r.get('d_incorporation', '')
-                post_data_details['created_on'] = datetime.now().strftime(D_FORMAT)
+                post_data_details['created_on'] = datetime.datetime.now().strftime(D_FORMAT)
                 post_data_details['din'] = r.get('din', '')
                 post_data_details['cin'] = r.get('cin', '').upper()
                 post_data_details['gstin'] = r.get('gstin', '').upper()
@@ -1778,15 +1778,16 @@ def move_data_attempts_prod(org_id):
                     'rule_id': 'ORGR001',
                     'designation': 'director',
                     'updated_by': r.get('created_by',''),
-                    'updated_on': datetime.now().strftime(D_FORMAT)
+                    'updated_on': datetime.datetime.now().strftime(D_FORMAT)
         
                 }
                 rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
                 if status_code != 200:
                     return res, status_code
                 
-                activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
-            
+                ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
+                
+                return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
         return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
 
@@ -1801,6 +1802,7 @@ def activate():
         3. send request to issue documents for org
         
         '''
+        g.org_id = request.values.get('org_id')
         data_moved = move_data_attempts_prod(g.org_id)
         if data_moved['status'] == 'success':
             #send request for 
