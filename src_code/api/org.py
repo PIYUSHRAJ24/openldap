@@ -1821,6 +1821,7 @@ def activate():
             
         
     except Exception as e:
+        REDISLIB.set('Debug_activate_001', str(e), 3600)
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
     
