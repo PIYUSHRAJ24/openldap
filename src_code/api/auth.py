@@ -47,7 +47,7 @@ def getjwt(post_data = None):
     try: 
                
         #hmac = secret+clientid+ts+clientid+orgid+digilockerid
-        did = request.values.get('did') or ""
+        did = request.headers.get('device-security-id') or request.headers.get('Device-Security-Id')
         orgid = request.headers.get('orgid') or request.headers.get('Orgid')
         ts = request.values.get('ts')
         hmac = request.values.get('hmac')

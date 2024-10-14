@@ -84,8 +84,9 @@ class DriveJwt:
             return Errors.error('err_1201')+"[#1002]"
 
     def jwt_generate(self, digilockerid, did, orgid, source='web'):
+        '''digilockerid, did, orgid, source'''
         try:
-            query = {'org_id': self.org_id}
+            query = {'org_id': orgid}
             res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
             if status_code == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_176')}, 401
@@ -94,8 +95,8 @@ class DriveJwt:
             self.org_access_details = res[RESPONSE]
             if self.org_access_details:
                 rule = self.org_access_details[0]  
-                is_active = rule.get('is_active')
-                is_approved = rule.get('is_approved')
+                is_active = rule.get('is_active') or 'N'
+                is_approved = rule.get('is_approved') or 'N'
                 if is_active is None:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_215')}, 400
                 if is_approved is None:
@@ -116,7 +117,6 @@ class DriveJwt:
                     "orgid":orgid,
                     "username":self.aes_encryption(digilockerid, secret),
                     "digilockerid":digilockerid,
-                    "orgid" :orgid,
                     "didsign":self.aes_encryption(did, secret),
                     "is_active":self.aes_encryption(is_active,secret),
                     "is_approved":self.aes_encryption(is_approved,secret)
