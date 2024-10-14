@@ -233,7 +233,7 @@ def handle_exception(e):
 
     # Return a generic error response
     response = {"status": "ERROR", "error_description": "Internal Server Error"}
-    response.status_code = 500
+    response['status_code'] = 500
     return response
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
