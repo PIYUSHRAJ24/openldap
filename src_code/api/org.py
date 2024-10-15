@@ -152,7 +152,7 @@ def get_details():
     req = {'org_id': g.org_id}
     logarray.update({ENDPOINT: 'get_details', REQUEST: req})
     try:
-        res, status_code = MONGOLIB.org_eve(post_data_details["collection_details"], req, {})
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1735,7 +1735,7 @@ def update_udyam_profile():
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
-def ids_verify(verification_type, data):
+def ids_verify(verification_type, data, org_id):
     try:
         ids_api_url = CONFIG["ids"]["url"]
         if verification_type == "cin":
@@ -1759,14 +1759,14 @@ def ids_verify(verification_type, data):
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
         ts = str(int(time.time()))
-        key = f"{ids_clientsecret}{ids_clientid}{g.org_id}{ts}"
+        key = f"{ids_clientsecret}{ids_clientid}{org_id}{ts}"
         hmac = hashlib.sha256(key.encode()).hexdigest()
 
         headers = {
             'ts': ts,
             'clientid': ids_clientid,
             'hmac': hmac,
-            'orgid': g.org_id,
+            'orgid': org_id,
             'upload_documents': 'Y',
             'Content-Type': 'application/json'
         }
@@ -1774,40 +1774,45 @@ def ids_verify(verification_type, data):
         response = curl_result.json()       
 
         code = curl_result.status_code
-        if code == 200 and response.get('status') == 'success':
-            return {'status': 'success', 'response': response['msg']}, code
-        elif 400 <= code <= 499 or code == 503:
-            return {'status': 'error', 'response': response['msg']}, code
-        else:
-            return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
+        return response, code
     
     except Exception as e:
-        return {"status": "error", 'response': str(e)}, 500
+        REDISLIB.set('Debug_ids_verify_001', str(e), 3600)
+        return {"status": "error", 'response': str(e)}, 400
 
 
-def pull_all_ids(data):
-    if r.get('ccin', None):
-        payload = {'cin': data.get('ccin').upper(), 
-                "din": data.get('din'),
-                "director_name": data['user_details']['full_name'], 
-                "director_dob": data['user_details']['dob'], 
-                "director_gender": data['user_details']['gender'],
-                "skip_din_check": "N"}
-        return ids_verify('cin', payload)
-    
-    if r.get('udyam', None):
-        payload = {"mobile": data['udyam'],
-                   "udyam_number": data['mobile']
-                   }
-        return ids_verify('udyam', payload)
-    
-    if r.get('pan', None):
-        payload = {"pan": data['pan'],
-                   "name": data['name'],
-                   "d_incorporation": data['d_incorporation'],
-                   }
-        return ids_verify('pan', payload)    
+def pull_all_ids(data, org_id):
+    try:
+        a = b = c = None
+        if data.get('ccin', None):
+            payload = {'cin': data.get('ccin').upper(), 
+                    "din": data.get('din'),
+                    "director_name": data['user_details']['full_name'], 
+                    "director_dob": data['user_details']['dob'], 
+                    "director_gender": data['user_details']['gender'],
+                    "skip_din_check": "N"}
+            a = ids_verify('cin', payload, org_id)
         
+        if data.get('udyam', None):
+            payload = {"mobile": data['udyam'],
+                    "udyam_number": data['mobile']
+                    }
+            b = ids_verify('udyam', payload, org_id)
+        
+        if data.get('pan', None):
+            dt_object = datetime.datetime.strptime(data['d_incorporation'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            # Format in dd-mm-yyyy (this will return a string)
+            formatted_date = dt_object.strftime("%d-%m-%Y")
+            payload = {"pan": data['pan'],
+                    "name": data['name'],
+                    "d_incorporation": formatted_date,
+                    }
+            c = ids_verify('pan', payload, org_id)    
+            
+        return a, b, c
+    except Exception as e:
+        REDISLIB.set('Debug_pull_all_ids_001', str(e), 3600)
+        return {"status": "error", 'response': str(e)}
 
 def move_data_attempts_prod(org_id):
     try:
@@ -1816,6 +1821,7 @@ def move_data_attempts_prod(org_id):
         if status_code == 200:
             post_data_details = {}
             r = res[RESPONSE][0]     
+            post_data_details['org_id'] = org_id
             post_data_details['is_approved'] = "YES"
             post_data_details['is_active'] = "N" 
             post_data_details['created_by'] = r.get('created_by','')
@@ -1892,7 +1898,7 @@ def move_data_attempts_prod(org_id):
             
             # pull the issued documents to the account 
             
-            pull_all_ids(r)
+            pull_all_ids(data=r, org_id=org_id)
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:

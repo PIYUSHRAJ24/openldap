@@ -226,7 +226,7 @@ def activitylist_response(rowitems, rowcount = '') :
         "file_deleted","file_renamed","uri_saved","uri_deleted","share_self","share_to","move_self","icai_updated","cin_updated",
         "udyam_updated","request_created","request_cancelled","download_shared","esign_consent","create_department",
         "access_department","update_department","department_assign","revoke_department","active_department","create_section","access_section",
-        "update_section","assign_section","revoke_section"
+        "update_section","assign_section","revoke_section","read","download"
     }
     activity_response = []
     for row in list(rowitems) :
@@ -295,5 +295,7 @@ def translation(app, subject,user,user_affected= "", filename="", role_id="",val
 			"update_section": username + ' updated '+ (prepared_params or '') + ' Section in ' + (value or '') + ' Department',
 			"assign_section": username + ' added a new ' + (role_id or '') + username_affected + ' to ' + (prepared_params or '') + ' Section of ' + (value or '') + ' Department',
 			"revoke_section": username + ' revoked access for ' + (prepared_params or '') + ' Section in ' + (value or '') + ' Department from ' + username_affected,
+            "read": username + ' read ' + prepared_params + ' to ' + (role_id or ''),
+            "download": username + ' download ' + prepared_params + ' as ' + (role_id or ''),
         }
         return switcher.get(subject,subject)

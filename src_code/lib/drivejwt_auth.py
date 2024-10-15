@@ -80,11 +80,17 @@ class DriveJwt:
             
             data = jwt_res.get('data', {})
             enc_username = data.get('username', '')
+            enc_is_active = data.get('is_active', '')
+            enc_is_approved = data.get('is_approved', '')
             self.org_id = data.get('orgid', '')
             self.digilockerid = data.get('digilockerid', '')
             if not self.org_id or not VALIDATIONS.is_valid_did(self.org_id):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_123")}, 401
             username = self.aes_decryption(enc_username.replace('---', '+'), self.aes_secret)
+            is_active = self.aes_decryption(enc_is_active.replace('---', '+'), self.aes_secret)
+            is_approved = self.aes_decryption(enc_is_approved.replace('---', '+'), self.aes_secret)
+            if is_active == 'N' and is_approved == 'PENDING':
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")+"[#111]"}, 401
             did_sign = None
             did = None
             if data.get('didsign'):

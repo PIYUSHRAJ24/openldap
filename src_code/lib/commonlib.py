@@ -516,6 +516,7 @@ class CommonLib:
             if res[RESPONSE][0].get('request_status') == "created": # type: ignore
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_179")}, 400
             access_post_data = []
+            name_dept = None
             first_record = {
                 'org_id': res[RESPONSE][0]['org_id'], # type: ignore
                 'digilockerid': digilockerid,

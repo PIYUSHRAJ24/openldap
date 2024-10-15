@@ -119,7 +119,8 @@ class DriveJwt:
                     "digilockerid":digilockerid,
                     "didsign":self.aes_encryption(did, secret),
                     "is_active":self.aes_encryption(is_active,secret),
-                    "is_approved":self.aes_encryption(is_approved,secret)
+                    "is_approved":self.aes_encryption(is_approved,secret),
+                    "device-security-id":did
 
                     }
             }
@@ -152,7 +153,15 @@ class DriveJwt:
             enc_username = data.get('username', '')
             self.org_id = data.get('orgid', '')
             self.digilockerid = data.get('digilockerid', '')
+            enc_is_active = data.get('is_active', '')
+            enc_is_approved = data.get('is_approved', '')
             username = self.aes_decryption(enc_username.replace('---', '+'), self.aes_secret)
+
+            is_active = self.aes_decryption(enc_is_active.replace('---', '+'), self.aes_secret)
+            is_approved = self.aes_decryption(enc_is_approved.replace('---', '+'), self.aes_secret)
+            if is_active == 'N' and is_approved == 'PENDING':
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")+"[#111]"}, 401
+            
             did_sign = None
             did = None
             if data.get('didsign'):
@@ -162,7 +171,7 @@ class DriveJwt:
             if device_security_id:
                 result = hashlib.md5(device_security_id.encode())
                 did = result.hexdigest()
-            if did_sign and (did is None or did_sign.find(did) == -1):
+            if did_sign != did:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path
             path = self.org_id + '/files/'  # this has been done as to create path based on org_id
