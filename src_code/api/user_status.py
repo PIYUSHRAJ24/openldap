@@ -61,7 +61,6 @@ def validate_user():
             REQUEST: {},
         }
     )
-    g.org_id = request.headers.get("orgid")
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):

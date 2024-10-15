@@ -22,7 +22,7 @@ except Exception as s:
     CONFIG['JWT_SECRET'] = os.getenv('JWT_SECRET') #for local
 
 VALIDATIONS = Validations()
-ELASTICLIB = ElasticLib()
+# ELASTICLIB = ElasticLib()
 MONGOLIB = MongoLib()
 RABBITMQ = RabbitMQ()
 CONNECTORS3 =Connectors3()

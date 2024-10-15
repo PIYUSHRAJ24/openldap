@@ -69,7 +69,6 @@ def validate():
             'body': request.get_data(as_text=True)
         }
         request.logger_data = request_data
-        g.org_id = request.headers.get("orgid")
 
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
