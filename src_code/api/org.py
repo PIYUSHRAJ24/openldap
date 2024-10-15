@@ -152,7 +152,7 @@ def get_details():
     req = {'org_id': g.org_id}
     logarray.update({ENDPOINT: 'get_details', REQUEST: req})
     try:
-        res, status_code = MONGOLIB.org_eve(post_data_details["collection_details"], req, {})
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
