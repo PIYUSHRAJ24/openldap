@@ -58,9 +58,6 @@ def validate_user():
         REQUEST: {}
     })
     g.org_id = request.headers.get("orgid")
-    res, status_code = VALIDATIONS.org_id_hmac_authentication(g.org_id)
-    if status_code != 200:
-        return res, status_code
     if dict(request.args):
         logarray[REQUEST].update(dict(request.args))
     if dict(request.values):
@@ -89,6 +86,9 @@ def healthcheck():
 
 @bp.route("/update_cin", methods=["POST"])
 def update_cin():
+    res_org, status_code = VALIDATIONS.org_id_hmac_authentication(g.org_id)
+    if status_code != 200:
+        return res_org, status_code
     res, status_code = VALIDATIONS.is_valid_cin_v3(request, g.org_id)
     if res[STATUS] == ERROR:
         return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
@@ -133,6 +133,9 @@ def verify_details():
 
 def ids_cin_verify(cin_no, cin_name):
     try:
+        res_org, status_code = VALIDATIONS.org_id_hmac_authentication(g.org_id)
+        if status_code != 200:
+            return res_org, status_code
         ids_api_url = CONFIG["ids"]["url"]
         curlurl = f"{ids_api_url}gateway/1.0/verify_cin"
         ids_clientid = CONFIG["ids"]["client_id"]

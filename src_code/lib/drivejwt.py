@@ -119,7 +119,8 @@ class DriveJwt:
                     "digilockerid":digilockerid,
                     "didsign":self.aes_encryption(did, secret),
                     "is_active":self.aes_encryption(is_active,secret),
-                    "is_approved":self.aes_encryption(is_approved,secret)
+                    "is_approved":self.aes_encryption(is_approved,secret),
+                    "device-security-id":did
 
                     }
             }
