@@ -73,7 +73,7 @@ def validate():
 
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = ('healthcheck', 'get_count')
+        bypass_urls = ('healthcheck', 'get_count', 'activate')
         if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
             return
         org_bypass_urls = ('create_org_user')
@@ -85,7 +85,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate", "deactivate","approve","disapprove"):
+        if request.path.split('/')[-1] in ("deactivate","approve","disapprove"):
             res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
             if status_code != 200:
                 return res, status_code
@@ -153,7 +153,7 @@ def get_details():
     req = {'org_id': g.org_id}
     logarray.update({ENDPOINT: 'get_details', REQUEST: req})
     try:
-        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
+        res, status_code = MONGOLIB.org_eve(post_data_details["collection_details"], req, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1735,13 +1735,196 @@ def update_udyam_profile():
         print(e)
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+def ids_verify(verification_type, data, org_id):
+    try:
+        ids_api_url = CONFIG["ids"]["url"]
+        if verification_type == "cin":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_cin_din"
+            required_fields = ["cin", "din", "director_gender","director_name","director_dob"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "CIN details required"}), 400
+        elif verification_type == "pan":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_pan"
+            required_fields = ["d_incorporation", "name", "pan"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "PAN details required"}), 400
+        elif verification_type == "udyam":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_udcer"
+            required_fields = ["udyam_number", "mobile"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "UDYAM details required"}), 400
+        else:
+            return jsonify({"status": "error", "response": "Invalid verification type"}), 400
+
+        ids_clientid = CONFIG["ids"]["client_id"]
+        ids_clientsecret = CONFIG["ids"]["client_secret"]
+        ts = str(int(time.time()))
+        key = f"{ids_clientsecret}{ids_clientid}{org_id}{ts}"
+        hmac = hashlib.sha256(key.encode()).hexdigest()
+
+        headers = {
+            'ts': ts,
+            'clientid': ids_clientid,
+            'hmac': hmac,
+            'orgid': org_id,
+            'upload_documents': 'Y',
+            'Content-Type': 'application/json'
+        }
+        curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+        response = curl_result.json()       
+
+        code = curl_result.status_code
+        return response, code
     
+    except Exception as e:
+        REDISLIB.set('Debug_ids_verify_001', str(e), 3600)
+        return {"status": "error", 'response': str(e)}, 400
+
+
+def pull_all_ids(data, org_id):
+    try:
+        a = b = c = None
+        if data.get('ccin', None):
+            payload = {'cin': data.get('ccin').upper(), 
+                    "din": data.get('din'),
+                    "director_name": data['user_details']['full_name'], 
+                    "director_dob": data['user_details']['dob'], 
+                    "director_gender": data['user_details']['gender'],
+                    "skip_din_check": "N"}
+            a = ids_verify('cin', payload, org_id)
+        
+        if data.get('udyam', None):
+            payload = {"mobile": data['udyam'],
+                    "udyam_number": data['mobile']
+                    }
+            b = ids_verify('udyam', payload, org_id)
+        
+        if data.get('pan', None):
+            dt_object = datetime.datetime.strptime(data['d_incorporation'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            # Format in dd-mm-yyyy (this will return a string)
+            formatted_date = dt_object.strftime("%d-%m-%Y")
+            payload = {"pan": data['pan'],
+                    "name": data['name'],
+                    "d_incorporation": formatted_date,
+                    }
+            c = ids_verify('pan', payload, org_id)    
+            
+        return a, b, c
+    except Exception as e:
+        REDISLIB.set('Debug_pull_all_ids_001', str(e), 3600)
+        return {"status": "error", 'response': str(e)}
+
+def move_data_attempts_prod(org_id):
+    try:
+        req = {'org_id': org_id}
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
+        if status_code == 200:
+            post_data_details = {}
+            r = res[RESPONSE][0]     
+            post_data_details['org_id'] = org_id
+            post_data_details['is_approved'] = "YES"
+            post_data_details['is_active'] = "N" 
+            post_data_details['created_by'] = r.get('created_by','')
+            post_data_details['org_alias'] = r.get('org_alias', '')
+            post_data_details['org_type'] = r.get('org_type', '').lower()
+            post_data_details['name'] = r.get('name', '')
+            if r.get('pan', None):
+                post_data_details['pan'] = r.get('pan', '').upper()
+            if r.get('ccin', None):
+                post_data_details['ccin'] = r.get('ccin').upper()
+            
+            if r.get('udyam', None):
+                post_data_details['udyam'] = r.get('udyam').upper()
+            
+            if r.get('mobile', None):
+                post_data_details['mobile'] = r.get('mobile')
+            
+            if r.get('email', None):
+                post_data_details['email'] = r.get('email').lower()
+                
+            post_data_details['d_incorporation'] = r.get('d_incorporation', '')
+            post_data_details['created_on'] = datetime.datetime.now().strftime(D_FORMAT)
+            
+            din = r.get('din')
+            if din:
+                post_data_details['din'] = din
+
+            cin = r.get('cin')
+            if cin:
+                post_data_details['cin'] = cin.upper()
+
+            gstin = r.get('gstin')
+            if gstin:
+                post_data_details['gstin'] = gstin.upper()
+
+            roc = r.get('roc')
+            if roc:
+                post_data_details['roc'] = roc
+
+            icai = r.get('icai')
+            if icai:
+                post_data_details['icai'] = icai
+                
+            post_data_details['dir_info'] = r.get('dir_info',[])
+            post_data_details['authorization_letter'] = r.get('d_incorporation', '')
+            post_data_details['consent'] = r.get('consent', '')
+            post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
+            
+            res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
+            if status_code_di != 200:
+                return res_di, status_code_di               
+                
+            access_post_data = {
+                'org_id': org_id,
+                'digilockerid': r.get('created_by',''),
+                'access_id': hashlib.md5((org_id+r.get('created_by','')).encode()).hexdigest(),
+                'is_active': "Y",
+                'rule_id': 'ORGR001',
+                'designation': 'director',
+                'updated_by': r.get('created_by',''),
+                'updated_on': datetime.datetime.now().strftime(D_FORMAT)
+    
+            }
+            rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
+            if status_code != 200:
+                return res, status_code
+            ''' Sending Activity '''
+            ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
+            ''' Link org_id with DigiLocker '''
+            
+            did = post_data_details.get('created_by')
+            data = {'data': {'digilockerid': did, 'org_id': [org_id]}}
+            RABBITMQ.send_to_queue(data, 'Organization_Xchange', 'org_add_org_user_')
+            
+            # pull the issued documents to the account 
+            
+            pull_all_ids(data=r, org_id=org_id)
+            
+            return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
+    except Exception as e:
+        return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
+
+
 
 @bp.route('/activate', methods=['POST'])
 def activate():
     try:
-        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_active': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+        '''
+        1. get the request from API setu for approval 
+        2. fetch the details from org_attempts and copy it to org_details, acccess_rules and activity
+        3. send request to issue documents for org
+        
+        '''
+        g.org_id = request.values.get('org_id')
+        data_moved, code = move_data_attempts_prod(g.org_id)
+        if data_moved['status'] == 'success':
+            return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
+            
+        return data_moved, code
+        
     except Exception as e:
+        REDISLIB.set('Debug_activate_001', str(e), 3600)
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
     
