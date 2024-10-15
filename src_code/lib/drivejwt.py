@@ -171,7 +171,7 @@ class DriveJwt:
             if device_security_id:
                 result = hashlib.md5(device_security_id.encode())
                 did = result.hexdigest()
-            if did_sign and (did is None or did_sign.find(did) == -1):
+            if did_sign != did:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path
             path = self.org_id + '/files/'  # this has been done as to create path based on org_id
