@@ -1867,7 +1867,7 @@ def move_data_attempts_prod(org_id):
                 post_data_details['icai'] = icai
                 
             post_data_details['dir_info'] = r.get('dir_info',[])
-            post_data_details['authorization_letter'] = r.get('d_incorporation', '')
+            post_data_details['authorization_letter'] = None
             post_data_details['consent'] = r.get('consent', '')
             post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
             
