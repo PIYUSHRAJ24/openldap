@@ -152,7 +152,7 @@ def get_details():
     req = {'org_id': g.org_id}
     logarray.update({ENDPOINT: 'get_details', REQUEST: req})
     try:
-        res, status_code = MONGOLIB.org_eve(post_data_details["collection_details"], req, {})
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], req, {})
         if status_code != 200:
             logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
             RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1772,6 +1772,7 @@ def ids_verify(verification_type, data, org_id):
         }
         curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
         response = curl_result.json()       
+        REDISLIB.set('Debug_ids_verify_002', json.dumps({'url':curlurl, 'head':headers, 'res':curl_result.text, 'data':data}), 3600)
 
         code = curl_result.status_code
         return response, code
@@ -1787,9 +1788,9 @@ def pull_all_ids(data, org_id):
         if data.get('ccin', None):
             payload = {'cin': data.get('ccin').upper(), 
                     "din": data.get('din'),
-                    "director_name": data['user_details']['full_name'], 
-                    "director_dob": data['user_details']['dob'], 
-                    "director_gender": data['user_details']['gender'],
+                    "director_name": data['user_details'][0]['full_name'], 
+                    "director_dob": data['user_details'][0]['dob'], 
+                    "director_gender": data['user_details'][0]['gender'],
                     "skip_din_check": "N"}
             a = ids_verify('cin', payload, org_id)
         
@@ -1917,9 +1918,7 @@ def activate():
         '''
         g.org_id = request.values.get('org_id')
         data_moved, code = move_data_attempts_prod(g.org_id)
-        if data_moved['status'] == 'success':
-            return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "Y"}}, 'Organization_Xchange', 'org_update_details_')
-            
+                    
         return data_moved, code
         
     except Exception as e:
