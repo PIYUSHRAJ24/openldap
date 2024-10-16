@@ -1791,7 +1791,7 @@ def pull_all_ids(data, org_id):
                     "director_name": data['user_details'][0]['full_name'], 
                     "director_dob": data['user_details'][0]['dob'], 
                     "director_gender": data['user_details'][0]['gender'],
-                    "skip_din_check": "N"}
+                    "skip_din_check": data.get('skip_din_check', 'N')} #if Y meaning DIN has not been verified, N meaning DIN Verified
             a = ids_verify('cin', payload, org_id)
         
         if data.get('udyam', None):
@@ -1853,7 +1853,6 @@ def move_data_attempts_prod(org_id):
             cin = r.get('cin')
             if cin:
                 post_data_details['cin'] = cin.upper()
-
             gstin = r.get('gstin')
             if gstin:
                 post_data_details['gstin'] = gstin.upper()
