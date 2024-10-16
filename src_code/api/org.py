@@ -170,6 +170,14 @@ def get_details():
                 r['icai'] = None # type: ignore
             if not r.get('udyam'): # type: ignore
                 r['udyam'] = None # type: ignore
+            if not r.get('pan'): # type: ignore
+                r['pan'] = None # type: ignore    
+            if not r.get('email'): # type: ignore
+                r['email'] = None # type: ignore    
+            if not r.get('roc'): # type: ignore
+                r['roc'] = None # type: ignore       
+            if not r.get('din'): # type: ignore
+                r['din'] = None # type: ignore            
             r['org_status'] = {}
             r['org_status']['is_active'] = r.get('is_active', 'N')
             r['org_status']['is_approved'] = r.get('is_approved', 'PENDING')

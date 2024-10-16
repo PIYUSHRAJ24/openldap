@@ -103,6 +103,8 @@ def healthcheck():
 @bp.route("/update_gstin", methods=["POST"])
 def set_gstin():
     res, status_code = VALIDATIONS.is_valid_gstin_v2(request, g.org_id)
+    if status_code != 200:
+        return res, status_code
     gstin_no = res.get('gstin')
     gstin_name = res.get('name')
     

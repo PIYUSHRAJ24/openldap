@@ -2148,7 +2148,7 @@ class Validations:
     @staticmethod
     def org_id_hmac_authentication(org_id):
         try:
-            if len(org_id) != 36 and org_id is None:
+            if org_id is None or not len(org_id) == 36:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "org_id"}, 400
             else:
                 return {STATUS: SUCCESS}, 200
