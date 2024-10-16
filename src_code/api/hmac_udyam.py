@@ -110,7 +110,7 @@ def update_udyam():
         log_data = {RESPONSE: res}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
-        return jsonify({"status": "error", "error_description": "UDYAM number not verified"}), 400
+        return res[0], status_code
         
     date_time = datetime.now().strftime(D_FORMAT)
     data = {
@@ -122,7 +122,7 @@ def update_udyam():
         log_data = {RESPONSE: "UDYAM number set successfully"}
         logarray.update(log_data)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_udyam')
-        return jsonify({"status": "success", "response": "UDYAM number set successfully"}), 200
+        return res[0], status_code
     except Exception as e:
         log_data = {RESPONSE: e}
         logarray.update(log_data)
