@@ -166,7 +166,7 @@ def ids_cin_verify(cin_no, cin_name):
         
         code = curl_result.status_code
         if code == 200 and response.get('status') == 'success':
-            return {'status': 'success', 'response': response['msg']}, code
+            return {'status': 'success', 'msg': response['msg'],"CIN_Issued_to": response['CIN_Issued_to']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
             return {'status': 'error', 'response': response['msg']}, code
