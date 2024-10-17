@@ -1340,6 +1340,33 @@ def get_user_access_requests():
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
+@bp.route('/get_user_access_requests_v2', methods=['GET'])
+def get_user_access_requests_v2():
+    req = {'org_id': g.org_id}
+    logarray.update({ENDPOINT: 'get_user_requests_v2', REQUEST: req})
+    
+    try:
+        # Call the original function
+        res, status_code = get_user_access_requests()
+        
+        # Log the response from the original function
+        logarray.update({RESPONSE: res})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        
+        # If status code is 200, return the same response
+        if status_code == 200:
+            # response_data = CommonLib.aes_encryption(user_details_str, g.org_id[:16])
+            return CommonLib.aes_encryption(res, g.org_id[:16]), status_code
+        
+        # Otherwise, return the received response and status code
+        return {STATUS: SUCCESS, RESPONSE: []}, status_code
+
+    except Exception as e:
+        logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
+        RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
 
 @bp.route('/cancel_user_request', methods=['POST'])
 def cancel_user_request():

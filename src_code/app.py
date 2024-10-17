@@ -175,8 +175,8 @@ def after_request(response):
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['X-XSS-Protection'] = '1; mode=block'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'x-requested-with, Content-Type, origin, authorization, Origin, Authorization, accept, jtoken, Jtoken, is_encrypted, client-security-token, requesttoken, XMLHttpRequest, Device-Security-Id, Source, device-security-id'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
         response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
         response.headers['Expect-CT'] = 'max-age=86400, enforce'
@@ -184,7 +184,7 @@ def after_request(response):
         if ref is not None and ref in os.getenv('allowed_origin'):
             response.headers.add("Access-Control-Allow-Origin", ref)
         else:
-            response.headers.add("Access-Control-Allow-Origin", "https://www.digilocker.gov.in")
+            response.headers.add("Access-Control-Allow-Origin", "https://entity.digilocker.gov.in")
         
         if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
             return response
