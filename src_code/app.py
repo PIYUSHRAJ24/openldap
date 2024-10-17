@@ -185,6 +185,11 @@ def after_request(response):
         response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
         response.headers['Expect-CT'] = 'max-age=86400, enforce'
+        ref = str(request.headers.get('Origin'))
+        if ref is not None and ref in os.getenv('allowed_origin'):
+            response.headers.add("Access-Control-Allow-Origin", ref)
+        else:
+            response.headers.add("Access-Control-Allow-Origin", "https://www.digilocker.gov.in")
         
         
         response_data = {
