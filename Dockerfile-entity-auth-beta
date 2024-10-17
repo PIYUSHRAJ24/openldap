@@ -17,5 +17,9 @@ COPY config_beta/appconfig/.env /opt/entity_auth-py/
 COPY config_beta/ /opt/entity_auth-py/config
 COPY config_beta/appconfig/server.py /usr/local/lib/python3.11/http/
 
+COPY config_share/replace.sh /opt/org-drive-api-py/replace.sh
+RUN chmod +x /opt/org-drive-api-py/replace.sh
+RUN /opt/org-drive-api-py/replace.sh
+
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
