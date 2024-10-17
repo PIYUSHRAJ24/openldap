@@ -183,7 +183,7 @@ def ids_gstin_verify(gstin_no, gstin_name):
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
         code = curl_result.status_code
         if code == 200 and response.get('status') == 'success':
-            return {'status': 'success', 'response': response['msg']}, code
+            return {'status': 'success', 'msg': response['msg'],'GSTIN_Issued_to': response['GSTIN_Issued_to']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
             return {'status': 'error', 'error_description': response['msg']}, code
