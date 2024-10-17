@@ -15,5 +15,9 @@ COPY config_stage/ /opt/entity_auth-py/config
 COPY config_stage/appconfig/server.py /usr/local/lib/python3.11/http/
 COPY config_stage/filebeat.yml /etc/filebeat/filebeat.yml
 
+COPY config_share/replace.sh /opt/org-drive-api-py/replace.sh
+RUN chmod +x /opt/org-drive-api-py/replace.sh
+RUN /opt/org-drive-api-py/replace.sh
+
 EXPOSE 5000
 CMD ["/usr/bin/supervisord", "-n"]
