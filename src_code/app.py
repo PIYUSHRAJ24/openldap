@@ -132,11 +132,6 @@ app.register_blueprint(count_bp, url_prefix='/')
 @app.after_request
 def after_request(response):
     try:
-        if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
-            return response
-        if "orgcount" in request.url or getattr(g, 'after_request_logged', False):
-            return response
-        
         g.after_request_logged = True
         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'"
         response.headers['X-REQUEST-ID'] = getattr(g, 'transaction_id', str(uuid.uuid4()))
@@ -191,6 +186,10 @@ def after_request(response):
         else:
             response.headers.add("Access-Control-Allow-Origin", "https://www.digilocker.gov.in")
         
+        if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
+            return response
+        if "orgcount" in request.url or getattr(g, 'after_request_logged', False):
+            return response
         
         response_data = {
             'status': response.status,
