@@ -72,7 +72,7 @@ def validate():
 
         if request.method == 'OPTIONS':
             return {"status": "error", "error_description": "OPTIONS OK"}
-        bypass_urls = ('healthcheck', 'get_count', 'activate')
+        bypass_urls = ('healthcheck', 'get_count')
         if request.path.split('/')[1] in bypass_urls or request.path.split('/')[-1] in bypass_urls:
             return
         org_bypass_urls = ('create_org_user')
@@ -84,8 +84,8 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("deactivate","approve","disapprove"):
-            res, status_code = VALIDATIONS.hmac_authentication_sha3_partner(request)
+        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove"):
+            res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
             g.org_id = res['orgid']
