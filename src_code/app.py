@@ -176,7 +176,7 @@ def after_request(response):
         response.headers['X-XSS-Protection'] = '1; mode=block'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
         response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST, OPTIONS'
         response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
         response.headers['Expect-CT'] = 'max-age=86400, enforce'
