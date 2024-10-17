@@ -15,7 +15,7 @@ from flask_cors import CORS
 from werkzeug.serving import WSGIRequestHandler
 
 app = Flask(__name__)
-cors = CORS(app, origins=os.getenv('allowed_origin'))
+cors = CORS(app, origins=os.getenv('ALLOWED_ORIGIN'))
 app.config['SERVER_NAME'] = None
 
 current_date = datetime.now().strftime("%Y-%m-%d")
