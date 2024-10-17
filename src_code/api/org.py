@@ -1957,7 +1957,13 @@ def activate():
         3. send request to issue documents for org
         
         '''
-        g.org_id = request.values.get('org_id')
+        g.entity_partner_org_id = request.values.get('org_id')
+        req = {'entity_partner_org_id': org_id}
+        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
+        if status_code == 200:
+            r = res[RESPONSE][0]    
+            g.org_id = r.get('org_id', '') 
+        
         data_moved, code = move_data_attempts_prod(g.org_id)
                     
         return data_moved, code
