@@ -103,7 +103,7 @@ def update_cin():
     res = ids_cin_verify(cin_no, cin_name)
     status_code = res[1]
     if status_code != 200 :
-        return jsonify({"status": "error", "response": "CIN number not verified"}), 400
+        return res[0], status_code
     
     post_data = {
         "org_id":g.org_id,
@@ -111,7 +111,7 @@ def update_cin():
         }
     try:
         RABBITMQ.send_to_queue({"data": post_data}, "Organization_Xchange", "org_update_details_")
-        return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
+        return res[0], status_code
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#12101]"}), 400
