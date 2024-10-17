@@ -1857,7 +1857,8 @@ def move_data_attempts_prod(org_id):
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
         if status_code == 200:
             post_data_details = {}
-            r = res[RESPONSE][0]     
+            r = res[RESPONSE][0]    
+            transactionid = r.get('transactionid', '') 
             post_data_details['org_id'] = org_id
             post_data_details['is_approved'] = "YES"
             post_data_details['is_active'] = "N" 
@@ -1921,7 +1922,12 @@ def move_data_attempts_prod(org_id):
                 'updated_on': datetime.datetime.now().strftime(D_FORMAT)
     
             }
-            rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)   
+            rules_res = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_rules"], access_post_data)
+            
+            update_appved = {"is_approved":"YES"}
+            update_appved_res = MONGOLIB.org_eve_update(CONFIG["org_eve"]["collection_attempts"], update_appved,transactionid)   
+            
+            
             if status_code != 200:
                 return res, status_code
             ''' Sending Activity '''
