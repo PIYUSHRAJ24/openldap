@@ -1354,9 +1354,10 @@ def get_user_access_requests_v2():
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         
         # If status code is 200, return the same response
-        if status_code == 200:
+        if status_code == 200 and len(res[RESPONSE]) > 0 :
+            res_str = json.dumps(res)
             # response_data = CommonLib.aes_encryption(user_details_str, g.org_id[:16])
-            return CommonLib.aes_encryption(res, g.org_id[:16]), status_code
+            return CommonLib.aes_encryption(res_str, g.org_id[:16]), status_code
         
         # Otherwise, return the received response and status code
         return {STATUS: SUCCESS, RESPONSE: []}, status_code
