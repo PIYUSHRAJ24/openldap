@@ -138,7 +138,7 @@ def after_request(response):
             return response
         
         g.after_request_logged = True
-        response.headers['Content-Security-Policy'] = "default-src 'self'"
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'"
         response.headers['X-REQUEST-ID'] = getattr(g, 'transaction_id', str(uuid.uuid4()))
         
         duration = time.time() - getattr(g, 'start_time', time.time())
