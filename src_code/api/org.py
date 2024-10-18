@@ -1963,7 +1963,7 @@ def activate():
         3. send request to issue documents for org
         
         '''
-        g.org_id = request.values.get('orgid')        
+        g.org_id = request.values.get('orgid')
         data_moved, code = move_data_attempts_prod(g.org_id)
                     
         return data_moved, code
