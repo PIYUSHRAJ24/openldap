@@ -45,6 +45,7 @@ class DriveJwt:
         self.org_user_details = {}
         self.dept_details = {}
         self.sec_details = {}
+        self.rs = RedisLib()
 
     def _pads(self, s):
         bs = AES.block_size  # AES.block_size is 16 bytes
@@ -82,7 +83,22 @@ class DriveJwt:
             VALIDATIONS.log_exception(e)
             print({STATUS: ERROR, ERROR_DES: 'Exception:DriveJwt:aes_decryption:: ' + str(e)})
             return Errors.error('err_1201')+"[#1002]"
-
+    
+    def jwt_logout(self):
+        try:
+            #check if invlid token 
+            token = self.jwt_token    
+            device_security_id = self.device_security_id
+            hash_jwt = hashlib.md5(token.encode()).hexdigest()       
+            hash_did = hashlib.md5(device_security_id.encode()).hexdigest()       
+            key = 'INVALID_JWT_'+hash_did+'_'+hash_jwt 
+            self.rs.set(key, 'Invalid', 2592000)
+            return {STATUS: "success"}, 401
+        except Exception as e:
+            VALIDATIONS.log_exception(e)
+            return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#2002]"}, 401
+    
+    
     def jwt_generate(self, digilockerid, did, orgid, source='web'):
         '''digilockerid, did, orgid, source'''
         try:

@@ -111,17 +111,18 @@ class DriveJwt:
             VALIDATIONS.log_exception(e)
             return {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#2001]"}, 401
 
+    
     def jwt_login_org(self):
         try:
             #check if invlid token 
-            # token = self.jwt_token    
-            # device_security_id = self.device_security_id
-            # hash_jwt = hashlib.md5(token.encode()).hexdigest()       
-            # hash_did = hashlib.md5(device_security_id.encode()).hexdigest()       
-            # key = 'INVALID_JWT_'+hash_did+'_'+hash_jwt # this is set in logout from misc api in redis
-            # res = self.rs.get(key)
-            # if res == 'Invalid':
-            #     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401               
+            token = self.jwt_token    
+            device_security_id = self.device_security_id
+            hash_jwt = hashlib.md5(token.encode()).hexdigest()       
+            hash_did = hashlib.md5(device_security_id.encode()).hexdigest()       
+            key = 'INVALID_JWT_'+hash_did+'_'+hash_jwt # this is set in logout from misc api in redis
+            res = self.rs.get(key)
+            if res == 'Invalid':
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401               
             
             
             path, code = self.jwt_login()

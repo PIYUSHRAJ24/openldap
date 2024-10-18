@@ -42,6 +42,18 @@ try:
 except Exception as s:
     CONFIG['JWT_SECRET'] = os.getenv('JWT_SECRET')
 
+
+@bp.route('/logout', methods=['POST'])
+def logout(post_data = None):
+    try:
+        jwtlib = DriveJwt(request, CONFIG)
+        jwtres, status_code = jwtlib.jwt_logout() 
+        return jwtres, status_code
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
 @bp.route('/getjwt', methods=['POST'])
 def getjwt(post_data = None):
     try: 
