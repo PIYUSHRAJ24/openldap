@@ -1881,6 +1881,7 @@ def move_data_attempts_prod(org_id_req):
             
             if r.get('udyam', None):
                 post_data_details['udyam'] = r.get('udyam').upper()
+                post_data_details['udyam_mobile'] = r.get('udyam_mobile')
             
             if r.get('mobile', None):
                 post_data_details['mobile'] = r.get('mobile')
