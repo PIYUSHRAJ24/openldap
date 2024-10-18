@@ -111,14 +111,15 @@ def validate():
         g.consent_time = ''
         consent_bypass_urls = ('get_details','get_access_rules', 'get_users','get_authorization_letter','get_access_rules','update_avatar','get_avatar','send_mobile_otp','verify_mobile_otp','send_email_otp','verify_email_otp','get_user_request','get_user_requests','update_cin_profile','update_icai_profile','update_udyam_profile','esign_consent_get')
         if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
-            consent_status, consent_code = esign_consent_get()
-            if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            try:
-                datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
-            except Exception:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            g.consent_time = consent_status.get('consent_time')
+            if CONFIG["esign_consent"]["esign_consent"] == "ON":
+                consent_status, consent_code = esign_consent_get()
+                if consent_code != 200 or consent_status.get(STATUS) != SUCCESS or not consent_status.get('consent_time'):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+                try:
+                    datetime.datetime.strptime(consent_status.get('consent_time', ''), D_FORMAT)
+                except Exception:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+                g.consent_time = consent_status.get('consent_time')
 
         logarray.update({'org_id': g.org_id, 'digilockerid': g.digilockerid})
     except Exception as e:
@@ -187,9 +188,12 @@ def get_details():
                 r['org_status']['deactivated_on'] = datetime.datetime.strptime(r['deactivated_on'], D_FORMAT).strftime("%d/%m/%Y")
             r['org_status']['remarks'] = r.get('remarks')
             r.pop('consent', None) # type: ignore
-            cres = esign_consent_get()
-            g.consent_time = cres[0].get('consent_time', '')
-            r['consent_time'] = g.consent_time # type: ignore
+            if CONFIG["esign_consent"]["esign_consent"] == "ON":
+                cres = esign_consent_get()
+                g.consent_time = cres[0].get('consent_time', '')
+                r['consent_time'] = g.consent_time # type: ignore
+            else:
+                r['consent_time'] = "SKIP" # type: ignore
         res['current_user_'+RESPONSE] = {'digilockerid': g.digilockerid, **Roles.rule_id(g.role), **CommonLib.get_profile_details({'digilockerid': g.digilockerid})} # type: ignore
         log_data = {RESPONSE: res}
         logarray.update(log_data)
