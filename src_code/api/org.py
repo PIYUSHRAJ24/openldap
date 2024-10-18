@@ -88,7 +88,6 @@ def validate():
             res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
-            g.org_id = res['orgid']
             return
         
         jwtlib = DriveJwt(request, CONFIG)
@@ -1855,13 +1854,14 @@ def pull_all_ids(data, org_id):
         REDISLIB.set('Debug_pull_all_ids_001', str(e), 3600)
         return {"status": "error", 'response': str(e)}
 
-def move_data_attempts_prod(org_id):
+def move_data_attempts_prod(org_id_req):
     try:
-        req = {'org_id': org_id}
+        req = {'$or':[{'entity_partner_org_id': org_id_req}, {'org_id':org_id_req}]}
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
         if status_code == 200:
             post_data_details = {}
             r = res[RESPONSE][0]    
+            org_id = r.get('org_id')
             transactionid = r.get('transactionid', '') 
             post_data_details['org_id'] = org_id
             post_data_details['is_approved'] = "YES"
@@ -1961,13 +1961,7 @@ def activate():
         3. send request to issue documents for org
         
         '''
-        g.entity_partner_org_id = request.values.get('org_id')
-        req = {'entity_partner_org_id': org_id}
-        res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
-        if status_code == 200:
-            r = res[RESPONSE][0]    
-            g.org_id = r.get('org_id', '') 
-        
+        g.org_id = request.values.get('orgid')        
         data_moved, code = move_data_attempts_prod(g.org_id)
                     
         return data_moved, code
