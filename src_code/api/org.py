@@ -1358,13 +1358,17 @@ def get_user_access_requests_v2():
         
         # If status code is 200, return the same response
         if status_code == 200 and len(res[RESPONSE]) > 0 :
-            res_str = json.dumps(res)
-            # response_data = CommonLib.aes_encryption(user_details_str, g.org_id[:16])
-            return CommonLib.aes_encryption(res_str, g.org_id[:16]), status_code
+            status = res.get("status")  # Directly access the 'status' from the response
+            data = json.dumps(res.get("response"))  # Get 'response' and serialize it
+            encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
+            encrypted_response = {
+                "status": status,
+                "response": encrypted_data
+            }
+            return encrypted_response, status_code
         
         # Otherwise, return the received response and status code
         return {STATUS: SUCCESS, RESPONSE: []}, status_code
-
     except Exception as e:
         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: str(e)}})
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
@@ -1834,8 +1838,8 @@ def pull_all_ids(data, org_id):
             a = ids_verify('cin', payload, org_id)
         
         if data.get('udyam', None):
-            payload = {"mobile": data['udyam'],
-                    "udyam_number": data['mobile']
+            payload = {"mobile": data['udyam_mobile'],
+                    "udyam_number": data['udyam']
                     }
             b = ids_verify('udyam', payload, org_id)
         
@@ -1961,7 +1965,7 @@ def activate():
         3. send request to issue documents for org
         
         '''
-        g.org_id = request.values.get('orgid')        
+        g.org_id = request.values.get('orgid')
         data_moved, code = move_data_attempts_prod(g.org_id)
                     
         return data_moved, code
