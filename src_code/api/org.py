@@ -1830,8 +1830,8 @@ def pull_all_ids(data, org_id):
             a = ids_verify('cin', payload, org_id)
         
         if data.get('udyam', None):
-            payload = {"mobile": data['udyam'],
-                    "udyam_number": data['mobile']
+            payload = {"mobile": data['udyam_mobile'],
+                    "udyam_number": data['udyam']
                     }
             b = ids_verify('udyam', payload, org_id)
         
