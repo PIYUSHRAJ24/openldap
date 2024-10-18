@@ -1838,8 +1838,8 @@ def pull_all_ids(data, org_id):
             a = ids_verify('cin', payload, org_id)
         
         if data.get('udyam', None):
-            payload = {"mobile": data['udyam_mobile'],
-                    "udyam_number": data['udyam']
+            payload = {"mobile": data.get('udyam_mobile'),
+                    "udyam_number": data.get('udyam')
                     }
             b = ids_verify('udyam', payload, org_id)
         
@@ -1881,7 +1881,6 @@ def move_data_attempts_prod(org_id_req):
             
             if r.get('udyam', None):
                 post_data_details['udyam'] = r.get('udyam').upper()
-                post_data_details['udyam_mobile'] = r.get('udyam_mobile')
             
             if r.get('mobile', None):
                 post_data_details['mobile'] = r.get('mobile')
