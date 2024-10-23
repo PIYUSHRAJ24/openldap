@@ -383,10 +383,10 @@ def get_access_rules_v2():
             response_data = encrypted_response
         else:
             # Plain user details for version 1
-            response_data = json.dumps(user_details.get("response"))
+            response_data = user_details
 
         # Prepare and return the response
-        res = {STATUS: SUCCESS, RESPONSE: response_data}
+        res = response_data
         logarray.update(res)
         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
         return res, 200
