@@ -368,7 +368,7 @@ def get_access_rules_v2():
             return user_details, 400
 
         # Check for encryption based on query parameter (e.g., ?version=2)
-        version = request.values.get('version', '2')
+        version = request.args.get('version', '2')
         if version == '2':
             status = user_details.get("status")  
             data = json.dumps(user_details.get("response"))
@@ -1318,10 +1318,15 @@ def get_user_access_requests():
         data = []
         if len(res[RESPONSE]) > 0:
             for d in res[RESPONSE]:
+                if d.get('dept_id') == g.org_id:
+                    dept_name = "Default"
+                elif d.get('dept_id') != g.org_id:
+                    dept_name = g.dept_details.get(d.get('dept_id'),{}).get("name","")
+
                 data.append({
                 'rule_name' : Roles.rule_id(d.get('rule_id', 0)).get('rule_name', '').title() ,# type: ignore
                 'access_id' : d.get('transaction_id',''),
-                'dept_name' : d.get('dept_id',''),
+                'dept_name' : dept_name,
                 'designation' : d.get('designation',''),
                 'digilockerid' : "NA",
                 'is_active' : d.get('request_status',''),
