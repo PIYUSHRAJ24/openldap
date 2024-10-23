@@ -371,12 +371,19 @@ def get_access_rules_v2():
         version = request.args.get('version', '2')  # Default to version 2 if not provided
         if version == '2':
             # Convert user_details to string (JSON format) for encryption
-            user_details_str = json.dumps(user_details)
+            status = user_details.get("status")  # Directly access the 'status' from the response
+            data = json.dumps(user_details.get("response"))  # Get 'response' and serialize it
+            encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
+            encrypted_response = {
+                "status": status,
+                "response": encrypted_data
+            }
+            # return encrypted_response, status_code
             # Encrypt user details string
-            response_data = CommonLib.aes_encryption(user_details_str, g.org_id[:16])
+            response_data = encrypted_response
         else:
             # Plain user details for version 1
-            response_data = user_details
+            response_data = json.dumps(user_details.get("response"))
 
         # Prepare and return the response
         res = {STATUS: SUCCESS, RESPONSE: response_data}
