@@ -19,6 +19,18 @@ from lib.commonlib import CommonLib
 from lib.redislib import RedisLib
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
+import logging
+
+from pythonjsonlogger import jsonlogger
+
+current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+log_file_path = f"ORG-logs-{current_date}.log"
+logHandler = logging.FileHandler(log_file_path)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger = logging.getLogger()
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
 
 # Initialize libraries
 MONGOLIB = MongoLib()
@@ -223,5 +235,5 @@ def handle_exception(e):
     }
     logger.error(log_data)
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
-    response.status_code = 500
+    response['status_code'] = 400
     return response

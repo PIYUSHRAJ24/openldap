@@ -2061,5 +2061,5 @@ def handle_exception(e):
 
     # Return a generic error response
     response = jsonify({STATUS: ERROR, ERROR_DES: "Internal Server Error"})
-    response.status_code = 500
+    response['status_code'] = 400
     return response
