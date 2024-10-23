@@ -248,6 +248,28 @@ def user_profile():
         VALIDATIONS.log_exception(e)
         return res, 400
     
+@bp.route('/user_profile_v2', methods=['POST'])
+def user_profile_v2():
+    try:
+        
+        res, status_code = user_profile()
+        if status_code != 200:
+            return res, status_code
+        status = res.get("status")  
+        data = json.dumps(res.get("response"))
+        encrypted_data = CommonLib.aes_encryption(data, g.org_id[:16])
+        encrypted_response = {
+            "status": status,
+            "response": encrypted_data
+        }
+        return encrypted_response, status_code
+    except Exception as e:
+        res = {STATUS: ERROR, ERROR_DES: Errors.error('err_1201')+"[#13105]"}
+        logarray.update(res)
+        RABBITMQLOGS.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        VALIDATIONS.log_exception(e)
+        return res, 400
+    
 @bp.route('/admin_access', methods=['POST'])
 def admin_access():
     try:

@@ -7,7 +7,7 @@ import requests
 import json
 from Crypto.Cipher import AES
 from lib.mongolib import MongoLib
-from Crypto.Util.Padding import unpad
+from Crypto.Util.Padding import pad, unpad
 import base64
 import jwt
 from lib.secretsmanager import SecretManager
@@ -29,6 +29,18 @@ except Exception as s:
 class CommonLib:
     def __init__(self):
         self.active = True
+
+    @staticmethod
+    def aes_encryption(plain_text, secret_key):
+        try:
+            iv = bytearray(secret_key.encode('utf-8'))
+            secret_key = hashlib.md5(secret_key.encode("utf-8")).hexdigest()
+            cipher = AES.new(secret_key.encode('utf-8'), AES.MODE_CBC, iv)
+            padded_plain_text = pad(plain_text.encode('utf-8'), AES.block_size)
+            cipher_text = cipher.encrypt(padded_plain_text)
+            return base64.b64encode(cipher_text).decode('utf-8')
+        except Exception as e:
+            return ''
 
     @staticmethod
     def aes_decryption(filtered_cipher_text, secret_key = s):
