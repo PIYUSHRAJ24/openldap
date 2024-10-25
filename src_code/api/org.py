@@ -1823,8 +1823,14 @@ def ids_verify(verification_type, data, org_id):
             'upload_documents': 'Y',
             'Content-Type': 'application/json'
         }
-        curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
-        response = curl_result.json()       
+        try:
+            curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+            response = curl_result.json()       
+        except Exception as e:
+            # Retry
+            curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+            response = curl_result.json()       
+            
         REDISLIB.set('Debug_ids_verify_002', json.dumps({'url':curlurl, 'head':headers, 'res':curl_result.text, 'data':data}), 3600)
 
         code = curl_result.status_code
