@@ -84,7 +84,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove"):
+        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold"):
             res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
@@ -2000,6 +2000,24 @@ def deactivate():
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
+
+@bp.route('/reject', methods=['POST'])
+def reject():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "REJECTED"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+
+@bp.route('/onhold', methods=['POST'])
+def onhold():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "UNDER REVIEW"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
 
 @bp.route('/approve', methods=['POST'])
 def approve():
