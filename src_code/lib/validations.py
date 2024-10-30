@@ -1786,6 +1786,79 @@ class Validations:
                 return {STATUS: SUCCESS, 'cin': cin, 'name': name}, 200
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v3:' + str(e)}, 400
+    
+    def is_valid_cin_pan_udyam_gstin(self, request, txn):
+        try:
+            post_data = request.json
+            query = {}
+            org_type = post_data.get('org_type')
+
+            # Building the query based on the organization type
+            if org_type == "cin" and post_data.get('ccin'):
+                query['ccin'] = post_data['ccin']
+            elif org_type == "pan" and post_data.get('pan'):
+                query['pan'] = post_data['pan']
+            elif org_type == "msme" and post_data.get('udyam'):
+                query['udyam'] = post_data['udyam']
+            elif org_type == "gstin" and post_data.get('gstin'):
+                query['gstin'] = post_data['gstin']
+            else:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('err_108')}, 400
+
+            orgid = self.get_txn(txn)
+            
+            res_atp, status_code = MONGOLIB.org_eve(
+                CONFIG["org_eve"]["collection_attempts"],
+                query,
+                {
+                    'ccin': 1,
+                    'gstin': 1,
+                    'pan': 1,
+                    'udyam': 1,
+                    'is_approved': 1,
+                    'is_gstin_upload': 1,
+                    'is_pan_upload': 1,
+                    'is_auth_letter_upload': 1,
+                    'is_cin_upload': 1
+                }
+            )
+
+            if status_code == 200 and len(res_atp[RESPONSE]) > 0:
+                for r in res_atp[RESPONSE]:
+                    if r.get('is_approved') == 'YES':
+                        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_226')}, 400
+                    
+                    if r.get('is_approved') not in ('REJECTED'):
+                        if r.get('is_approved') in ('PENDING', 'UNDER REVIEW'):
+                            if (org_type == "cin" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
+                                    r.get('is_cin_upload') not in ('Y', 'SYNC')):
+                                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('CIN', r['is_approved'].lower())}, 400
+                            
+                            elif (org_type == "pan" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
+                                    r.get('is_pan_upload') not in ('Y', 'SYNC')):
+                                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('PAN', r['is_approved'].lower())}, 400
+                            
+                            elif (org_type == "gstin" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
+                                    r.get('is_gstin_upload') not in ('Y', 'SYNC')):
+                                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('GSTIN', r['is_approved'].lower())}, 400
+            
+            # Check for additional organization details
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+            if status_code == 200 and len(res[RESPONSE]) > 0:
+                error_map = {
+                    "msme": 'ERR_MSG_196',
+                    "pan": 'ERR_MSG_214',
+                    "cin": 'ERR_MSG_182',
+                    "gstin": 'ERR_MSG_216'
+                }
+
+                if org_type in error_map:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error(error_map[org_type])}, 406
+            
+            return {STATUS: SUCCESS, RESPONSE: True, "txn": orgid}, 200
+        
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception: Validations::verify_details: ' + str(e)}, 400
 
     def is_valid_gstin_v2(self, request, org_id):
         try: 

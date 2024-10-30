@@ -129,6 +129,20 @@ def verify_details():
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#12103]"}), 400
+    
+@bp.route("/verify_details_v2", methods=["POST"])
+def verify_details_v2():
+    
+    try:
+        txn = str(uuid.uuid4())
+        res, status_code = VALIDATIONS.is_valid_cin_pan_udyam_gstin(request, txn)
+        if res[STATUS] == ERROR:
+            return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
+        
+        return {STATUS: SUCCESS, "txn": res["txn"]}, 200
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#12103]"}), 400
 
 
 def ids_cin_verify(cin_no, cin_name):

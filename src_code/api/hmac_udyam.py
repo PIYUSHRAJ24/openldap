@@ -23,7 +23,7 @@ import logging
 
 from pythonjsonlogger import jsonlogger
 
-current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+current_date = ""
 log_file_path = f"ORG-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
@@ -186,7 +186,7 @@ def ids_udyam_verify(udyam_no, mobile):
             return {'status': 'success', 'msg': response['msg'], "UDYAM_Issued_to": response['UDYAM_Issued_to']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {'status': 'error', 'error_description': response['msg']}, code
+            return {'status': 'error', 'error_description': "Udyam not verified"}, code
         else:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
             return {"status": "error", "error_description": f"Technical error occurred. Code: {code}"}, code

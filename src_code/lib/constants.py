@@ -179,6 +179,8 @@ class Errors:
             'ERR_MSG_213': "User already Active.",
             "ERR_MSG_214": "The PAN Number you entered is already registered with us.",
             "ERR_MSG_215" : "Key is None .",
+            "ERR_MSG_216" : "The GSTIN Number you entered is already registered with us.",
+            "ERR_MSG_223" : "The %s you entered is currently %s for approval.",
             
             
 
