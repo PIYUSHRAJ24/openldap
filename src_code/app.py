@@ -22,10 +22,10 @@ current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
-
+current_iso_timestamp = datetime.utcnow().isoformat() + "Z"
 def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
     error_log_data = {
-        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'timestamp': current_iso_timestamp,
         'level': 'CRITICAL',
         'event': 'uncaught_exception',
         'error_type': exc_type.__name__,
@@ -55,7 +55,7 @@ def before_request():
         g.after_request_logged = False
         g.transaction_id = request.headers.get('X-REQUEST-ID', str(uuid.uuid4()))
         log_data = {
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'timestamp': current_iso_timestamp,
             'level': 'INFO',
             'event': 'request_started',
             'method': request.method,
@@ -67,7 +67,7 @@ def before_request():
         logger.info(json.dumps(log_data))
     except Exception as e:
         error_log_data = {
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'timestamp': current_iso_timestamp,
             'level': 'ERROR',
             'event': 'before_request_error',
             'error': str(e),
@@ -138,7 +138,7 @@ def after_request(response):
         
         duration = time.time() - getattr(g, 'start_time', time.time())
         log_data = {
-            'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            'timestamp': current_iso_timestamp,
             'level': 'INFO',
             'event': 'request_completed',
             'method': request.method,
@@ -153,7 +153,7 @@ def after_request(response):
         # Log successful responses
         if 200 <= response.status_code < 300:
             success_log_data = {
-                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                'timestamp': current_iso_timestamp,
                 'level': 'INFO',
                 'event': 'successful_response',
                 'method': request.method,
@@ -195,7 +195,7 @@ def after_request(response):
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            'time_end': current_iso_timestamp
         }
         log_data = {
             'request': request.logger_data,
@@ -211,7 +211,7 @@ def after_request(response):
 def handle_exception(e):
     tb = traceback.format_exc()
     log_data = {
-        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        'timestamp': current_iso_timestamp,
         'level': 'ERROR',
         'event': 'unhandled_exception',
         'error': str(e),
