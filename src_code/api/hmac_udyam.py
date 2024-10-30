@@ -23,7 +23,7 @@ import logging
 
 from pythonjsonlogger import jsonlogger
 
-current_date = ""
+current_date = datetime.datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()

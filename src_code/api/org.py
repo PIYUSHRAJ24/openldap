@@ -84,7 +84,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove"):
+        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold"):
             res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
@@ -1823,8 +1823,14 @@ def ids_verify(verification_type, data, org_id):
             'upload_documents': 'Y',
             'Content-Type': 'application/json'
         }
-        curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
-        response = curl_result.json()       
+        try:
+            curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+            response = curl_result.json()       
+        except Exception as e:
+            # Retry
+            curl_result = requests.post(curlurl, headers=headers, json=data, timeout=5)
+            response = curl_result.json()       
+            
         REDISLIB.set('Debug_ids_verify_002', json.dumps({'url':curlurl, 'head':headers, 'res':curl_result.text, 'data':data}), 3600)
 
         code = curl_result.status_code
@@ -1994,6 +2000,24 @@ def deactivate():
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
+
+@bp.route('/reject', methods=['POST'])
+def reject():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "REJECTED"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
+
+@bp.route('/onhold', methods=['POST'])
+def onhold():
+    try:
+        return RABBITMQ.send_to_queue({"data": {'org_id': g.org_id, 'is_approved': "UNDER REVIEW"}}, 'Organization_Xchange', 'org_update_details_')
+    except Exception as e:
+        VALIDATIONS.log_exception(e)
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+    
 
 @bp.route('/approve', methods=['POST'])
 def approve():
