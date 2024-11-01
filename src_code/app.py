@@ -22,6 +22,7 @@ current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
+
 def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
     error_log_data = {
         'timestamp': datetime.utcnow().isoformat(),
