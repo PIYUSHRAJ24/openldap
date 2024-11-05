@@ -1830,16 +1830,16 @@ class Validations:
                     
                     if r.get('is_approved') not in ('REJECTED'):
                         if r.get('is_approved') in ('PENDING', 'UNDER REVIEW'):
-                            if (org_type == "cin" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
-                                    r.get('is_cin_upload') not in ('Y', 'SYNC')):
+                            if (org_type == "cin" and r.get('is_auth_letter_upload') in ('Y', 'SYNC') and
+                                    r.get('is_cin_upload') in ('Y', 'SYNC')):
                                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('CIN', r['is_approved'].lower())}, 400
                             
-                            elif (org_type == "pan" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
-                                    r.get('is_pan_upload') not in ('Y', 'SYNC')):
+                            elif (org_type == "pan" and r.get('is_auth_letter_upload') in ('Y', 'SYNC') and
+                                    r.get('is_pan_upload') in ('Y', 'SYNC')):
                                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('PAN', r['is_approved'].lower())}, 400
                             
-                            elif (org_type == "gstin" and r.get('is_auth_letter_upload') not in ('Y', 'SYNC') and
-                                    r.get('is_gstin_upload') not in ('Y', 'SYNC')):
+                            elif (org_type == "gstin" and r.get('is_auth_letter_upload') in ('Y', 'SYNC') and
+                                    r.get('is_gstin_upload') in ('Y', 'SYNC')):
                                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_223') % ('GSTIN', r['is_approved'].lower())}, 400
             
             # Check for additional organization details
