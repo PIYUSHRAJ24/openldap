@@ -1801,6 +1801,11 @@ def ids_verify(verification_type, data, org_id):
             required_fields = ["d_incorporation", "name", "pan"]
             if not all(field in data for field in required_fields):
                 return jsonify({"status": "error", "response": "PAN details required"}), 400
+        elif verification_type == "gstin":
+            curlurl = f"{ids_api_url}gateway/1.0/verify_gstin"
+            required_fields = ["d_incorporation", "FullName", "GSTIN"]
+            if not all(field in data for field in required_fields):
+                return jsonify({"status": "error", "response": "GSTIN details required"}), 400
         elif verification_type == "udyam":
             curlurl = f"{ids_api_url}gateway/1.0/verify_udcer"
             required_fields = ["udyam_number", "mobile"]
@@ -1843,7 +1848,7 @@ def ids_verify(verification_type, data, org_id):
 
 def pull_all_ids(data, org_id):
     try:
-        a = b = c = None
+        a = b = c = d = None
         if data.get('ccin', None):
             payload = {'cin': data.get('ccin').upper(), 
                     "din": data.get('din'),
@@ -1867,9 +1872,19 @@ def pull_all_ids(data, org_id):
                     "name": data['name'],
                     "d_incorporation": formatted_date,
                     }
-            c = ids_verify('pan', payload, org_id)    
+            c = ids_verify('pan', payload, org_id)
+
+        if data.get('gstin', None):
+            dt_object = datetime.datetime.strptime(data['d_incorporation'], "%Y-%m-%dT%H:%M:%S.%fZ")
+            # Format in dd-mm-yyyy (this will return a string)
+            formatted_date = dt_object.strftime("%d-%m-%Y")
+            payload = {"GSTIN": data['gstin'],
+                    "FullName": data['name'],
+                    "d_incorporation": formatted_date,
+                    }
+            d = ids_verify('gstin', payload, org_id)    
             
-        return a, b, c
+        return a, b, c, d
     except Exception as e:
         REDISLIB.set('Debug_pull_all_ids_001', str(e), 3600)
         return {"status": "error", 'response': str(e)}
