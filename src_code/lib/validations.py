@@ -2051,7 +2051,7 @@ class Validations:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
             if udyam_number == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "udyam_number", RESPONSE: udyam_number[0]}, 400
-            elif not udyam_number or not self.is_valid_udyam(udyam_number):
+            elif udyam_number is None or not self.is_valid_udyam(udyam_number):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_195")}, 400
 
             query = {'udyam': udyam_number}
