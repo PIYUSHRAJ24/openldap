@@ -37,9 +37,6 @@ logarray = {}
 CONFIG = dict(CONFIG)
 secrets = json.loads(SecretManager.get_secret())
 
-# cin validation pattern
-cin_pattern = r"^([L|U]{1})(\d{5})([A-Za-z]{2})(\d{4})([A-Za-z]{3})(\d{6})$"
-
 try:
     CONFIG["JWT_SECRET"] = secrets.get("aes_secret", os.getenv("JWT_SECRET"))
 except Exception:

@@ -1735,7 +1735,7 @@ class Validations:
             name_decrypted = CommonLib.aes_decryption_v2(gstin_name[0], org_id[:16])
             gstin = cin_decrypted if cin_decrypted is not None else gstin_no
             name = name_decrypted if name_decrypted is not None else gstin_name
-            if not gstin or not self.is_valid_cin(gstin):
+            if not gstin or not self.is_valid_gstin(gstin):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
