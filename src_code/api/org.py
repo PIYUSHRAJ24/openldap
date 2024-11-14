@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import random
+import re
 import uuid
 from flask import request, Blueprint, g, render_template, jsonify
 import requests
@@ -84,7 +85,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold"):
+        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold","signup"):
             res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
@@ -2052,6 +2053,21 @@ def disapprove():
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
 
 
+schema = {
+    "pan": {
+        "regex": r"^[A-Z]{3}[ABCFGHLJPT][A-Z][0-9]{4}[A-Z]$",
+        "description": "PAN format"
+    },
+    "udyam_mobile": {
+        "regex": r"^\+91[6-9]\d{9}$",
+        "description": "UDYAM registered mobile format"
+    },
+    "gstin": {
+        "regex": r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z][0-9A-Z][0-9A-Z]$",
+        "description": "GSTIN format"
+    }
+}
+
 def validation_partner_request(data):
     try:
         org_type= ''
@@ -2082,7 +2098,7 @@ def validation_partner_request(data):
 
         if 'd_incorporation' in data:
             try:
-                datetime.strptime(data['d_incorporation'], '%Y-%m-%d')
+                datetime.datetime.strptime(data['d_incorporation'], '%Y-%m-%d')
             except ValueError:
                 {STATUS: ERROR, ERROR_DES:"Invalid date format for d_incorporation, should be YYYY-MM-DD"}
         if not data.get('transactionid'):
@@ -2104,39 +2120,10 @@ def validation_partner_request(data):
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: "Internal server error"+str(e)}       
 
-def get_profile(digilockerid):
-    if not digilockerid:
-        return {STATUS: ERROR, ERROR_DESC: "DigiLocker ID cannot be empty"}, 400
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'masked_aadhaar': 'yes'
-    }
-    ts = str(int(time.time()))
-    plain_txt = f"{SECRET_KEY}{CLIENT_ID}{digilockerid}{timestamp}"
-    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
-        
-    fields = {
-        'user': digilockerid,
-        'clientid': CLIENT_ID,
-        'ts': ts,
-        'hmac': hmac
-    }
-    url = f"{ACS_API_URL}profile/1.0"
-    try:
-        response = requests.post(url, headers=headers, data=fields, timeout=CURL_TIMEOUT)
-        response_data = response.json()
-        status_code = response.status_code
-        if status_code in [200, 400, 401] and len(response_data) > 3:
-            return response_data, status_code
-        else:
-            return {STATUS: ERROR, ERROR_DESC: TECH_ERROR_MSG + str(status_code)}
-
-    except requests.RequestException as e:
-        return {STATUS: ERROR, ERROR_DESC: TECH_ERROR_MSG + str(e)}
-
 def send_attempt(data):
+    CLIENT_ID = CONFIG.get("org_signin_api", "client_id")
     ts = str(int(time.time()))
-    plain_txt = f"{SECRET_KEY}{CLIENT_ID}{digilockerid}{timestamp}"
+    plain_txt = f"{CONFIG.get("org_signin_api", "client_secret")}{CLIENT_ID}{ts}"
     hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
     headers = {
         'Content-Type': 'application/json',
@@ -2144,11 +2131,8 @@ def send_attempt(data):
         'ts' : ts,
         'hmac': hmac
     }
-    timestamp = str(int(time.time()))
-    plain_txt = f"{SECRET_KEY}{CLIENT_ID}{digilockerid}{timestamp}"
-    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
         
-    url = f"{org_locker_api}attempt/store_details"
+    url = f"{CONFIG.get("org_signin_api", "url")}attempt/store_details"
     try:
         response = requests.post(url, headers=headers, data=data, timeout=10)
         response_data = response.json()
@@ -2156,13 +2140,13 @@ def send_attempt(data):
         if status_code == 200:
             return response_data, status_code
         else:
-            return {STATUS: ERROR, ERROR_DESC: response_data}, status_code
+            return {STATUS: ERROR, ERROR_DES: response_data}, status_code
 
     except requests.RequestException as e:
-        return {STATUS: ERROR, ERROR_DESC: "Internal server error" + str(e)}, 400
+        return {STATUS: ERROR, ERROR_DES: "Internal server error" + str(e)}, 400
     
 
-@app.route('/signup', methods=['POST'])
+@bp.route('/signup', methods=['POST'])
 def create_organization_partners():
     data = request.json
     try:
@@ -2171,7 +2155,7 @@ def create_organization_partners():
             # Required fields
             org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
             txn_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
-            userinfo = get_profile(data.get('created_by'))
+            userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
             org_type = check_valid['org_type']
             cin = check_valid['cin']
             fixed_schema = {
