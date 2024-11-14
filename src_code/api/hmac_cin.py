@@ -183,7 +183,7 @@ def ids_cin_verify(cin_no, cin_name):
             return {'status': 'success', 'msg': response['msg'],"CIN_Issued_to": response['CIN_Issued_to']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {'status': 'error', 'response': response['msg']}, code
+            return {'status': 'error', 'error_description': "CIN not verified"}, code
         else:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
             return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code

@@ -2041,8 +2041,8 @@ class Validations:
         udyam_number_decryption_result = CommonLib.filter_input(CommonLib.aes_decryption_v2(udyam_number_encrypted, org_id[:16]))
 
         # Handle tuple returns from decryption
-        mobile = mobile_decryption_result[0] if mobile_decryption_result[0] is not None else mobile_encrypted
-        udyam_number = udyam_number_decryption_result[0] if udyam_number_decryption_result[0] is not None else udyam_number_encrypted
+        mobile = mobile_decryption_result[0] if mobile_decryption_result[0] else mobile_encrypted
+        udyam_number = udyam_number_decryption_result[0] if udyam_number_decryption_result[0] else udyam_number_encrypted
 
         try:
             if mobile == 400:
