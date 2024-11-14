@@ -1726,6 +1726,28 @@ class Validations:
         except Exception as e:
             return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
     
+    def is_valid_gstin_v3(self, request, org_id):
+        ''' check valid GSTIN'''
+        try:
+            gstin_no = CommonLib.filter_input(request.values.get('gstin'))
+            gstin_name = CommonLib.filter_input(request.values.get('gstin_name'))
+            cin_decrypted = CommonLib.aes_decryption_v2(gstin_no[0], org_id[:16])
+            name_decrypted = CommonLib.aes_decryption_v2(gstin_name[0], org_id[:16])
+            gstin = cin_decrypted if cin_decrypted is not None else gstin_no
+            name = name_decrypted if name_decrypted is not None else gstin_name
+            if not gstin or not self.is_valid_cin(gstin):
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
+            if not name :
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
+            query = {'cin': gstin}
+            res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], query, {}, limit=500)
+            if status_code == 200 and len(res[RESPONSE]) > 0:
+                return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_182')}, 406
+            else:
+                return {STATUS: SUCCESS, 'gstin': gstin, 'name': name}, 200
+        except Exception as e:
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
+    
     def is_valid_cin_pan_udyam(self, request, txn):
         ''' check valid CIN'''
         try:

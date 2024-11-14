@@ -6,6 +6,7 @@ from lib.mongolib import MongoLib
 from lib.rabbitmq import RabbitMQ
 from lib.drivejwt import DriveJwt
 from api.org_activity import activity_insert
+from api.org import esign_consent_get
 from lib.validations import Validations
 from lib.commonlib import CommonLib
 from lib.redislib import RedisLib
@@ -105,20 +106,21 @@ def validate():
             request.path.split("/")[1] not in consent_bypass_urls
             and request.path.split("/")[-1] not in consent_bypass_urls
         ):
-            consent_status, consent_code = esign_consent_get()
-            if (
-                consent_code != 200
-                or consent_status.get(STATUS) != SUCCESS
-                or not consent_status.get("consent_time")
-            ):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            try:
-                datetime.strptime(
-                    consent_status.get("consent_time", ""), D_FORMAT
-                )
-            except Exception:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
-            g.consent_time = consent_status.get("consent_time")
+            if CONFIG["esign_consent"]["esign_consent"] == "ON":
+                consent_status, consent_code = esign_consent_get()
+                if (
+                    consent_code != 200
+                    or consent_status.get(STATUS) != SUCCESS
+                    or not consent_status.get("consent_time")
+                ):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+                try:
+                    datetime.strptime(
+                        consent_status.get("consent_time", ""), D_FORMAT
+                    )
+                except Exception:
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_194")}, 400
+                g.consent_time = consent_status.get("consent_time")
 
         logarray.update({"org_id": g.org_id, "digilockerid": g.digilockerid})
     except Exception as e:

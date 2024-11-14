@@ -102,6 +102,7 @@ from api.users import bp as users_bp
 from api.user_status import bp as user_status_bp
 from api.user_name import bp as user_name_bp
 from api.count import bp as count_bp
+from api.gst import bp as gst_bp
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
@@ -124,6 +125,7 @@ app.register_blueprint(department_bp, url_prefix='/department')
 app.register_blueprint(permission_bp, url_prefix='/permission')
 app.register_blueprint(section_bp, url_prefix='/section')
 app.register_blueprint(users_bp, url_prefix='/users')
+app.register_blueprint(gst_bp, url_prefix='/gst')
 app.register_blueprint(user_status_bp, url_prefix='/status')
 app.register_blueprint(user_name_bp, url_prefix='/search/v1')
 app.register_blueprint(count_bp, url_prefix='/')

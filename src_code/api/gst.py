@@ -31,7 +31,7 @@ REDISLIB = RedisLib()
 
 # Configuration and blueprint setup
 logs_queue = "org_details_update_"
-bp = Blueprint("cin", __name__)
+bp = Blueprint("gst", __name__)
 logger = logging.getLogger(__name__)
 logarray = {}
 CONFIG = dict(CONFIG)
@@ -78,7 +78,7 @@ def validate():
         g.org_access_rules = jwtlib.org_access_rules
         g.org_user_details = jwtlib.org_user_details
         g.consent_time = ''
-        consent_bypass_urls = ('update_cin')
+        consent_bypass_urls = ('update_gstin')
         if request.path.split('/')[1] not in consent_bypass_urls and request.path.split('/')[-1] not in consent_bypass_urls:
             if CONFIG["esign_consent"]["esign_consent"] == "ON":
                 consent_status, consent_code = esign_consent_get()
@@ -100,46 +100,51 @@ def validate():
 def healthcheck():
     return jsonify({STATUS: SUCCESS})
 
-@bp.route("/update_cin", methods=["POST"])
+@bp.route("/update_gstin", methods=["POST"])
 def update_cin():
-    res, status_code = VALIDATIONS.is_valid_cin_v2(request, g.org_id)
+    res, status_code = VALIDATIONS.is_valid_gstin_v3(request, g.org_id)
     if res[STATUS] == ERROR:
         return jsonify({"status": "error", "response":res[ERROR_DES]}), status_code
-    cin_no = res.get('cin')
-    cin_name = res.get('name')
-    if not cin_no:
-        return jsonify({"status": "error", "response": "CIN number not provided"}), 400
-    if not cin_name:
-        return jsonify({"status": "error", "response": "CIN name not provided"}), 400
+    gstin = res.get('gstin')
+    gstin_name = res.get('name')
+    if not gstin:
+        return jsonify({"status": "error", "response": "GSTIN number not provided"}), 400
+    if not gstin_name:
+        return jsonify({"status": "error", "response": "GSTIN name not provided"}), 400
     if not g.org_id:
         return jsonify({"status": "error", "response": "Organization ID not provided"}), 400
-    res = ids_cin_verify(cin_no, cin_name)
+    resp, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_details"], {'org_id': g.org_id}, {"d_incorporation" :1}, limit=1)
+    if status_code != 200 and len(resp[RESPONSE]) == 0:
+        return jsonify({"status": "error", "response": "Organization ID not found"}), 400
+    doi = resp[RESPONSE][0].get('d_incorporation')
+    res = ids_cin_verify(gstin, gstin_name, doi)
     status_code = res[1]
     if status_code != 200 :
-        return jsonify({"status": "error", "response": "CIN number not verified"}), 400
+        return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
     post_data = {
         "org_id":g.org_id,
-        "ccin": cin_no
+        "gstin": gstin
     }
     try:
         RABBITMQ.send_to_queue({"data": post_data}, "Organization_Xchange", "org_update_details_")
-        return jsonify({"status": "success", "response": "CIN number set successfully"}), 200
+        return jsonify({"status": "success", "response": "GSTIN number set successfully"}), 200
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return jsonify({"status": "error", "error_description": Errors.error('err_1201')+"[#1901]"}), 400
 
-def ids_cin_verify(cin_no, cin_name):
+def ids_cin_verify(gstin, gstin_name, doi):
     try:
         ids_api_url = CONFIG["ids"]["url"]
         curlurl = f"{ids_api_url}gateway/1.0/verify_cin"
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
-        if not cin_no or not cin_name:
+        if not gstin or not gstin_name:
             return {"status": "error", "error_desc": "err_112"}, 400
      
         data = {
-            "cin": cin_no,
-            "name": cin_name
+            "GSTIN": gstin,
+            "FullName": gstin_name,
+            "d_incorporation": doi
         }
         fields = json.dumps(data)
 
@@ -164,7 +169,7 @@ def ids_cin_verify(cin_no, cin_name):
             return {'status': 'success', 'response': response['msg']}, code
         elif 400 <= code <= 499 or code == 503:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
-            return {'status': 'error', 'response': response['msg']}, code
+            return {'status': 'error', 'response': "GSTIN not Verified"}, code
         else:
             RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'entity_auth_logs_')
             return {"status": "error", "error_desc": f"Technical error occurred. Code: {code}"}, code
