@@ -103,6 +103,8 @@ def healthcheck():
 @bp.route("/update_udyam", methods=["POST"])
 def update_udyam():
     res, status_code = VALIDATIONS.is_valid_udyam_v2(request, g.org_id)
+    if status_code != 200:
+        return res, status_code
 
     udyam_no = res.get('udyam_number')
     mobile = res.get('mobile')
