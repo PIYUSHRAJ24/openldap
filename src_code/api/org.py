@@ -1,6 +1,7 @@
 import datetime
 import hashlib
 import random
+import re
 import uuid
 from flask import request, Blueprint, g, render_template, jsonify
 import requests
@@ -84,7 +85,7 @@ def validate():
             logarray.update({ENDPOINT: g.endpoint, REQUEST: {'user': res[0], 'client_id': res[1]}})
             g.org_id = res[0]
             return
-        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold"):
+        if request.path.split('/')[-1] in ("activate","deactivate","approve","disapprove","reject","onhold","signup"):
             res, status_code = VALIDATIONS.hmac_authentication(request)
             if status_code != 200:
                 return res, status_code
@@ -2050,6 +2051,157 @@ def disapprove():
     except Exception as e:
         VALIDATIONS.log_exception(e)
         return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+
+
+schema = {
+    "pan": {
+        "regex": r"^[A-Z]{3}[ABCFGHLJPT][A-Z][0-9]{4}[A-Z]$",
+        "description": "PAN format"
+    },
+    "udyam_mobile": {
+        "regex": r"^\+91[6-9]\d{9}$",
+        "description": "UDYAM registered mobile format"
+    },
+    "gstin": {
+        "regex": r"^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z][0-9A-Z][0-9A-Z]$",
+        "description": "GSTIN format"
+    }
+}
+
+def validation_partner_request(data):
+    try:
+        org_type= ''
+        ccin = ''
+        required_fields = ['name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
+        for field in required_fields:
+            if field not in data or not data[field]:
+                return {STATUS: ERROR, ERROR_DES:f"Field {field} is required"}
+            
+        if 'cin' in data and not data.get('din'):
+            return {STATUS: ERROR, ERROR_DES:"DIN is required when CIN is provided"}
+        
+        if 'udyam' in data and not data.get('udyam_mobile'):
+            return {STATUS: ERROR, ERROR_DES:"UDYAM registered mobile is required when UDYAM is provided"}
+        
+        if ('pan' in data or 'gstin' in data) and not data.get('d_incorporation'):
+            {STATUS: ERROR, ERROR_DES:"Date of incorporation is required"}
+
+        # Validate specific formats
+        if not re.match(schema['pan']['regex'], data['pan']):
+            {STATUS: ERROR, ERROR_DES:"Invalid PAN format"}
+        
+        if 'udyam_mobile' in data and not re.match(schema['udyam_mobile']['regex'], data['udyam_mobile']):
+            {STATUS: ERROR, ERROR_DES:"Invalid UDYAM mobile format"}
+
+        if 'gstin' in data and not re.match(schema['gstin']['regex'], data['gstin']):
+            {STATUS: ERROR, ERROR_DES:"Invalid GSTIN format"}
+
+        if 'd_incorporation' in data:
+            try:
+                datetime.datetime.strptime(data['d_incorporation'], '%Y-%m-%d')
+            except ValueError:
+                {STATUS: ERROR, ERROR_DES:"Invalid date format for d_incorporation, should be YYYY-MM-DD"}
+        if not data.get('transactionid'):
+            data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['name']))
+        
+        if 'pan' in data:
+            org_type = "pan"
+            cin = data['pan']
+        if 'udyam' in data:
+            org_type = "msme"
+            cin = data['udyam']
+        if 'cin' in data:
+            org_type = "llp"    
+            cin = data['cin'] 
+        if 'gstin' in data:
+            org_type = "gstin"    
+            cin = data['gstin']        
+        return {STATUS: SUCCESS,"org_type":org_type,"cin":cin}     
+    except Exception as e:
+        return {STATUS: ERROR, ERROR_DES: "Internal server error"+str(e)}       
+
+def send_attempt(data):
+    CLIENT_ID = CONFIG.get("org_signin_api", "client_id")
+    ts = str(int(time.time()))
+    plain_txt = f"{CONFIG.get("org_signin_api", "client_secret")}{CLIENT_ID}{ts}"
+    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
+    headers = {
+        'Content-Type': 'application/json',
+        'client-id': CLIENT_ID,
+        'ts' : ts,
+        'hmac': hmac
+    }
+        
+    url = f"{CONFIG.get("org_signin_api", "url")}attempt/store_details"
+    try:
+        response = requests.post(url, headers=headers, data=data, timeout=10)
+        response_data = response.json()
+        status_code = response.status_code
+        if status_code == 200:
+            return response_data, status_code
+        else:
+            return {STATUS: ERROR, ERROR_DES: response_data}, status_code
+
+    except requests.RequestException as e:
+        return {STATUS: ERROR, ERROR_DES: "Internal server error" + str(e)}, 400
+    
+
+@bp.route('/signup', methods=['POST'])
+def create_organization_partners():
+    data = request.json
+    try:
+        check_valid = validation_partner_request(data)
+        if check_valid[STATUS] == SUCCESS:  
+            # Required fields
+            org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
+            txn_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
+            userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
+            org_type = check_valid['org_type']
+            cin = check_valid['cin']
+            fixed_schema = {
+                "org_id": org_id,
+                "org_type": org_type,
+                "cin": cin, # unique identifier can be pan,gstin,msme,gstin
+                "transactionid": data.get('transactionid', txn_id), 
+                "name": data.get('name', ''),
+                "pan": data.get('pan', ''),
+                "created_by": data.get('created_by', ''),
+                "din": data.get('din', ''),
+                "ccin": data.get('cin', ''),
+                "udyam": data.get('udyam', ''),
+                "udyam_mobile": data.get('udyam_mobile', ''),
+                "gstin": data.get('gstin', '') ,
+                "d_incorporation": data.get('d_incorporation', ''),
+                "entity_partner_org_id": data.get('entity_partner_org_id', ''),
+                "request_partner_name": data.get('request_partner_name', ''),
+                "dir_info" : {
+                    "digilocker_id" : data.get('created_by', ''),
+                    "din" : data.get('din', ''),
+                    "is_active" : 'Y',
+                    "deactivated_on" : None
+                },
+                "user_details" : {
+                    "digilockerid" : data.get('created_by', ''),
+                    "email_id" : userinfo.get('email',''),
+                    "full_name" : userinfo.get('full_name',''),
+                    "mobile_no" : userinfo.get('mobile',''),
+                    "dob" : userinfo.get('date_of_birth',''),
+                    "gender" : userinfo.get('gender',''),
+                },
+                "is_active" : "Y",
+                "is_approved" : "YES"
+            }
+            send_request, code = send_attempt(fixed_schema)
+            return send_request, code
+        else:
+            return {"status": "error", "error_description": check_valid}, 400
+            
+    except ValueError as e:
+        return {"status": "error", "error_description": str(e)}, 400
+
+    except Exception as e:
+        return {"status": "error", "error_description": "Internal server error"}, 400
+
     
     
 @bp.after_request
