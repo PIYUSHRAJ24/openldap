@@ -2045,13 +2045,13 @@ class Validations:
         udyam_number = udyam_number_decryption_result[0] if udyam_number_decryption_result[0] else udyam_number_encrypted
 
         try:
-            if mobile_decryption_result[1] == 400:
+            if mobile == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
             elif not mobile or not self.is_valid_mobile(mobile):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-            if udyam_number_decryption_result[1] == 400:
+            if udyam_number == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "udyam_number", RESPONSE: udyam_number[0]}, 400
-            elif udyam_number is None or not self.is_valid_udyam(udyam_number):
+            elif not udyam_number or not self.is_valid_udyam(udyam_number):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_195")}, 400
 
             query = {'udyam': udyam_number}
@@ -2062,10 +2062,11 @@ class Validations:
                 logarray.update(log_data)
                 RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_gstin')
                 return res, status_code
-            log_data = {RESPONSE: 'Udyam number and mobile successfully decrypted'}
-            logarray.update(log_data)
-            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
-            return {STATUS: SUCCESS, 'mobile': mobile ,'udyam_number': udyam_number}, 200
+            else:
+                log_data = {RESPONSE: 'Udyam number and mobile successfully decrypted'}
+                logarray.update(log_data)
+                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
+                return {STATUS: SUCCESS, 'mobile': mobile ,'udyam_number': udyam_number}, 200
 
         except Exception as e:
             log_data = {RESPONSE: e}
