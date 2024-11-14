@@ -2045,11 +2045,11 @@ class Validations:
         udyam_number = udyam_number_decryption_result[0] if udyam_number_decryption_result[0] else udyam_number_encrypted
 
         try:
-            if mobile == 400:
+            if mobile_decryption_result[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "mobile", RESPONSE: mobile[0]}, 400
             elif not mobile or not self.is_valid_mobile(mobile):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_149")}, 400
-            if udyam_number == 400:
+            if udyam_number_decryption_result[1] == 400:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_100") % "udyam_number", RESPONSE: udyam_number[0]}, 400
             elif udyam_number is None or not self.is_valid_udyam(udyam_number):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_195")}, 400
