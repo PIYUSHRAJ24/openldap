@@ -2062,11 +2062,10 @@ class Validations:
                 logarray.update(log_data)
                 RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'update_gstin')
                 return res, status_code
-            else:
-                log_data = {RESPONSE: 'Udyam number and mobile successfully decrypted'}
-                logarray.update(log_data)
-                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
-                return {STATUS: SUCCESS, 'mobile': mobile ,'udyam_number': udyam_number}, 200
+            log_data = {RESPONSE: 'Udyam number and mobile successfully decrypted'}
+            logarray.update(log_data)
+            RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, 'set_gstin')
+            return {STATUS: SUCCESS, 'mobile': mobile ,'udyam_number': udyam_number}, 200
 
         except Exception as e:
             log_data = {RESPONSE: e}
