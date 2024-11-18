@@ -1737,7 +1737,7 @@ class Validations:
             gstin = cin_decrypted if cin_decrypted is not None else gstin_no
             name = name_decrypted if name_decrypted is not None else gstin_name
             if not gstin or not self.is_valid_gstin(gstin):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_146")}, 400
+                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_147")}, 400
             if not name :
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_199")}, 400
             query = {'cin': gstin}
@@ -1747,7 +1747,7 @@ class Validations:
             else:
                 return {STATUS: SUCCESS, 'gstin': gstin, 'name': name}, 200
         except Exception as e:
-            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_cin_v2:' + str(e)}, 400
+            return {STATUS: ERROR, ERROR_DES: 'Exception:Validations::is_valid_gstin_v2:' + str(e)}, 400
     
     def is_valid_cin_pan_udyam(self, request, txn):
         ''' check valid CIN'''

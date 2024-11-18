@@ -132,7 +132,7 @@ def update_cin():
 def ids_cin_verify(gstin, gstin_name, doi):
     try:
         ids_api_url = CONFIG["ids"]["url"]
-        curlurl = f"{ids_api_url}gateway/1.0/verify_cin"
+        curlurl = f"{ids_api_url}gateway/1.0/verify_gstin"
         ids_clientid = CONFIG["ids"]["client_id"]
         ids_clientsecret = CONFIG["ids"]["client_secret"]
         if not gstin or not gstin_name:
