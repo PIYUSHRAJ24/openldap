@@ -114,7 +114,9 @@ def update_cin():
     if status_code != 200 and len(resp[RESPONSE]) == 0:
         return jsonify({"status": "error", "response": "Organization ID not found"}), 400
     doi = resp[RESPONSE][0].get('d_incorporation')
-    res = ids_cin_verify(gstin, gstin_name, doi)
+    dt= datetime.strptime(doi, "%Y-%m-%dT%H:%M:%S.%fZ")
+    formatted_date = str(dt.strftime("%d-%m-%Y"))
+    res = ids_cin_verify(gstin, gstin_name, formatted_date)
     status_code = res[1]
     if status_code != 200 :
         return jsonify({"status": "error", "response": "GSTIN number not verified"}), 400
