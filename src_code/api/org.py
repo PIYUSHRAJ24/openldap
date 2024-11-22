@@ -2174,6 +2174,16 @@ def create_organization_partners():
                 "d_incorporation": data.get('d_incorporation', ''),
                 "entity_partner_org_id": data.get('entity_partner_org_id', ''),
                 "request_partner_name": data.get('request_partner_name', ''),
+                
+                "org_url": data.get('org_url', ''),
+                "org_name": data.get('org_name', ''),
+                "org_address": data.get('org_address', ''),
+                "state_id": data.get('state_id', ''),
+                "nodal_officer_name": data.get('nodal_officer_name', ''),
+                "nodal_officer_mobile": data.get('nodal_officer_mobile', ''),
+                "nodal_email": data.get('nodal_email', ''),
+                "is_auto_approved": data.get('is_auto_approved', 'N'),
+                
                 "dir_info" : {
                     "digilocker_id" : data.get('created_by', ''),
                     "din" : data.get('din', ''),
