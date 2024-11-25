@@ -2140,7 +2140,7 @@ def send_attempt(data):
         if status_code == 200:
             return response_data, status_code
         elif status_code == 422:
-            return {STATUS: ERROR, ERROR_DES: "Json Data is not valid."}, 422
+            return {STATUS: ERROR, ERROR_DES: "Data is not valid."}, 422
         else:
             return {STATUS: ERROR, ERROR_DES: response_data}, status_code
 
