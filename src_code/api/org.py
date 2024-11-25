@@ -2077,7 +2077,7 @@ def validation_partner_request(data):
             if field not in data or not data[field]:
                 return {STATUS: ERROR, ERROR_DES:f"Field {field} is required"}
             
-        if 'ccin' in data and not data.get('din'):
+        if 'cin' in data and not data.get('din'):
             return {STATUS: ERROR, ERROR_DES:"DIN is required when CIN is provided"}
         
         if 'udyam' in data and not data.get('udyam_mobile'):
