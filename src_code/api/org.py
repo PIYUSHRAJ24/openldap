@@ -2163,7 +2163,7 @@ def create_organization_partners():
                 "org_type": org_type,
                 "cin": cin, # unique identifier can be pan,gstin,msme,gstin
                 "transactionid": data.get('transactionid', txn_id), 
-                "name": data.get('name', ''),
+                "name": data.get('org_name', ''),
                 "pan": data.get('pan', ''),
                 "created_by": data.get('created_by', ''),
                 "din": data.get('din', ''),
@@ -2175,14 +2175,13 @@ def create_organization_partners():
                 "entity_partner_org_id": data.get('entity_partner_org_id', ''),
                 "request_partner_name": data.get('request_partner_name', ''),
                 
-                "org_url": data.get('org_url', ''),
-                "org_name": data.get('org_name', ''),
+                "domain": data.get('org_url', ''),
                 "org_address": data.get('org_address', ''),
                 "state_id": data.get('state_id', ''),
                 "nodal_officer_name": data.get('nodal_officer_name', ''),
                 "nodal_officer_mobile": data.get('nodal_officer_mobile', ''),
                 "nodal_email": data.get('nodal_email', ''),
-                "is_auto_approved": data.get('is_auto_approved', 'N'),
+                "is_auto_approved": data.get('is_auto_approved', 'Y'),
                 
                 "dir_info" : {
                     "digilocker_id" : data.get('created_by', ''),
