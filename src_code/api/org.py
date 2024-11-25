@@ -2134,7 +2134,7 @@ def send_attempt(data):
     base_url = CONFIG['org_signin_api']['url']
     url = f"{base_url}attempt/oauth/store_details"
     try:
-        response = requests.post(url, headers=headers, data=data, timeout=10)
+        response = requests.post(url, headers=headers, data=json.dumps(data), timeout=10)
         response_data = response.json()
         status_code = response.status_code
         if status_code == 200:
