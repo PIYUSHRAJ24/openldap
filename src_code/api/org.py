@@ -1892,8 +1892,7 @@ def pull_all_ids(data, org_id):
 
 def move_data_attempts_prod(org_id_req):
     try:
-        # req = {'$or':[{'entity_partner_org_id': org_id_req}, {'org_id':org_id_req}]}
-        req = {'org_id': org_id_req}
+        req = {'$or':[{'entity_partner_org_id': org_id_req}, {'org_id':org_id_req}]}
         res, status_code = MONGOLIB.org_eve(CONFIG["org_eve"]["collection_attempts"], req, {})
         if status_code == 200:
             post_data_details = {}
@@ -2122,7 +2121,6 @@ def validation_partner_request(data):
         return {STATUS: ERROR, ERROR_DES: "Internal server error"+str(e)}       
 
 def send_attempt(data):
-    # CLIENT_ID = CONFIG.get("org_signin_api", "client_id")
     CLIENT_ID = CONFIG['org_signin_api']['client_id']
     ts = str(int(time.time()))
     plain_txt = f"{CONFIG.get("org_signin_api", "client_secret")}{CLIENT_ID}{ts}"
@@ -2133,7 +2131,6 @@ def send_attempt(data):
         'ts' : ts,
         'hmac': hmac
     }
-    # url = f"{CONFIG.get("org_signin_api", "url")}attempt/store_details"
     base_url = CONFIG['org_signin_api']['url']
     url = f"{base_url}attempt/store_details"
     try:
@@ -2145,8 +2142,8 @@ def send_attempt(data):
         else:
             return {STATUS: ERROR, ERROR_DES: response_data}, status_code
 
-    except requests.RequestException as e:
-        return {STATUS: ERROR, ERROR_DES: "Internal server error" + str(e)}, 400
+    except Exception as e:
+        return {STATUS: ERROR, ERROR_DES: "Failed to store attempt.", RESPONSE: str(e)}, 400
     
 
 @bp.route('/signup', methods=['POST'])
@@ -2157,8 +2154,8 @@ def create_organization_partners():
         if check_valid[STATUS] == SUCCESS:  
             # Required fields
             org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
-            txn_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
-            # userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
+            txn_id = hashlib.sha256(org_id.encode()).hexdigest()
+            userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
             org_type = check_valid['org_type']
             cin = check_valid['cin']
             fixed_schema = {
@@ -2194,19 +2191,21 @@ def create_organization_partners():
                     "deactivated_on" : None
                 },
                 "user_details" : {
-                    # "digilockerid" : data.get('created_by', ''),
-                    # "email_id" : userinfo.get('email',''),
-                    # "full_name" : userinfo.get('full_name',''),
-                    # "mobile_no" : userinfo.get('mobile',''),
-                    # "dob" : userinfo.get('date_of_birth',''),
-                    # "gender" : userinfo.get('gender',''),
+                    "digilockerid" : data.get('created_by', ''),
+                    "email_id" : userinfo.get('email',''),
+                    "full_name" : userinfo.get('full_name',''),
+                    "mobile_no" : userinfo.get('mobile',''),
+                    "dob" : userinfo.get('date_of_birth',''),
+                    "gender" : userinfo.get('gender',''),
                 },
                 "is_active" : "Y",
                 "is_approved" : "YES"
             }
-            # send_request, code = send_attempt(fixed_schema)
-            send_request, code = move_data_attempts_prod('461ffd99-6966-5ff9-aa97-9d1eaef4b414')
-            return send_request, code
+            send_request, code = send_attempt(fixed_schema)
+            if code != 200:
+                return send_request, code
+            return move_data_attempts_prod(org_id)
+            
         else:
             return {"status": "error", "error_description": check_valid}, 400
             
