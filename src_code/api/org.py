@@ -2153,7 +2153,7 @@ def create_organization_partners():
         check_valid = validation_partner_request(data)
         if check_valid[STATUS] == SUCCESS:  
             # Required fields
-            org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
+            org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid.uuid4())))
             txn_id = hashlib.sha256(org_id.encode()).hexdigest()
             userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
             org_type = check_valid['org_type']
