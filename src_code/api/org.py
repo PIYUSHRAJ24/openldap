@@ -2132,7 +2132,7 @@ def send_attempt(data):
         'hmac': hmac
     }
     base_url = CONFIG['org_signin_api']['url']
-    url = f"{base_url}attempt/store_details"
+    url = f"{base_url}attempt/oauth/store_details"
     try:
         response = requests.post(url, headers=headers, data=data, timeout=10)
         response_data = response.json()
@@ -2181,7 +2181,7 @@ def create_organization_partners():
                 "nodal_officer_name": data.get('nodal_officer_name', ''),
                 "nodal_officer_mobile": data.get('nodal_officer_mobile', ''),
                 "nodal_email": data.get('nodal_email', ''),
-                "is_auto_approved": data.get('is_auto_approved', 'Y'),
+                "is_auto_approved": 'Y',
                 
                 "dir_info" : {
                     "digilocker_id" : data.get('created_by', ''),
@@ -2200,10 +2200,10 @@ def create_organization_partners():
                 "is_active" : "Y",
                 "is_approved" : "YES"
             }
-            send_request, code = send_attempt(fixed_schema)
-            if code != 200:
-                return send_request, code
-            return move_data_attempts_prod(org_id)
+            return send_attempt(fixed_schema)
+            # if code != 200:
+            #     return send_request, code
+            # return move_data_attempts_prod(org_id)
             
         else:
             return {"status": "error", "error_description": check_valid}, 400
