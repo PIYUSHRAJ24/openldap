@@ -2072,7 +2072,7 @@ def validation_partner_request(data):
     try:
         org_type= ''
         ccin = ''
-        required_fields = ['name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
+        required_fields = ['org_name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
         for field in required_fields:
             if field not in data or not data[field]:
                 return {STATUS: ERROR, ERROR_DES:f"Field {field} is required"}
@@ -2102,7 +2102,7 @@ def validation_partner_request(data):
             except ValueError:
                 {STATUS: ERROR, ERROR_DES:"Invalid date format for d_incorporation, should be YYYY-MM-DD"}
         if not data.get('transactionid'):
-            data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['name']))
+            data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['org_name']))
         
         if 'pan' in data:
             org_type = "pan"
