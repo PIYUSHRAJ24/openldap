@@ -2148,8 +2148,8 @@ def send_attempt(data):
 
 @bp.route('/signup', methods=['POST'])
 def create_organization_partners():
-    data = request.json
     try:
+        data = request.json
         check_valid = validation_partner_request(data)
         if check_valid[STATUS] == SUCCESS:  
             # Required fields
