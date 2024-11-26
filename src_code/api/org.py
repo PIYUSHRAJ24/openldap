@@ -2072,7 +2072,7 @@ def validation_partner_request(data):
     try:
         org_type= ''
         ccin = ''
-        required_fields = ['name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
+        required_fields = ['org_name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
         for field in required_fields:
             if field not in data or not data[field]:
                 return {STATUS: ERROR, ERROR_DES:f"Field {field} is required"}
@@ -2102,7 +2102,7 @@ def validation_partner_request(data):
             except ValueError:
                 {STATUS: ERROR, ERROR_DES:"Invalid date format for d_incorporation, should be YYYY-MM-DD"}
         if not data.get('transactionid'):
-            data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['name']))
+            data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['org_name']))
         
         if 'pan' in data:
             org_type = "pan"
@@ -2121,7 +2121,7 @@ def validation_partner_request(data):
         return {STATUS: ERROR, ERROR_DES: "Internal server error"+str(e)}       
 
 def send_attempt(data):
-    CLIENT_ID = CONFIG.get("org_signin_api", "client_id")
+    CLIENT_ID = CONFIG['org_signin_api']['client_id']
     ts = str(int(time.time()))
     plain_txt = f"{CONFIG.get("org_signin_api", "client_secret")}{CLIENT_ID}{ts}"
     hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
@@ -2131,10 +2131,10 @@ def send_attempt(data):
         'ts' : ts,
         'hmac': hmac
     }
-        
-    url = f"{CONFIG.get("org_signin_api", "url")}attempt/store_details"
+    base_url = CONFIG['org_signin_api']['url']
+    url = f"{base_url}attempt/oauth/store_details"
     try:
-        response = requests.post(url, headers=headers, data=data, timeout=10)
+        response = requests.post(url, headers=headers, data=json.dumps(data), timeout=10)
         response_data = response.json()
         status_code = response.status_code
         if status_code == 200:
@@ -2142,19 +2142,19 @@ def send_attempt(data):
         else:
             return {STATUS: ERROR, ERROR_DES: response_data}, status_code
 
-    except requests.RequestException as e:
-        return {STATUS: ERROR, ERROR_DES: "Internal server error" + str(e)}, 400
+    except Exception as e:
+        return {STATUS: ERROR, ERROR_DES: "Failed to store attempt.", RESPONSE: str(e)}, 400
     
 
 @bp.route('/signup', methods=['POST'])
 def create_organization_partners():
-    data = request.json
     try:
+        data = request.json
         check_valid = validation_partner_request(data)
         if check_valid[STATUS] == SUCCESS:  
             # Required fields
-            org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
-            txn_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, data.get('created_by')))
+            org_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(uuid.uuid4())))
+            txn_id = hashlib.sha256(org_id.encode()).hexdigest()
             userinfo = CommonLib.get_profile_details({'digilockerid': data.get('created_by')})
             org_type = check_valid['org_type']
             cin = check_valid['cin']
@@ -2163,7 +2163,7 @@ def create_organization_partners():
                 "org_type": org_type,
                 "cin": cin, # unique identifier can be pan,gstin,msme,gstin
                 "transactionid": data.get('transactionid', txn_id), 
-                "name": data.get('name', ''),
+                "name": data.get('org_name', ''),
                 "pan": data.get('pan', ''),
                 "created_by": data.get('created_by', ''),
                 "din": data.get('din', ''),
@@ -2174,6 +2174,15 @@ def create_organization_partners():
                 "d_incorporation": data.get('d_incorporation', ''),
                 "entity_partner_org_id": data.get('entity_partner_org_id', ''),
                 "request_partner_name": data.get('request_partner_name', ''),
+                
+                "domain": data.get('org_url', ''),
+                "org_address": data.get('org_address', ''),
+                "state_id": data.get('state_id', ''),
+                "nodal_officer_name": data.get('nodal_officer_name', ''),
+                "nodal_officer_mobile": data.get('nodal_officer_mobile', ''),
+                "nodal_email": data.get('nodal_email', ''),
+                "is_auto_approved": 'Y',
+                
                 "dir_info" : {
                     "digilocker_id" : data.get('created_by', ''),
                     "din" : data.get('din', ''),
@@ -2191,8 +2200,11 @@ def create_organization_partners():
                 "is_active" : "Y",
                 "is_approved" : "YES"
             }
-            send_request, code = send_attempt(fixed_schema)
-            return send_request, code
+            return send_attempt(fixed_schema)
+            # if code != 200:
+            #     return send_request, code
+            # return move_data_attempts_prod(org_id)
+            
         else:
             return {"status": "error", "error_description": check_valid}, 400
             

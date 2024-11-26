@@ -139,7 +139,7 @@ def activity_insert(ac_type, subject, user, org_id, doc_name="",role_id= "",user
             REDISLIB.remove(org_id + '_activity_1_30')
             REDISLIB.remove(org_id + '_activity_page')
             REDISLIB.remove(org_id + '_activity_count')
-            return {STATUS: True,"message": SUCCESS},200
+            return {STATUS: True, "message": SUCCESS},200
         else:
             return {STATUS: False, ERROR_DES: Errors.error("ERR_MSG_111"), RESPONSE: "org_activity_insert: activity_service_inactive" },400
     except Exception as e:
