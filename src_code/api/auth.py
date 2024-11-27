@@ -119,7 +119,7 @@ def token(post_data = None):
         return jwtres, status_code
     except Exception as e:
         VALIDATIONS.log_exception(e)
-        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')}, 400
+        return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_111')+str(e)}, 400
 
 @bp.route('/refresh', methods=['POST'])
 def refresh(post_data = None):
