@@ -103,16 +103,17 @@ def token(post_data = None):
         clientid = request.headers.get('clientid')
         digilockerid = request.headers.get('user')
         
+        source = request.headers.get('source') or "web"
+        _, status_code = CommonLib().validate_hmac_partners_256(clientid,ts,orgid,digilockerid,hmac)
+        if status_code != 200:
+            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_122')}, 401
+        
         '''validating above digilockerid - it should exists in users collection'''
         u_data = CommonLib().get_users_data(user=digilockerid)
         digilockerid = u_data.get('digilockerid')
         if digilockerid is None:
             return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_108')}, 401
         
-        source = request.headers.get('source') or "web"
-        _, status_code = CommonLib().validate_hmac_partners_256(clientid,ts,orgid,digilockerid,hmac)
-        if status_code != 200:
-            return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_122')}, 401
         jwtlib = DriveJwt(request, CONFIG)
         jwtres, status_code = jwtlib.jwt_generate(digilockerid, did, orgid, source)
         return jwtres, status_code
