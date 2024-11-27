@@ -966,7 +966,7 @@ class CommonLib:
         else:
             return False, 401
         
-    def get_users_data(user):
+    def get_users_data(self, user):
         try:
             if len(user) == 36:
                 where = {"digilockerid": user}
