@@ -966,3 +966,19 @@ class CommonLib:
         else:
             return False, 401
         
+    def get_users_data(self, user):
+        try:
+            if len(user) == 36:
+                where = {"digilockerid": user}
+            else:
+                where = {"user_id": user}
+                
+            res, status_code = MONGOLIB.accounts_eve_v2("users", where, {'_id':0}, limit=1)
+            if status_code == 200:
+                data = res['response'][0]
+                return data
+                
+            return {}
+        except Exception as e:
+            return {}
+        
