@@ -42,17 +42,18 @@ git pull origin develop || { echo "Error: Failed to pull latest changes from dev
 if [ ! -f "$REVISION_FILE" ]; then
     echo "-------------v0.0.0------------------
 Version: v0.0.0
-Revision: Initial
-Author: Initial
-Date: $(date '+%Y-%m-%d')
-Commit Messages: Initial commit" > "$REVISION_FILE"
+Merge Commit: No
+Commit Details:
+- Revision: Initial
+- Author: Initial
+- Date: $(date '+%Y-%m-%d')
+- Message: Initial commit" > "$REVISION_FILE"
 fi
 
 # Function to increment version
 increment_version() {
     local version="${1:-v0.0.0}"
-    # Remove 'v' prefix for processing
-    version=${version#v}
+    version=${version#v} # Remove 'v' prefix for processing
     
     local major=$(echo "$version" | cut -d'.' -f1)
     local minor=$(echo "$version" | cut -d'.' -f2)
@@ -73,13 +74,11 @@ increment_version() {
         major=$((major + 1))
     fi
     
-    # Return the incremented version with 'v' prefix
     printf "v%d.%d.%d" "$major" "$minor" "$patch"
 }
 
 # Extract the latest version
 current_version=$(grep -oP '(?<=Version: )v?\d+\.\d+\.\d+' "$REVISION_FILE" | head -1)
-# Fallback to initial version if not found
 current_version=${current_version:-v0.0.0}
 echo "Current version: $current_version"
 
@@ -93,31 +92,29 @@ commit_author=$(git log -1 --pretty=format:'%an')
 commit_date=$(git log -1 --date=format:'%Y-%m-%d %H:%M:%S' --pretty=format:'%cd')
 commit_message=$(git log -1 --pretty=format:'%s' | sed 's/[^[:print:]]//g')
 
-# Fetch meaningful merge commits (excluding generic merge messages)
+# Check for meaningful merge commits
 latest_merge=$(git log --merges --pretty=format:"- %h %an %ar: %s" develop | \
     grep -vE "Merge branch '?develop'? of" | \
-    grep -vE "merged conficts" | \
+    grep -vE "merged conflicts" | \
     head -1)
+merge_commit="No"
+if [ -n "$latest_merge" ]; then
+    merge_commit="Yes"
+fi
 
-# Prepend the new version block
+# Update the revisions.txt file
 echo "Updating revisions.txt..."
 {
     echo "------------- $new_version ------------------"
     echo "Version: $new_version"
-    echo "Revision: $commit_hash"
-    echo "Author: $commit_author"
-    echo "Date: $commit_date"
-    echo "Commit Messages:"
-    echo "Current Commit: $commit_message"
+    echo "Merge Commit: $merge_commit"
     echo ""
-    if [ -n "$latest_merge" ]; then
-        echo "Latest Merge into develop:"
-        echo "$latest_merge"
-        echo ""
-    else
-        echo "No recent branch merges into develop."
-        echo ""
-    fi
+    echo "Commit Details:"
+    echo "- Revision: $commit_hash"
+    echo "- Author: $commit_author"
+    echo "- Date: $commit_date"
+    echo "- Message: $commit_message"
+    echo ""
     echo "Previous Versions:"
     cat "$REVISION_FILE"
 } > "$REVISION_FILE.tmp" && mv "$REVISION_FILE.tmp" "$REVISION_FILE"
@@ -131,4 +128,9 @@ else
     git push origin develop || { echo "Error: Push failed."; exit 1; }
 fi
 
-echo "Version updated to $new_version and changes pushed to the repository successfully."
+# Add a Git tag for the new version
+echo "Tagging the new version: $new_version"
+git tag -a "$new_version" -m "Version $new_version" || { echo "Error: Tagging failed."; exit 1; }
+git push origin "$new_version" || { echo "Error: Failed to push tag to remote."; exit 1; }
+
+echo "Version updated to $new_version, changes pushed, and tag $new_version created successfully."
