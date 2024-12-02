@@ -1,0 +1,134 @@
+#!/bin/bash
+# Variables
+REVISION_FILE="revisions.txt"
+GIT_REPO_PATH="$(pwd)"
+
+# Ensure Git credentials are set up
+if [ -z "$GIT_USERNAME" ] || [ -z "$GIT_PASSWORD" ]; then
+    echo "Error: Git credentials are not provided."
+    exit 1
+fi
+
+# Retrieve Git URL from repository
+GIT_URL=$(git remote get-url origin)
+if [ -z "$GIT_URL" ]; then
+    echo "Error: Unable to retrieve Git URL from repository."
+    exit 1
+fi
+
+# Encode credentials to handle special characters
+ENCODED_USERNAME=$(printf "%s" "$GIT_USERNAME" | jq -sRr @uri)
+ENCODED_PASSWORD=$(printf "%s" "$GIT_PASSWORD" | jq -sRr @uri)
+
+# Construct authenticated Git URL
+CONSTRUCTED_URL="https://${ENCODED_USERNAME}:${ENCODED_PASSWORD}@${GIT_URL#https://}"
+echo "Using Git URL: $CONSTRUCTED_URL"
+
+# Configure Git with credentials
+git config --global user.name "jenkins"
+git config --global user.email "jenkins@localhost"
+git remote set-url origin "$CONSTRUCTED_URL"
+
+# Ensure no uncommitted changes before pulling
+git stash save "Temporary stash before version update" || true
+
+# Check out the develop branch
+git checkout develop || { echo "Error: Failed to checkout the develop branch."; exit 1; }
+
+# Pull latest changes
+git pull origin develop || { echo "Error: Failed to pull latest changes from develop."; exit 1; }
+
+# Create revisions.txt if it doesn't exist
+if [ ! -f "$REVISION_FILE" ]; then
+    echo "-------------v0.0.0------------------
+Version: v0.0.0
+Revision: Initial
+Author: Initial
+Date: $(date '+%Y-%m-%d')
+Commit Messages: Initial commit" > "$REVISION_FILE"
+fi
+
+# Function to increment version
+increment_version() {
+    local version="${1:-v0.0.0}"
+    # Remove 'v' prefix for processing
+    version=${version#v}
+    
+    local major=$(echo "$version" | cut -d'.' -f1)
+    local minor=$(echo "$version" | cut -d'.' -f2)
+    local patch=$(echo "$version" | cut -d'.' -f3)
+    
+    # Increment patch version
+    patch=$((patch + 1))
+    
+    # After 10 patches, reset patch and increment minor
+    if [ "$patch" -ge 10 ]; then
+        patch=0
+        minor=$((minor + 1))
+    fi
+    
+    # After 10 minors, reset minor and increment major
+    if [ "$minor" -ge 10 ]; then
+        minor=0
+        major=$((major + 1))
+    fi
+    
+    # Return the incremented version with 'v' prefix
+    printf "v%d.%d.%d" "$major" "$minor" "$patch"
+}
+
+# Extract the latest version
+current_version=$(grep -oP '(?<=Version: )v?\d+\.\d+\.\d+' "$REVISION_FILE" | head -1)
+# Fallback to initial version if not found
+current_version=${current_version:-v0.0.0}
+echo "Current version: $current_version"
+
+# Increment the version
+new_version=$(increment_version "$current_version")
+echo "New version: $new_version"
+
+# Get Git commit info
+commit_hash=$(git rev-parse --short HEAD)
+commit_author=$(git log -1 --pretty=format:'%an')
+commit_date=$(git log -1 --date=format:'%Y-%m-%d %H:%M:%S' --pretty=format:'%cd')
+commit_message=$(git log -1 --pretty=format:'%s' | sed 's/[^[:print:]]//g')
+
+# Fetch meaningful merge commits (excluding generic merge messages)
+latest_merge=$(git log --merges --pretty=format:"- %h %an %ar: %s" develop | \
+    grep -vE "Merge branch '?develop'? of" | \
+    grep -vE "merged conficts" | \
+    head -1)
+
+# Prepend the new version block
+echo "Updating revisions.txt..."
+{
+    echo "------------- $new_version ------------------"
+    echo "Version: $new_version"
+    echo "Revision: $commit_hash"
+    echo "Author: $commit_author"
+    echo "Date: $commit_date"
+    echo "Commit Messages:"
+    echo "Current Commit: $commit_message"
+    echo ""
+    if [ -n "$latest_merge" ]; then
+        echo "Latest Merge into develop:"
+        echo "$latest_merge"
+        echo ""
+    else
+        echo "No recent branch merges into develop."
+        echo ""
+    fi
+    echo "Previous Versions:"
+    cat "$REVISION_FILE"
+} > "$REVISION_FILE.tmp" && mv "$REVISION_FILE.tmp" "$REVISION_FILE"
+
+# Stage and commit the updated file
+git add "$REVISION_FILE"
+if git diff --cached --quiet; then
+    echo "No changes to commit."
+else
+    git commit -m "Bump version to $new_version" || { echo "Error: Commit failed."; exit 1; }
+    git push origin develop || { echo "Error: Push failed."; exit 1; }
+fi
+
+echo "Version updated to $new_version and changes pushed to the repository successfully."
