@@ -134,3 +134,4 @@ git tag -a "$new_version" -m "Version $new_version" || { echo "Error: Tagging fa
 git push origin "$new_version" || { echo "Error: Failed to push tag to remote."; exit 1; }
 
 echo "Version updated to $new_version, changes pushed, and tag $new_version created successfully."
+#######
