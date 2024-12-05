@@ -1967,6 +1967,31 @@ def move_data_attempts_prod(org_id_req):
             update_appved = {"is_approved":"YES"}
             update_appved_res = MONGOLIB.org_eve_update(CONFIG["org_eve"]["collection_attempts"], update_appved,transactionid)   
             
+            path =  org_id + '_common'
+            CLIENT_ID = CONFIG['org_drive_api']['client_id']
+            ts = str(int(time.time()))
+            plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{ts}"
+            hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
+            
+            url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
+            headers = {
+            'ts': ts,
+            'clientid': CLIENT_ID,
+            'hmac': hmac,
+            'orgid': org_id,
+            'user': 'system',
+            'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            response = requests.request("POST", url, headers=headers, data={'path': path})
+            try:
+                api_res, status_code = json.loads(response.text), response.status_code
+            except Exception:
+                print(response.text)
+                api_res, status_code = {'status': 'error', 'msg': "Failed to create folder for Department."}
+            if status_code not in [200,201]:
+                logarray.update({RESPONSE: api_res})
+                RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+                return api_res, status_code
             
             if status_code != 200:
                 return res, status_code
