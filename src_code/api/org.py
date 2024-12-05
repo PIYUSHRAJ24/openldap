@@ -1970,7 +1970,8 @@ def move_data_attempts_prod(org_id_req):
             path =  f"{org_id}_common"
             CLIENT_ID = CONFIG['org_drive_api']['client_id']
             ts = str(int(time.time()))
-            plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{ts}"
+            user ="system"
+            plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{user}{ts}"
             hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
             
             url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
@@ -1979,7 +1980,7 @@ def move_data_attempts_prod(org_id_req):
             'clientid': CLIENT_ID,
             'hmac': hmac,
             'orgid': org_id,
-            'user': 'system',
+            'user': user,
             'Content-Type': 'application/x-www-form-urlencoded'
             }
             response = requests.request("POST", url, headers=headers, data={'path': path})
