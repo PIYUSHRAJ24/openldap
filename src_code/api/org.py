@@ -1946,6 +1946,11 @@ def move_data_attempts_prod(org_id_req):
             post_data_details['authorization_letter'] = None
             post_data_details['consent'] = r.get('consent', '')
             post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
+
+            default_folder, code = upload_call(org_id)
+
+            if code != 200:
+                return default_folder, code
             
             res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
             if status_code_di != 200:
@@ -1969,11 +1974,6 @@ def move_data_attempts_prod(org_id_req):
             
             if status_code != 200:
                 return res, status_code
-            
-            default_folder, code = upload_call(org_id)
-
-            if code != 200:
-                return default_folder, code
 
             ''' Sending Activity '''
             ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
