@@ -1970,6 +1970,11 @@ def move_data_attempts_prod(org_id_req):
             if status_code != 200:
                 return res, status_code
             
+            default_folder, code = upload_call(org_id)
+
+            if code != 200:
+                return default_folder, code
+
             ''' Sending Activity '''
             ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
             ''' Link org_id with DigiLocker '''
@@ -1986,36 +1991,35 @@ def move_data_attempts_prod(org_id_req):
     except Exception as e:
         return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
 
-@bp.route('/upload_call', methods=['POST'])
-def upload_call():
-        # path =  f"{org_id}_common"
-        path =  "common"
-        CLIENT_ID = CONFIG['org_drive_api']['client_id']
-        ts = str(int(time.time()))
-        user ="system"
-        plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{user}{ts}"
-        hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
+def upload_call(org_id):
         
-        url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
-        headers = {
-        'ts': ts,
-        'clientid': CLIENT_ID,
-        'hmac': hmac,
-        'orgid': g.org_id,
-        'user': user,
-        'Content-Type': 'application/x-www-form-urlencoded'
-        }
-        response = requests.request("POST", url, headers=headers, data={'path': path})
-        try:
-            api_res, status_code = json.loads(response.text), response.status_code
-            return api_res, status_code
-        except Exception:
-            print(response.text)
-            api_res, status_code = {'status': 'error', 'msg': "Failed to create folder for common entity."}
-        if status_code not in [200,201]:
-            logarray.update({RESPONSE: api_res})
-            RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
-            return api_res, status_code
+    path =  f"{org_id}_common"
+    CLIENT_ID = CONFIG['org_drive_api']['client_id']
+    ts = str(int(time.time()))
+    user = org_id
+    plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{user}{ts}"
+    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
+    
+    url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
+    headers = {
+    'ts': ts,
+    'clientid': CLIENT_ID,
+    'hmac': hmac,
+    'orgid': org_id,
+    'user': user,
+    'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    response = requests.request("POST", url, headers=headers, data={'path': path})
+    try:
+        api_res, status_code = json.loads(response.text), response.status_code
+        return api_res, status_code
+    except Exception:
+        print(response.text)
+        api_res, status_code = {'status': 'error', 'msg': "Failed to create folder for common entity."}
+    if status_code not in [200,201]:
+        logarray.update({RESPONSE: api_res})
+        RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        return api_res, status_code
 
 @bp.route('/activate', methods=['POST'])
 def activate():
