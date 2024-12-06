@@ -1996,9 +1996,8 @@ def upload_call(org_id):
     path =  f"{org_id}_common"
     CLIENT_ID = CONFIG['org_drive_api']['client_id']
     ts = str(int(time.time()))
-    user = org_id
-    plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{user}{ts}"
-    hmac = hashlib.sha256(plain_txt.encode()).hexdigest()
+    plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{org_id}{ts}"
+    hmac = hashlib.sha3_256(plain_txt.encode()).hexdigest()
     
     url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
     headers = {
@@ -2006,7 +2005,6 @@ def upload_call(org_id):
     'clientid': CLIENT_ID,
     'hmac': hmac,
     'orgid': org_id,
-    'user': user,
     'Content-Type': 'application/x-www-form-urlencoded'
     }
     response = requests.request("POST", url, headers=headers, data={'path': path})
