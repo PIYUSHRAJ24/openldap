@@ -1996,7 +1996,7 @@ def upload_call(org_id):
     path =  f"{org_id}_common"
     CLIENT_ID = CONFIG['org_drive_api']['client_id']
     ts = str(int(time.time()))
-    plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{org_id}{ts}"
+    plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{ts}"
     hmac = hashlib.sha3_256(plain_txt.encode()).hexdigest()
     
     url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
