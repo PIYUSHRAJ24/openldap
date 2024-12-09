@@ -1947,11 +1947,6 @@ def move_data_attempts_prod(org_id_req):
             post_data_details['consent'] = r.get('consent', '')
             post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
 
-            default_folder, code = upload_call(org_id)
-
-            if code not in [200]:
-                return default_folder, code
-            
             res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
             if status_code_di != 200:
                 return res_di, status_code_di               
@@ -1986,6 +1981,11 @@ def move_data_attempts_prod(org_id_req):
             # pull the issued documents to the account 
             
             pull_all_ids(data=r, org_id=org_id)
+
+            default_folder, code = upload_call(org_id)
+
+            if code not in [200,201]:
+                return default_folder, code
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
@@ -1993,9 +1993,6 @@ def move_data_attempts_prod(org_id_req):
 
 def upload_call(org_id):
         
-    path =  org_id + "_common"
-
-
     client_id = CONFIG['org_drive_api']['client_id']
     ts = str(int(time.time()))
     plain_text_key_created = CONFIG['org_drive_api']['client_secret'] + client_id + ts
@@ -2009,7 +2006,7 @@ def upload_call(org_id):
     'orgid': org_id,
     'Content-Type': 'application/x-www-form-urlencoded'
     }
-    response = requests.request("POST", url, headers=headers, data={'path': path})
+    response = requests.request("POST", url, headers=headers)
     try:
         api_res, status_code = json.loads(response.text), response.status_code
         return api_res, status_code
