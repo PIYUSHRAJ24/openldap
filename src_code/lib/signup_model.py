@@ -21,13 +21,29 @@ class Signup_model:
 
     def aadhaar_signup(self, res, data):
         try:
+            UIDTOKEN = res.get('UID_Token')
+            residentName = res.get('residentName')
+            users_info = {
+                'name': residentName,
+                'gender' : res.get('gender'),
+                'dob' : res.get('dateOfBirth'),
+                'careOf' : res.get('careOf'),
+                'state' : res.get('state'),
+                'district' : res.get('district'),
+                'city' : res.get('city'),
+                'uid_token' : UIDTOKEN,
+                'mobile':None,
+                'email':None,
+            }
             finaldata = {}
-            if res['UID_Token'] is None or res['residentName'] is None:
+            
+            if UIDTOKEN is None or residentName is None:
                 finaldata['status'] = ERROR
                 finaldata[ERROR_DES] = Errors.error('err_111')
                 finaldata['code'] = 205
                 return finaldata
-            user_data = self.check_for_uid_token_exists(res['UID_Token'])
+            
+            user_data = self.check_for_uid_token_exists(UIDTOKEN)
             if user_data.get('status') is False and user_data.get('max_org_reached') is True:
                 return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_165')}, 400
             elif user_data.get('status') is False:
@@ -36,32 +52,44 @@ class Signup_model:
                 if createuser['status'] == 'success':
                     self.rs.set(key = data['txn'] + '_otp_verified', value='yes', ex=3600 * 24)
                     # aadhaar saveuri
-                    MONGOLIB.saveuri_aadhaar(data['txn'], res['UID_Token'], data['txn'])
+                    MONGOLIB.saveuri_aadhaar(data['txn'], UIDTOKEN, data['txn'])
                     finaldata[STATUS]= SUCCESS
                     finaldata['username']= data['txn']
                     finaldata['digilockerid']= data['txn']
                     finaldata['email_id']= data.get('email_id')
                     finaldata['mobile_no']= data.get('mobile_no')
                     finaldata['type']= 'new'
-                    finaldata['name'] = res['residentName']
+                    finaldata['name'] = residentName
+                    finaldata['pin_enabled'] = 'no'
+                    
                     finaldata['code']= 200
                     finaldata['careOf'] = res.get('careOf') if res.get('careOf') else ''
+                    finaldata['user_info'] = users_info
                     return finaldata
                 else:
                     return {STATUS: ERROR, ERROR_DES: Errors.error('ERR_MSG_166'), 'actual_err':createuser.get('error_description')}
             elif user_data.get('status') and user_data.get('data') and len(user_data.get('data'))>0:
+                em = user_data.get('data').get('email_id')
+                emv = user_data.get('data').get('email_id_verified')
+                users_info['email'] = em if em and emv == 1 else None
+                users_info['mobile'] = user_data.get('data').get('mobile_no')
+                
                 finaldata[STATUS]= SUCCESS
                 finaldata['username']= user_data.get('data').get('user_id')
                 finaldata['digilockerid']= user_data.get('data').get('digilockerid')
                 finaldata['type']= 'old'
+                # Optimized
+                pin = user_data.get('data', {}).get('pin')
+                finaldata['pin_enabled'] = 'yes' if pin and len(pin) >= 32 else 'no'
+
                 finaldata['name'] = self.get_profile_data(finaldata['digilockerid']).get('name')
                 finaldata['code']= 200
                 finaldata['careOf'] = res.get('careOf') if res.get('careOf') else ''
+                finaldata['user_info'] = users_info
 
                 # aadhaar saveuri
                 MONGOLIB.saveuri_aadhaar(finaldata['digilockerid'], user_data.get('data').get('uid_token'), finaldata['username'])
                 self.rs.set(finaldata['digilockerid']+'_org_add_user_verify_otp', json.dumps(finaldata))
-                
                 return finaldata 
             else:
                 finaldata['status'] = ERROR

@@ -135,23 +135,9 @@ def verify_otp():
         res_data = AADHAAR_CONNECTOR.aadhaar_otp_verify(data)
         if res_data['status']== 'success':
             resp = res_data['response']
-
-            user_data = AADHAAR_CONNECTOR.check_for_uid_token_exists(resp['UID_Token'])
-            if user_data.get('status') and user_data.get('data') and  len(user_data.get('data')) > 0:
-                finaldata = {}
-                finaldata[STATUS]= SUCCESS
-                finaldata['digilockerid']= user_data.get('data').get('digilockerid')
-                finaldata['user_name']= resp['residentName']
-                finaldata['photo']= resp['photo']
-                finaldata['code']= 200
-                finaldata['type']= 'old'
-                finaldata['careOf'] = resp.get('careOf') if resp.get('careOf') else ''
-                REDISLIB.set(finaldata['digilockerid']+'_org_add_user_verify_otp', json.dumps(finaldata))
-                return finaldata
-            else:
-                REDISLIB.remove(txn + '_logID')
-                resp = res_data['response']
-                return SIGNUP_CONNECTOR.aadhaar_signup(resp, data)
+            REDISLIB.remove(txn + '_logID')
+            resp = res_data['response']
+            return SIGNUP_CONNECTOR.aadhaar_signup(resp, data)
         else:
             g.logs.update({RESPONSE: res_data})
             return {
