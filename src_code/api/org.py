@@ -2001,7 +2001,7 @@ def upload_call(org_id):
     plain_text_key_created = CONFIG['org_drive_api']['client_secret'] + client_id + ts
     hmac = hashlib.sha3_256(plain_text_key_created.encode()).hexdigest()
     
-    url = CONFIG['org_drive_api']['url'] + "/" + 'upload'
+    url = CONFIG['org_drive_api']['url'] + 'upload'
     headers = {
     'ts': ts,
     'clientid': client_id,
