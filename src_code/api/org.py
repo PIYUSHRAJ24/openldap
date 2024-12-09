@@ -1949,7 +1949,7 @@ def move_data_attempts_prod(org_id_req):
 
             default_folder, code = upload_call(org_id)
 
-            if code != 200:
+            if code not in [200,201]:
                 return default_folder, code
             
             res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
@@ -1993,17 +1993,13 @@ def move_data_attempts_prod(org_id_req):
 
 def upload_call(org_id):
         
-    path =  f"{org_id}_common"
+    path =  org_id + "_common"
 
 
     client_id = CONFIG['org_drive_api']['client_id']
     ts = str(int(time.time()))
     plain_text_key_created = CONFIG['org_drive_api']['client_secret'] + client_id + ts
     hmac = hashlib.sha3_256(plain_text_key_created.encode()).hexdigest()
-    # CLIENT_ID = CONFIG['org_drive_api']['client_id']
-    # ts = str(int(time.time()))
-    # plain_txt = f"{CONFIG.get("org_drive_api", "client_secret")}{CLIENT_ID}{ts}"
-    # hmac = hashlib.sha3_256(plain_txt.encode()).hexdigest()
     
     url = CONFIG['org_drive_api']['url'] + 'upload'
     headers = {
