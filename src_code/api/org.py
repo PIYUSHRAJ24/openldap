@@ -1982,10 +1982,10 @@ def move_data_attempts_prod(org_id_req):
             
             pull_all_ids(data=r, org_id=org_id)
 
-            default_folder, code = upload_call(org_id)
+            # default_folder, code = upload_call(org_id)
 
-            if code not in [200,201]:
-                return default_folder, code
+            # if code not in [200,201]:
+            #     return default_folder, code
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
