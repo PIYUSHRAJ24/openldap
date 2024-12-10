@@ -1,3 +1,25 @@
+------------- v6.5.0 ------------------
+Version: v6.5.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 89e6690
+- Author: Bhavishya Kumar
+- Date: 2024-12-10 10:36:28
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/upload_folder_curl_in_activate_api
+
+Previous Versions:
+------------- v6.4.9 ------------------
+Version: v6.4.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 1be1b6d
+- Author: Bhavishya Kumar
+- Date: 2024-12-09 13:48:24
+- Message: update code of upload_call
+
+Previous Versions:
 ------------- v6.4.8 ------------------
 Version: v6.4.8
 Merge Commit: Yes
