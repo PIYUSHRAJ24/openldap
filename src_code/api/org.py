@@ -2080,8 +2080,8 @@ def validation_partner_request(data):
         # if 'cin' in data and not data.get('din'):
         #     return {STATUS: ERROR, ERROR_DES:"DIN is required when CIN is provided"}
         
-        # if 'udyam' in data and not data.get('udyam_mobile'):
-        #     return {STATUS: ERROR, ERROR_DES:"UDYAM registered mobile is required when UDYAM is provided"}
+        if 'udyam' in data and not data.get('udyam_mobile'):
+            return {STATUS: ERROR, ERROR_DES:"UDYAM registered mobile is required when UDYAM is provided"}
         
         if ('pan' in data or 'gstin' in data) and not data.get('d_incorporation'):
             {STATUS: ERROR, ERROR_DES:"Date of incorporation is required"}
