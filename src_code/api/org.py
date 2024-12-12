@@ -1946,7 +1946,7 @@ def move_data_attempts_prod(org_id_req):
             post_data_details['authorization_letter'] = None
             post_data_details['consent'] = r.get('consent', '')
             post_data_details['is_authorization_letter'] = r.get('is_authorization_letter', '').upper()
-            
+
             res_di, status_code_di = MONGOLIB.org_eve_post(CONFIG["org_eve"]["collection_details"], post_data_details)
             if status_code_di != 200:
                 return res_di, status_code_di               
@@ -1967,9 +1967,9 @@ def move_data_attempts_prod(org_id_req):
             update_appved = {"is_approved":"YES"}
             update_appved_res = MONGOLIB.org_eve_update(CONFIG["org_eve"]["collection_attempts"], update_appved,transactionid)   
             
-            
             if status_code != 200:
                 return res, status_code
+
             ''' Sending Activity '''
             ac_resp, ac_cd = activity_insert("signup","signup",r.get('created_by',''),org_id, r.get('name', ''))         
             ''' Link org_id with DigiLocker '''
@@ -1981,12 +1981,42 @@ def move_data_attempts_prod(org_id_req):
             # pull the issued documents to the account 
             
             pull_all_ids(data=r, org_id=org_id)
+
+            # default_folder, code = upload_call(org_id)
+
+            # if code not in [200,201]:
+            #     return default_folder, code
             
             return  {STATUS: SUCCESS, MESSAGE: str(ac_resp)}, 200
     except Exception as e:
         return {'status': 'error', 'error_description': 'Failed to process your request at the moment.', 'response': str(e)}, 400
 
-
+def upload_call(org_id):
+        
+    client_id = CONFIG['org_drive_api']['client_id']
+    ts = str(int(time.time()))
+    plain_text_key_created = CONFIG['org_drive_api']['client_secret'] + client_id + ts
+    hmac = hashlib.sha3_256(plain_text_key_created.encode()).hexdigest()
+    
+    url = CONFIG['org_drive_api']['url'] + 'upload'
+    headers = {
+    'ts': ts,
+    'clientid': client_id,
+    'hmac': hmac,
+    'orgid': org_id,
+    'Content-Type': 'application/x-www-form-urlencoded'
+    }
+    response = requests.request("POST", url, headers=headers)
+    try:
+        api_res, status_code = json.loads(response.text), response.status_code
+        return api_res, status_code
+    except Exception:
+        print(response.text)
+        api_res, status_code = {'status': 'error', 'msg': "Failed to create folder for common entity."}
+    if status_code not in [200,201]:
+        logarray.update({RESPONSE: api_res})
+        RABBITMQ.send_to_queue(logarray, 'Logstash_Xchange', 'org_logs_')
+        return api_res, status_code
 
 @bp.route('/activate', methods=['POST'])
 def activate():

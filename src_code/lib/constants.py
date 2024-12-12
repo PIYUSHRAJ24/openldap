@@ -183,7 +183,7 @@ class Errors:
             "ERR_MSG_223" : "The %s you entered is currently %s for approval.",
             "ERR_MSG_224" : "The details you entered is already registered with us.",
             "ERR_MSG_225" : "The PAN Number you entered is already registered with us.",
-            "ERR_MSG_226" : "The GSTIN Number you entered is already registered with us.",
+            "ERR_MSG_226" : "",
             
             
 

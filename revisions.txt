@@ -1,0 +1,6523 @@
+------------- v6.5.1 ------------------
+Version: v6.5.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 4830fcf
+- Author: Abhijeet Anand
+- Date: 2024-12-10 11:20:34
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/PINStatus@359019
+
+Previous Versions:
+------------- v6.5.0 ------------------
+Version: v6.5.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 89e6690
+- Author: Bhavishya Kumar
+- Date: 2024-12-10 10:36:28
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/upload_folder_curl_in_activate_api
+
+Previous Versions:
+------------- v6.4.9 ------------------
+Version: v6.4.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 1be1b6d
+- Author: Bhavishya Kumar
+- Date: 2024-12-09 13:48:24
+- Message: update code of upload_call
+
+Previous Versions:
+------------- v6.4.8 ------------------
+Version: v6.4.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 327e9ed
+- Author: jenkins
+- Date: 2024-12-05 17:42:55
+- Message: Bump version to v6.4.7
+
+Previous Versions:
+------------- v6.4.7 ------------------
+Version: v6.4.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 9727403
+- Author: jenkins
+- Date: 2024-12-05 16:47:53
+- Message: Bump version to v6.4.6
+
+Previous Versions:
+------------- v6.4.6 ------------------
+Version: v6.4.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: f39c551
+- Author: jenkins
+- Date: 2024-12-02 12:19:58
+- Message: Bump version to v6.4.5
+
+Previous Versions:
+------------- v6.4.5 ------------------
+Version: v6.4.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 41a7d0a
+- Author: saurabh
+- Date: 2024-12-02 12:19:21
+- Message: test the postmerge script -1
+
+Previous Versions:
+------------- v6.4.4 ------------------
+Version: v6.4.4
+Revision: dee0f73
+Author: saurabh
+Date: 2024-12-02 12:07:42
+Commit Messages:
+Current Commit: added auto tagging of develop banch on every push of develop
+
+Latest Merge into develop:
+- 0fbcc3e Bhavishya Kumar 5 weeks ago: update code
+
+Previous Versions:
+------------- v6.4.3 ------------------
+Version: v6.4.3
+Revision: 18b2678
+Author: saurabh
+Date: 2024-12-02 10:33:34
+Commit Messages:
+Current Commit: updated
+
+Latest Merge into develop:
+- 0fbcc3e Bhavishya Kumar 5 weeks ago: update code
+
+Previous Versions:
+------------- v6.4.2 ------------------
+Version: v6.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 719c6a8
+- Author: Abhijeet Anand
+- Date: 2024-11-27 15:18:12
+- Message: err fixed
+
+------------- v6.4.1 ------------------
+Version: v6.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 59b85b8
+- Author: Abhijeet Anand
+- Date: 2024-11-27 15:14:53
+- Message: err
+
+------------- v6.4.0 ------------------
+Version: v6.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: e3bd427
+- Author: Abhijeet Anand
+- Date: 2024-11-27 15:03:48
+- Message: getting digiockerid and validating with DB
+
+------------- v6.3.9 ------------------
+Version: v6.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: b001c3d
+- Author: Abhijeet Anand
+- Date: 2024-11-27 14:59:54
+- Message: getting digiockerid and validating with DB
+
+------------- v6.3.8 ------------------
+Version: v6.3.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 19b142e
+- Author: Bhavishya Kumar
+- Date: 2024-11-26 17:53:15
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v6.3.7 ------------------
+Version: v6.3.7
+Merge Commit: No
+
+Commit Details:
+- Revision: df613c6
+- Author: Bhavishya Kumar
+- Date: 2024-11-26 17:50:52
+- Message: update mapping handle error code
+
+------------- v6.3.6 ------------------
+Version: v6.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 277b75d
+- Author: Kshitiz Singh
+- Date: 2024-11-25 12:57:12
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.5 ------------------
+Version: v6.3.5
+Merge Commit: No
+
+Commit Details:
+- Revision: d00973f
+- Author: Kshitiz Singh
+- Date: 2024-11-25 11:43:58
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.4 ------------------
+Version: v6.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 5e40e86
+- Author: Kshitiz Singh
+- Date: 2024-11-25 11:29:24
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.3 ------------------
+Version: v6.3.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 6215693
+- Author: Kshitiz Singh
+- Date: 2024-11-25 11:23:57
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.2 ------------------
+Version: v6.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: f11cc34
+- Author: Kshitiz Singh
+- Date: 2024-11-25 11:16:29
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.1 ------------------
+Version: v6.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: c9bbed7
+- Author: Kshitiz Singh
+- Date: 2024-11-25 11:13:49
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.3.0 ------------------
+Version: v6.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 75fa32f
+- Author: Kshitiz Singh
+- Date: 2024-11-25 10:43:50
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.2.9 ------------------
+Version: v6.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 55c95ef
+- Author: Kshitiz Singh
+- Date: 2024-11-25 10:25:02
+- Message: Entity georaphic details and nodal officer details for auth partner signup.
+
+------------- v6.2.8 ------------------
+Version: v6.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 01d0d73
+- Author: Kshitiz Singh
+- Date: 2024-11-25 10:01:51
+- Message: update
+
+------------- v6.2.7 ------------------
+Version: v6.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 55bfab6
+- Author: Subhash Kaashyan
+- Date: 2024-11-25 09:37:16
+- Message: Attemp
+
+------------- v6.2.6 ------------------
+Version: v6.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 4bd5906
+- Author: Subhash Kaashyan
+- Date: 2024-11-22 13:29:53
+- Message: Add remaining keys in input dic. org_url , org_name, org_address, state_id, nodal_officer_name, nodal_officer_mobile, nodal_email, is_auto_approved
+
+------------- v6.2.5 ------------------
+Version: v6.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 2b50fe0
+- Author: Bhavishya Kumar
+- Date: 2024-11-18 12:18:37
+- Message: update regex of gstin
+
+------------- v6.2.4 ------------------
+Version: v6.2.4
+Merge Commit: No
+
+Commit Details:
+- Revision: eab7418
+- Author: Bhavishya Kumar
+- Date: 2024-11-18 12:10:01
+- Message: update code validation and code
+
+------------- v6.2.3 ------------------
+Version: v6.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 299d058
+- Author: Bhavishya Kumar
+- Date: 2024-11-18 10:22:21
+- Message: update code validation
+
+------------- v6.2.2 ------------------
+Version: v6.2.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 454b1f9
+- Author: Bhavishya Kumar
+- Date: 2024-11-18 09:35:52
+- Message: update regex of gstin
+
+------------- v6.2.1 ------------------
+Version: v6.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: a7bb641
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 17:11:20
+- Message: update code
+
+------------- v6.2.0 ------------------
+Version: v6.2.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: bfc4f08
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 17:03:52
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v6.1.9 ------------------
+Version: v6.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 9827369
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 17:03:30
+- Message: update esign consent and gstin profile api
+
+------------- v6.1.8 ------------------
+Version: v6.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 9e133b2
+- Author: Kshitiz Singh
+- Date: 2024-11-14 15:59:23
+- Message: Direct partner signup for entity.
+
+------------- v6.1.7 ------------------
+Version: v6.1.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 1d382a6
+- Author: Kshitiz Singh
+- Date: 2024-11-14 12:52:03
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/signup_direct_partnes
+
+------------- v6.1.6 ------------------
+Version: v6.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 3001c9d
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 10:09:48
+- Message: update code 4
+
+------------- v6.1.5 ------------------
+Version: v6.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: dd5d4fd
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 10:01:39
+- Message: update code 3
+
+------------- v6.1.4 ------------------
+Version: v6.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 788c5fa
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 09:52:00
+- Message: update coede1
+
+------------- v6.1.3 ------------------
+Version: v6.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 8fbb8c4
+- Author: Bhavishya Kumar
+- Date: 2024-11-14 09:40:47
+- Message: update code
+
+------------- v6.1.2 ------------------
+Version: v6.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 08a70ed
+- Author: Bhavishya Kumar
+- Date: 2024-11-13 17:13:35
+- Message: update uydam_number issue
+
+------------- v6.1.1 ------------------
+Version: v6.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: cd0b512
+- Author: Bhavishya Kumar
+- Date: 2024-11-13 11:59:48
+- Message: update udyam and cin
+
+------------- v6.1.0 ------------------
+Version: v6.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 6a07faf
+- Author: Bhavishya Kumar
+- Date: 2024-11-11 17:36:50
+- Message: update gstin  code of issue documents
+
+------------- v6.0.9 ------------------
+Version: v6.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 1121e69
+- Author: saurabh
+- Date: 2024-11-08 10:44:25
+- Message: code for direct signup from partners
+
+------------- v6.0.8 ------------------
+Version: v6.0.8
+Merge Commit: No
+
+Commit Details:
+- Revision: fc84d25
+- Author: Bhavishya Kumar
+- Date: 2024-11-05 12:13:59
+- Message: update vify_details_v2
+
+------------- v6.0.7 ------------------
+Version: v6.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 4abd584
+- Author: Bhavishya Kumar
+- Date: 2024-11-01 10:41:11
+- Message: update code
+
+------------- v6.0.6 ------------------
+Version: v6.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: fe6cb20
+- Author: Bhavishya Kumar
+- Date: 2024-11-01 10:38:19
+- Message: update code app
+
+------------- v6.0.5 ------------------
+Version: v6.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: e95adc0
+- Author: Bhavishya Kumar
+- Date: 2024-11-01 10:35:26
+- Message: update datetime
+
+------------- v6.0.4 ------------------
+Version: v6.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 4bc8eb3
+- Author: Bhavishya Kumar
+- Date: 2024-10-30 17:04:43
+- Message: update date time
+
+------------- v6.0.3 ------------------
+Version: v6.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 4fd6011
+- Author: Bhavishya Kumar
+- Date: 2024-10-30 16:44:55
+- Message: update date time in app
+
+------------- v6.0.2 ------------------
+Version: v6.0.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0fbcc3e
+- Author: Bhavishya Kumar
+- Date: 2024-10-30 15:59:36
+- Message: update code
+
+------------- v6.0.1 ------------------
+Version: v6.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: d0d9b5f
+- Author: Bhavishya Kumar
+- Date: 2024-10-30 15:56:13
+- Message: update code of vify details
+
+------------- v6.0.0 ------------------
+Version: v6.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 7c71604
+- Author: Kshitiz Singh
+- Date: 2024-10-25 12:58:56
+- Message: APIs to update approval status for new entity.APIs to update approval status for new entity.
+
+------------- v5.9.9 ------------------
+Version: v5.9.9
+Merge Commit: No
+
+Commit Details:
+- Revision: f849abe
+- Author: Abhijeet Anand
+- Date: 2024-10-25 12:05:00
+- Message: retry added
+
+------------- v5.9.8 ------------------
+Version: v5.9.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 924db8c
+- Author: Abhijeet Anand
+- Date: 2024-10-25 11:22:00
+- Message: datetime
+
+------------- v5.9.7 ------------------
+Version: v5.9.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 3645ab1
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 13:32:42
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.9.6 ------------------
+Version: v5.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 5d79a24
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 13:32:25
+- Message: user_profile encryption
+
+------------- v5.9.5 ------------------
+Version: v5.9.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 6edde52
+- Author: Kshitiz Singh
+- Date: 2024-10-23 12:40:23
+- Message: Exception error handling.
+
+------------- v5.9.4 ------------------
+Version: v5.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: cedbcbe
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 11:50:10
+- Message: update get_user_access_requests api to dept_name
+
+------------- v5.9.3 ------------------
+Version: v5.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 86c5543
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 11:01:29
+- Message: update code
+
+------------- v5.9.2 ------------------
+Version: v5.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 0e02d62
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 10:58:18
+- Message: update code of encryption
+
+------------- v5.9.1 ------------------
+Version: v5.9.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a48acc6
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 10:32:22
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.9.0 ------------------
+Version: v5.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 6c501cc
+- Author: Bhavishya Kumar
+- Date: 2024-10-23 10:32:07
+- Message: update encryption code for org_access_rules
+
+------------- v5.8.9 ------------------
+Version: v5.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 695ffa9
+- Author: Abhijeet Anand
+- Date: 2024-10-18 18:17:03
+- Message: revted
+
+------------- v5.8.8 ------------------
+Version: v5.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 948cbc6
+- Author: Abhijeet Anand
+- Date: 2024-10-18 17:58:45
+- Message: udyam_mobile
+
+------------- v5.8.7 ------------------
+Version: v5.8.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 10c5c1f
+- Author: saurabh
+- Date: 2024-10-18 13:48:08
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.8.6 ------------------
+Version: v5.8.6
+Merge Commit: No
+
+Commit Details:
+- Revision: fae7186
+- Author: saurabh
+- Date: 2024-10-18 13:47:47
+- Message: upadted logout
+
+------------- v5.8.5 ------------------
+Version: v5.8.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 3588dc6
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 12:14:44
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.8.4 ------------------
+Version: v5.8.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 48fa710
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 12:05:33
+- Message: update code
+
+------------- v5.8.3 ------------------
+Version: v5.8.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d761b56
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 11:56:52
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.8.2 ------------------
+Version: v5.8.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 98d3037
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 11:56:36
+- Message: update code remove HTML response
+
+------------- v5.8.1 ------------------
+Version: v5.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 1f25adc
+- Author: saurabh
+- Date: 2024-10-18 11:48:15
+- Message: updatd
+
+------------- v5.8.0 ------------------
+Version: v5.8.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 1f8acde
+- Author: saurabh
+- Date: 2024-10-18 11:44:45
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.7.9 ------------------
+Version: v5.7.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 6e88f22
+- Author: saurabh
+- Date: 2024-10-18 11:44:33
+- Message: updatd
+
+------------- v5.7.8 ------------------
+Version: v5.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 923feec
+- Author: Abhijeet Anand
+- Date: 2024-10-18 11:17:10
+- Message: udyam no pull doc
+
+------------- v5.7.7 ------------------
+Version: v5.7.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: b618f40
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 11:02:54
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.7.6 ------------------
+Version: v5.7.6
+Merge Commit: No
+
+Commit Details:
+- Revision: a35b857
+- Author: Bhavishya Kumar
+- Date: 2024-10-18 11:02:40
+- Message: update esign_consent SKIP/ON
+
+------------- v5.7.5 ------------------
+Version: v5.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: a39e01a
+- Author: saurabh
+- Date: 2024-10-18 10:49:10
+- Message: vify logout state of JWT
+
+------------- v5.7.4 ------------------
+Version: v5.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 009d17e
+- Author: Abhijeet Anand
+- Date: 2024-10-18 09:59:15
+- Message: msme activation case handled
+
+------------- v5.7.3 ------------------
+Version: v5.7.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 28b2847
+- Author: saurabh
+- Date: 2024-10-17 17:40:37
+- Message: updated validation
+
+------------- v5.7.2 ------------------
+Version: v5.7.2
+Merge Commit: No
+
+Commit Details:
+- Revision: d968b2f
+- Author: saurabh
+- Date: 2024-10-17 16:41:57
+- Message: updated activatyion
+
+------------- v5.7.1 ------------------
+Version: v5.7.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 39f5e0d
+- Author: saurabh
+- Date: 2024-10-17 16:26:48
+- Message: updated
+
+------------- v5.7.0 ------------------
+Version: v5.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 10cc9e3
+- Author: saurabh
+- Date: 2024-10-17 16:05:16
+- Message: updated flag for attempts
+
+------------- v5.6.9 ------------------
+Version: v5.6.9
+Merge Commit: No
+
+Commit Details:
+- Revision: d2d83de
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 15:00:04
+- Message: update gstin
+
+------------- v5.6.8 ------------------
+Version: v5.6.8
+Merge Commit: No
+
+Commit Details:
+- Revision: bdf4656
+- Author: saurabh
+- Date: 2024-10-17 12:52:03
+- Message: updated allowd origins
+
+------------- v5.6.7 ------------------
+Version: v5.6.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 9e620ef
+- Author: saurabh
+- Date: 2024-10-17 12:25:39
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.6.6 ------------------
+Version: v5.6.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 567f933
+- Author: saurabh
+- Date: 2024-10-17 12:25:29
+- Message: updated
+
+------------- v5.6.5 ------------------
+Version: v5.6.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 9052c2a
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 12:21:50
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.6.4 ------------------
+Version: v5.6.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: c9e8f48
+- Author: saurabh
+- Date: 2024-10-17 12:08:33
+- Message: updated
+
+------------- v5.6.3 ------------------
+Version: v5.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: d4e68f0
+- Author: saurabh
+- Date: 2024-10-17 11:58:44
+- Message: updated
+
+------------- v5.6.2 ------------------
+Version: v5.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: ad232ef
+- Author: Abhijeet Anand
+- Date: 2024-10-17 11:49:54
+- Message: cors fixed
+
+------------- v5.6.1 ------------------
+Version: v5.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 9f610ae
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 11:22:57
+- Message: update get_access_requests_v2
+
+------------- v5.6.0 ------------------
+Version: v5.6.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0eb5109
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 11:10:34
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.5.9 ------------------
+Version: v5.5.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 787bd32
+- Author: saurabh
+- Date: 2024-10-17 10:41:59
+- Message: updated response headers
+
+------------- v5.5.8 ------------------
+Version: v5.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 43c2a82
+- Author: saurabh
+- Date: 2024-10-17 10:39:34
+- Message: updated response headers
+
+------------- v5.5.7 ------------------
+Version: v5.5.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d69485a
+- Author: saurabh
+- Date: 2024-10-17 10:33:37
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.5.6 ------------------
+Version: v5.5.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f706b30
+- Author: saurabh
+- Date: 2024-10-17 10:33:19
+- Message: updated response headers
+
+------------- v5.5.5 ------------------
+Version: v5.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 97984eb
+- Author: saurabh
+- Date: 2024-10-17 10:28:47
+- Message: updated serv headers
+
+------------- v5.5.4 ------------------
+Version: v5.5.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 876ba84
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 10:21:45
+- Message: update and encrypt the get_user_access_requests_v2
+
+------------- v5.5.3 ------------------
+Version: v5.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: a4e37d7
+- Author: Bhavishya Kumar
+- Date: 2024-10-17 10:00:54
+- Message: update code of gstin
+
+------------- v5.5.2 ------------------
+Version: v5.5.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 009d04f
+- Author: Bhavishya Kumar
+- Date: 2024-10-16 17:45:55
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.5.1 ------------------
+Version: v5.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 025e0ed
+- Author: Bhavishya Kumar
+- Date: 2024-10-16 17:45:41
+- Message: update res[0] return
+
+------------- v5.5.0 ------------------
+Version: v5.5.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 2b75f81
+- Author: Abhijeet Anand
+- Date: 2024-10-16 17:26:04
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into bugfix/IDSUploadErr
+
+------------- v5.4.9 ------------------
+Version: v5.4.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 87b8167
+- Author: Abhijeet Anand
+- Date: 2024-10-16 17:24:04
+- Message: skip din check passing in CIN DIN Pull Doc
+
+------------- v5.4.8 ------------------
+Version: v5.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 1c73dd9
+- Author: saurabh
+- Date: 2024-10-16 16:59:32
+- Message: udpated for default profile
+
+------------- v5.4.7 ------------------
+Version: v5.4.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 7aebb75
+- Author: Bhavishya Kumar
+- Date: 2024-10-16 16:56:15
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.4.6 ------------------
+Version: v5.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 50b26e4
+- Author: Abhijeet Anand
+- Date: 2024-10-16 16:38:36
+- Message: fix post_data_details['authorization_letter']
+
+------------- v5.4.5 ------------------
+Version: v5.4.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: b8226dd
+- Author: Bhavishya Kumar
+- Date: 2024-10-16 16:09:16
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/jtoken_hmac_validation@308036
+
+------------- v5.4.4 ------------------
+Version: v5.4.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 0e0cd71
+- Author: Bhavishya Kumar
+- Date: 2024-10-16 16:09:01
+- Message: update hmac_cin,hmac_udyam and hmac_org_id
+
+------------- v5.4.3 ------------------
+Version: v5.4.3
+Merge Commit: No
+
+Commit Details:
+- Revision: de094b1
+- Author: Abhijeet Anand
+- Date: 2024-10-16 15:59:28
+- Message: Upload CIN FIx
+
+Signed-off-by: Abhijeet Anand <abhijeet.a912@gmail.com>
+
+------------- v5.4.2 ------------------
+Version: v5.4.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 074f093
+- Author: saurabh
+- Date: 2024-10-15 17:38:48
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.4.1 ------------------
+Version: v5.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 5827ac0
+- Author: saurabh
+- Date: 2024-10-15 17:38:36
+- Message: commit
+
+------------- v5.4.0 ------------------
+Version: v5.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: ce11afb
+- Author: Abhijeet Anand
+- Date: 2024-10-15 17:05:28
+- Message: CONFIG["org_eve"]
+
+------------- v5.3.9 ------------------
+Version: v5.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: a053799
+- Author: Bhavishya Kumar
+- Date: 2024-10-15 12:20:04
+- Message: update code of did_sign
+
+------------- v5.3.8 ------------------
+Version: v5.3.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 224a8d4
+- Author: Bhavishya Kumar
+- Date: 2024-10-15 11:26:49
+- Message: update code
+
+------------- v5.3.7 ------------------
+Version: v5.3.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 85e1d4f
+- Author: Bhavishya Kumar
+- Date: 2024-10-15 10:47:12
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.3.6 ------------------
+Version: v5.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 34130b5
+- Author: Bhavishya Kumar
+- Date: 2024-10-15 10:46:53
+- Message: update jtoken and hmac
+
+------------- v5.3.5 ------------------
+Version: v5.3.5
+Merge Commit: No
+
+Commit Details:
+- Revision: fd6ec7a
+- Author: Abhijeet Anand
+- Date: 2024-10-14 16:30:18
+- Message: formatted_date
+
+------------- v5.3.4 ------------------
+Version: v5.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 419ac00
+- Author: Abhijeet Anand
+- Date: 2024-10-14 16:20:00
+- Message: IDS part modified
+
+------------- v5.3.3 ------------------
+Version: v5.3.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 9f2d362
+- Author: saurabh
+- Date: 2024-10-14 16:02:46
+- Message: updated
+
+------------- v5.3.2 ------------------
+Version: v5.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 9271989
+- Author: Abhijeet Anand
+- Date: 2024-10-14 15:20:52
+- Message: data formatted
+
+------------- v5.3.1 ------------------
+Version: v5.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e51e8ab
+- Author: Abhijeet Anand
+- Date: 2024-10-14 15:09:18
+- Message: 0 take
+
+------------- v5.3.0 ------------------
+Version: v5.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 5557f13
+- Author: Abhijeet Anand
+- Date: 2024-10-14 14:59:43
+- Message: err handled
+
+------------- v5.2.9 ------------------
+Version: v5.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: e456f13
+- Author: Abhijeet Anand
+- Date: 2024-10-14 14:55:22
+- Message: debug
+
+------------- v5.2.8 ------------------
+Version: v5.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 709befd
+- Author: Abhijeet Anand
+- Date: 2024-10-14 14:47:14
+- Message: push data in digiLocker users coll wrt to org_id
+
+------------- v5.2.7 ------------------
+Version: v5.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: d4b8c06
+- Author: saurabh
+- Date: 2024-10-14 14:35:16
+- Message: updated
+
+------------- v5.2.6 ------------------
+Version: v5.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 63471d6
+- Author: saurabh
+- Date: 2024-10-14 13:47:34
+- Message: updated
+
+------------- v5.2.5 ------------------
+Version: v5.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: e1b478b
+- Author: saurabh
+- Date: 2024-10-14 12:51:18
+- Message: updated
+
+------------- v5.2.4 ------------------
+Version: v5.2.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: fe1510f
+- Author: Bhavishya Kumar
+- Date: 2024-10-14 12:47:18
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.2.3 ------------------
+Version: v5.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: c900bcf
+- Author: Bhavishya Kumar
+- Date: 2024-10-14 12:46:52
+- Message: update jtoken and hmac
+
+------------- v5.2.2 ------------------
+Version: v5.2.2
+Merge Commit: No
+
+Commit Details:
+- Revision: e404971
+- Author: saurabh
+- Date: 2024-10-14 11:45:11
+- Message: updated
+
+------------- v5.2.1 ------------------
+Version: v5.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 0c31d9b
+- Author: saurabh
+- Date: 2024-10-14 11:23:56
+- Message: update
+
+------------- v5.2.0 ------------------
+Version: v5.2.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 49826e9
+- Author: Bhavishya Kumar
+- Date: 2024-10-11 17:24:09
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.1.9 ------------------
+Version: v5.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: ecc7cfa
+- Author: maneesh
+- Date: 2024-10-11 16:16:52
+- Message: orgid get from headers
+
+------------- v5.1.8 ------------------
+Version: v5.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 920ebd2
+- Author: maneesh
+- Date: 2024-10-11 15:21:09
+- Message: sha_256 add
+
+------------- v5.1.7 ------------------
+Version: v5.1.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 7cfa53a
+- Author: Bhavishya Kumar
+- Date: 2024-10-11 14:59:20
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.1.6 ------------------
+Version: v5.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: abd8a76
+- Author: maneesh
+- Date: 2024-10-11 13:39:47
+- Message: add two key in token data
+
+------------- v5.1.5 ------------------
+Version: v5.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 2e55cce
+- Author: Bhavishya Kumar
+- Date: 2024-10-11 10:42:04
+- Message: update code of activity read and download
+
+------------- v5.1.4 ------------------
+Version: v5.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 0485d10
+- Author: Bhavishya Kumar
+- Date: 2024-10-10 11:06:37
+- Message: update code of search encryption
+
+------------- v5.1.3 ------------------
+Version: v5.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 87add4d
+- Author: Bhavishya Kumar
+- Date: 2024-10-09 16:21:04
+- Message: change encryption of user
+
+------------- v5.1.2 ------------------
+Version: v5.1.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 6ba5a5e
+- Author: Bhavishya Kumar
+- Date: 2024-10-09 12:48:31
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v5.1.1 ------------------
+Version: v5.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: b099624
+- Author: Bhavishya Kumar
+- Date: 2024-10-09 12:48:13
+- Message: update create_org_user activity
+
+------------- v5.1.0 ------------------
+Version: v5.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: f530720
+- Author: Kshitiz Singh
+- Date: 2024-10-09 11:01:03
+- Message: update.
+
+------------- v5.0.9 ------------------
+Version: v5.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 662cf56
+- Author: Kshitiz Singh
+- Date: 2024-10-09 10:18:35
+- Message: update
+
+------------- v5.0.8 ------------------
+Version: v5.0.8
+Merge Commit: No
+
+Commit Details:
+- Revision: b6cceed
+- Author: Kshitiz Singh
+- Date: 2024-10-09 09:49:52
+- Message: update
+
+------------- v5.0.7 ------------------
+Version: v5.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: f7cff7b
+- Author: Kshitiz Singh
+- Date: 2024-10-08 17:27:24
+- Message: update.
+
+------------- v5.0.6 ------------------
+Version: v5.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: cc29001
+- Author: Kshitiz Singh
+- Date: 2024-10-08 17:18:09
+- Message: update.
+
+------------- v5.0.5 ------------------
+Version: v5.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: f0bc89a
+- Author: Kshitiz Singh
+- Date: 2024-10-08 16:45:00
+- Message: Generate and refrwsh jwt for entity auth partners.
+
+------------- v5.0.4 ------------------
+Version: v5.0.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: caa1e4a
+- Author: Kshitiz Singh
+- Date: 2024-10-08 14:38:09
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/entityDetailsReponse@305080
+
+------------- v5.0.3 ------------------
+Version: v5.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: daf262c
+- Author: Kshitiz Singh
+- Date: 2024-10-08 14:37:56
+- Message: update
+
+------------- v5.0.2 ------------------
+Version: v5.0.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a6f58e0
+- Author: Bhavishya Kumar
+- Date: 2024-10-08 11:42:10
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v5.0.1 ------------------
+Version: v5.0.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a658283
+- Author: Kshitiz Singh
+- Date: 2024-10-08 11:19:07
+- Message: Update schema for entity/details.
+
+------------- v5.0.0 ------------------
+Version: v5.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 2dd1f82
+- Author: Kshitiz Singh
+- Date: 2024-10-08 11:18:02
+- Message: Update schema for entity/details.
+
+------------- v4.9.9 ------------------
+Version: v4.9.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: b09470b
+- Author: Bhavishya Kumar
+- Date: 2024-10-08 10:32:54
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_user_based_on_default_depart@293861
+
+------------- v4.9.8 ------------------
+Version: v4.9.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 1bda759
+- Author: saurabh
+- Date: 2024-10-07 17:06:04
+- Message: updated with HMAC
+
+------------- v4.9.7 ------------------
+Version: v4.9.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: c3302df
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 16:43:49
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_user_based_on_default_depart@293861
+
+------------- v4.9.6 ------------------
+Version: v4.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 6ab3840
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 16:33:26
+- Message: update code
+
+------------- v4.9.5 ------------------
+Version: v4.9.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 37cbae2
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 16:30:17
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/security_encrption_branch
+
+------------- v4.9.4 ------------------
+Version: v4.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: edf4a2c
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 16:30:02
+- Message: update and encrypt search user name or digilocker id
+
+------------- v4.9.3 ------------------
+Version: v4.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 97d6814
+- Author: saurabh
+- Date: 2024-10-07 16:25:39
+- Message: udpated for entity partners details
+
+------------- v4.9.2 ------------------
+Version: v4.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: a11c6dc
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 11:37:43
+- Message: update code with security
+
+------------- v4.9.1 ------------------
+Version: v4.9.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 322940a
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 11:35:29
+- Message: update code
+
+------------- v4.9.0 ------------------
+Version: v4.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: c34efca
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 11:19:26
+- Message: update code org_access_rule encrypt
+
+------------- v4.8.9 ------------------
+Version: v4.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: cee29b3
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 10:20:03
+- Message: update code
+
+------------- v4.8.8 ------------------
+Version: v4.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 736dc71
+- Author: Bhavishya Kumar
+- Date: 2024-10-07 09:55:43
+- Message: update and encrpt get_access_rules
+
+------------- v4.8.7 ------------------
+Version: v4.8.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 966ceb3
+- Author: Bhavishya Kumar
+- Date: 2024-10-03 15:42:50
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_user_based_on_default_depart@293861
+
+------------- v4.8.6 ------------------
+Version: v4.8.6
+Merge Commit: No
+
+Commit Details:
+- Revision: c787b43
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 16:43:12
+- Message: update code
+
+------------- v4.8.5 ------------------
+Version: v4.8.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 557140f
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 16:37:01
+- Message: update uuid with validation
+
+------------- v4.8.4 ------------------
+Version: v4.8.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a45ec27
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 15:57:31
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/vify_details_pan_cin_udyam@296312
+
+------------- v4.8.3 ------------------
+Version: v4.8.3
+Merge Commit: No
+
+Commit Details:
+- Revision: a1c3171
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 15:57:16
+- Message: add txn
+
+------------- v4.8.2 ------------------
+Version: v4.8.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: fc3a3d5
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:43:46
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/entityActivateDeactivateApis@289876
+
+------------- v4.8.1 ------------------
+Version: v4.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e97769e
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:38:13
+- Message: update.
+
+------------- v4.8.0 ------------------
+Version: v4.8.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 81b439c
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:26:48
+- Message: update.
+
+------------- v4.7.9 ------------------
+Version: v4.7.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 5ac5a7a
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 13:25:41
+- Message: update code
+
+------------- v4.7.8 ------------------
+Version: v4.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: ce839f9
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:16:58
+- Message: is_approved, is_active status in entity details schema
+
+------------- v4.7.7 ------------------
+Version: v4.7.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 281e769
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 13:10:12
+- Message: update and remove encript
+
+------------- v4.7.6 ------------------
+Version: v4.7.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 54f8bc4
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:03:26
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/entityActivateDeactivateApis@289876
+
+------------- v4.7.5 ------------------
+Version: v4.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: f0b057f
+- Author: Kshitiz Singh
+- Date: 2024-10-01 13:03:10
+- Message: is_approved, is_active status in entity details schema
+
+------------- v4.7.4 ------------------
+Version: v4.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: beb4803
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 11:22:21
+- Message: remove encryption on type
+
+------------- v4.7.3 ------------------
+Version: v4.7.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 6ed41e2
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 10:25:51
+- Message: update code
+
+------------- v4.7.2 ------------------
+Version: v4.7.2
+Merge Commit: No
+
+Commit Details:
+- Revision: f0b0d47
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 10:19:11
+- Message: optimize code
+
+------------- v4.7.1 ------------------
+Version: v4.7.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 8ded9a7
+- Author: Bhavishya Kumar
+- Date: 2024-10-01 10:11:39
+- Message: update code of cin,udyam,pan,ccin
+
+------------- v4.7.0 ------------------
+Version: v4.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: edf8c2f
+- Author: Bhavishya Kumar
+- Date: 2024-09-30 14:25:10
+- Message: update code validation
+
+------------- v4.6.9 ------------------
+Version: v4.6.9
+Merge Commit: No
+
+Commit Details:
+- Revision: e256e3c
+- Author: Bhavishya Kumar
+- Date: 2024-09-30 11:51:49
+- Message: update code to hmac_cin
+
+------------- v4.6.8 ------------------
+Version: v4.6.8
+Merge Commit: No
+
+Commit Details:
+- Revision: bbcd717
+- Author: Bhavishya Kumar
+- Date: 2024-09-30 11:01:59
+- Message: update code
+
+------------- v4.6.7 ------------------
+Version: v4.6.7
+Merge Commit: No
+
+Commit Details:
+- Revision: ceb8cf8
+- Author: Bhavishya Kumar
+- Date: 2024-09-30 10:32:43
+- Message: update code
+
+------------- v4.6.6 ------------------
+Version: v4.6.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 7543bd2
+- Author: Bhavishya Kumar
+- Date: 2024-09-30 10:25:21
+- Message: update vify_details of CIN,PAN,UDYAM
+
+------------- v4.6.5 ------------------
+Version: v4.6.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 18c899d
+- Author: Bhavishya Kumar
+- Date: 2024-09-27 10:01:27
+- Message: update code dept_org_id as None
+
+------------- v4.6.4 ------------------
+Version: v4.6.4
+Merge Commit: No
+
+Commit Details:
+- Revision: f1a47d2
+- Author: Bhavishya Kumar
+- Date: 2024-09-26 17:53:53
+- Message: update code
+
+------------- v4.6.3 ------------------
+Version: v4.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 8359d3f
+- Author: Bhavishya Kumar
+- Date: 2024-09-26 17:42:34
+- Message: update code
+
+------------- v4.6.2 ------------------
+Version: v4.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 8c1d7ea
+- Author: Bhavishya Kumar
+- Date: 2024-09-26 17:13:46
+- Message: update is_valid_dept in validation
+
+------------- v4.6.1 ------------------
+Version: v4.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: baebf68
+- Author: Bhavishya Kumar
+- Date: 2024-09-26 16:34:00
+- Message: department and default user add using create_org_user
+
+------------- v4.6.0 ------------------
+Version: v4.6.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d6ad1f5
+- Author: Bhavishya Kumar
+- Date: 2024-09-23 15:36:38
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.5.9 ------------------
+Version: v4.5.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 6a11f28
+- Author: Bhavishya Kumar
+- Date: 2024-09-23 15:36:21
+- Message: grant_access api update with access_id
+
+------------- v4.5.8 ------------------
+Version: v4.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: aab11c7
+- Author: Kshitiz Singh
+- Date: 2024-09-23 13:21:50
+- Message: Entity count API.
+
+------------- v4.5.7 ------------------
+Version: v4.5.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 6b62067
+- Author: Kshitiz Singh
+- Date: 2024-09-23 12:59:11
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/entityActivateDeactivateApis@289876
+
+------------- v4.5.6 ------------------
+Version: v4.5.6
+Merge Commit: No
+
+Commit Details:
+- Revision: ea7986d
+- Author: Kshitiz Singh
+- Date: 2024-09-23 12:58:54
+- Message: Entity count API.
+
+------------- v4.5.5 ------------------
+Version: v4.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: e5211e9
+- Author: Kshitiz Singh
+- Date: 2024-09-23 12:57:55
+- Message: Entity count API.
+
+------------- v4.5.4 ------------------
+Version: v4.5.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 2812eac
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 16:06:28
+- Message: drivejwt acsapi_dl
+
+------------- v4.5.3 ------------------
+Version: v4.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: deaf7a8
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 15:00:44
+- Message: update code
+
+------------- v4.5.2 ------------------
+Version: v4.5.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 361e049
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 14:54:45
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.5.1 ------------------
+Version: v4.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 16f381b
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 14:54:30
+- Message: Activate api of revoke user in department
+
+------------- v4.5.0 ------------------
+Version: v4.5.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d64d9cf
+- Author: Kshitiz Singh
+- Date: 2024-09-20 12:16:31
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/hmacSha3PanUdyamCin@278089
+
+------------- v4.4.9 ------------------
+Version: v4.4.9
+Merge Commit: No
+
+Commit Details:
+- Revision: bdb563b
+- Author: Kshitiz Singh
+- Date: 2024-09-20 12:16:20
+- Message: Entity Activate and Deactivate APIs.
+
+------------- v4.4.8 ------------------
+Version: v4.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 8c48086
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 11:33:04
+- Message: update config of pin, commonlib
+
+------------- v4.4.7 ------------------
+Version: v4.4.7
+Merge Commit: No
+
+Commit Details:
+- Revision: c722f85
+- Author: Bhavishya Kumar
+- Date: 2024-09-20 11:13:03
+- Message: update user config
+
+------------- v4.4.6 ------------------
+Version: v4.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 87b256e
+- Author: saurabh
+- Date: 2024-09-20 10:33:57
+- Message: updated prod config for filebeat
+
+------------- v4.4.5 ------------------
+Version: v4.4.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a74a667
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 16:22:58
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/optimize_logs
+
+------------- v4.4.4 ------------------
+Version: v4.4.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 575d926
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 16:22:39
+- Message: remove unuse code in app
+
+------------- v4.4.3 ------------------
+Version: v4.4.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 708c3db
+- Author: saurabh
+- Date: 2024-09-17 15:43:20
+- Message: updated api for count of ORG
+
+------------- v4.4.2 ------------------
+Version: v4.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 4fa2ae5
+- Author: saurabh
+- Date: 2024-09-17 14:52:16
+- Message: updated api for count of ORG
+
+------------- v4.4.1 ------------------
+Version: v4.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 426a7a7
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 13:26:01
+- Message: update validation for error handling
+
+------------- v4.4.0 ------------------
+Version: v4.4.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0558ae9
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 12:57:02
+- Message: update code
+
+------------- v4.3.9 ------------------
+Version: v4.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 64ef330
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 12:40:01
+- Message: update error handling in drivejwt_auth
+
+------------- v4.3.8 ------------------
+Version: v4.3.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: ad3c39a
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 11:55:34
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.3.7 ------------------
+Version: v4.3.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 9fdc35d
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 11:54:38
+- Message: update code from validation to app
+
+------------- v4.3.6 ------------------
+Version: v4.3.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 92e7b87
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 10:40:58
+- Message: Merge branch 'feature/digilockerid_name_on_mobile_adhaar_email@277626' into feature/optimize_logs
+
+------------- v4.3.5 ------------------
+Version: v4.3.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: e528a09
+- Author: Bhavishya Kumar
+- Date: 2024-09-17 10:38:26
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/optimize_logs
+
+------------- v4.3.4 ------------------
+Version: v4.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: d1db745
+- Author: saurabh
+- Date: 2024-09-13 16:31:28
+- Message: removed log from healthcheck
+
+------------- v4.3.3 ------------------
+Version: v4.3.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 94288a0
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 15:59:00
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.3.2 ------------------
+Version: v4.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 1dfe77f
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 15:58:43
+- Message: update error in user,section,permission
+
+------------- v4.3.1 ------------------
+Version: v4.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 765708e
+- Author: saurabh
+- Date: 2024-09-13 15:56:50
+- Message: updated logging
+
+------------- v4.3.0 ------------------
+Version: v4.3.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 3b05503
+- Author: Abhilash
+- Date: 2024-09-13 15:33:59
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/cin@237378
+
+------------- v4.2.9 ------------------
+Version: v4.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 878c115
+- Author: Abhilash
+- Date: 2024-09-13 15:33:38
+- Message: Modified Timeout.
+
+------------- v4.2.8 ------------------
+Version: v4.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: a843a88
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:56:29
+- Message: cache cleared
+
+------------- v4.2.7 ------------------
+Version: v4.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 8576d34
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:53:49
+- Message: update code 4
+
+------------- v4.2.6 ------------------
+Version: v4.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 7ab29eb
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:50:32
+- Message: update code 4
+
+------------- v4.2.5 ------------------
+Version: v4.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 1431ba9
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:45:49
+- Message: update code 3
+
+------------- v4.2.4 ------------------
+Version: v4.2.4
+Merge Commit: No
+
+Commit Details:
+- Revision: f5634ff
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:43:13
+- Message: update code 2
+
+------------- v4.2.3 ------------------
+Version: v4.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 289343e
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:14:16
+- Message: update 1
+
+------------- v4.2.2 ------------------
+Version: v4.2.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 61df348
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:07:29
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/user_name_search_v1_user
+
+------------- v4.2.1 ------------------
+Version: v4.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: f6d95c9
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 13:07:16
+- Message: update code
+
+------------- v4.2.0 ------------------
+Version: v4.2.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d13b56c
+- Author: Abhilash
+- Date: 2024-09-13 12:32:38
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/cin@237378
+
+------------- v4.1.9 ------------------
+Version: v4.1.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d97e054
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 12:22:50
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v4.1.8 ------------------
+Version: v4.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 54f2351
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 12:22:38
+- Message: update code
+
+------------- v4.1.7 ------------------
+Version: v4.1.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 10e2da6
+- Author: Bhavishya Kumar
+- Date: 2024-09-13 12:19:40
+- Message: update error log
+
+------------- v4.1.6 ------------------
+Version: v4.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: c285248
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 17:04:19
+- Message: update elastic comments
+
+------------- v4.1.5 ------------------
+Version: v4.1.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 89bab57
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 16:48:38
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.1.4 ------------------
+Version: v4.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 923f936
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 16:31:56
+- Message: update code
+
+------------- v4.1.3 ------------------
+Version: v4.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 0ba6d65
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 16:27:58
+- Message: update code
+
+------------- v4.1.2 ------------------
+Version: v4.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 1086a85
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 16:21:15
+- Message: update code
+
+------------- v4.1.1 ------------------
+Version: v4.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 240967b
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 15:54:50
+- Message: edit route of username
+
+------------- v4.1.0 ------------------
+Version: v4.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 217443e
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 15:17:29
+- Message: update code
+
+------------- v4.0.9 ------------------
+Version: v4.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: b73f379
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 15:05:01
+- Message: logging error v1
+
+------------- v4.0.8 ------------------
+Version: v4.0.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 20f2d75
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 10:13:11
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.0.7 ------------------
+Version: v4.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 2478a9c
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 10:00:28
+- Message: remove localhost from elastic
+
+------------- v4.0.6 ------------------
+Version: v4.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f5efd74
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 09:49:40
+- Message: update elastic code
+
+------------- v4.0.5 ------------------
+Version: v4.0.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 5aefb1d
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 09:47:54
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/digilockerid_name_on_mobile_adhaar_email@277626
+
+------------- v4.0.4 ------------------
+Version: v4.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 74e7434
+- Author: Bhavishya Kumar
+- Date: 2024-09-12 09:47:34
+- Message: logging error
+
+------------- v4.0.3 ------------------
+Version: v4.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 6d8b0e0
+- Author: Abhilash
+- Date: 2024-09-11 15:01:41
+- Message: Removed hmac_authentication_sha3.
+
+------------- v4.0.2 ------------------
+Version: v4.0.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0a0d994
+- Author: Abhilash
+- Date: 2024-09-11 13:41:50
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/cin@237378
+
+------------- v4.0.1 ------------------
+Version: v4.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: f47149f
+- Author: Abhilash
+- Date: 2024-09-11 13:41:23
+- Message: Modified Cin and Hmac with cin, removed CCIN
+
+------------- v4.0.0 ------------------
+Version: v4.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 38ffe1b
+- Author: Subhash
+- Date: 2024-09-10 10:14:26
+- Message: Commit for org_list api v-2
+
+------------- v3.9.9 ------------------
+Version: v3.9.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 3df5bbc
+- Author: Subhash
+- Date: 2024-09-10 10:12:24
+- Message: Commit for org_list api v-1
+
+------------- v3.9.8 ------------------
+Version: v3.9.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 6108680
+- Author: Subhash
+- Date: 2024-09-10 09:39:31
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/check_user_status
+
+------------- v3.9.7 ------------------
+Version: v3.9.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 95a6a04
+- Author: Subhash
+- Date: 2024-09-10 09:39:14
+- Message: Commit for org_list api
+
+------------- v3.9.6 ------------------
+Version: v3.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 7a5b121
+- Author: Bhavishya Kumar
+- Date: 2024-09-09 11:41:00
+- Message: update code
+
+------------- v3.9.5 ------------------
+Version: v3.9.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 7f05e54
+- Author: Bhavishya Kumar
+- Date: 2024-09-09 11:33:07
+- Message: update retrive_name username
+
+------------- v3.9.4 ------------------
+Version: v3.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 5db6860
+- Author: Bhavishya Kumar
+- Date: 2024-09-09 10:55:19
+- Message: update code new ids match
+
+------------- v3.9.3 ------------------
+Version: v3.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: d36f441
+- Author: Bhavishya Kumar
+- Date: 2024-09-09 10:16:38
+- Message: update code regex
+
+------------- v3.9.2 ------------------
+Version: v3.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 2b21359
+- Author: Bhavishya Kumar
+- Date: 2024-09-09 09:42:57
+- Message: update code
+
+------------- v3.9.1 ------------------
+Version: v3.9.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e3b75d2
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 17:43:26
+- Message: update code
+
+------------- v3.9.0 ------------------
+Version: v3.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 9b1eb3a
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 17:20:24
+- Message: update client_id
+
+------------- v3.8.9 ------------------
+Version: v3.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: c711a0d
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 17:03:18
+- Message: update acsapi
+
+------------- v3.8.8 ------------------
+Version: v3.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 1597615
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 15:13:15
+- Message: update curl request
+
+------------- v3.8.7 ------------------
+Version: v3.8.7
+Merge Commit: No
+
+Commit Details:
+- Revision: e8eabb8
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 11:03:04
+- Message: update code json
+
+------------- v3.8.6 ------------------
+Version: v3.8.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 2049b40
+- Author: Bhavishya Kumar
+- Date: 2024-09-06 09:28:49
+- Message: update code
+
+------------- v3.8.5 ------------------
+Version: v3.8.5
+Merge Commit: No
+
+Commit Details:
+- Revision: b792643
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 17:07:07
+- Message: update code
+
+------------- v3.8.4 ------------------
+Version: v3.8.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 38c91aa
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 16:45:06
+- Message: update code
+
+------------- v3.8.3 ------------------
+Version: v3.8.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 1b8cfca
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 16:35:15
+- Message: update code
+
+------------- v3.8.2 ------------------
+Version: v3.8.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 6a89a40
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 16:01:25
+- Message: update hmac in user_name
+
+------------- v3.8.1 ------------------
+Version: v3.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: c86e478
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 12:57:13
+- Message: update app and Blueprint name
+
+------------- v3.8.0 ------------------
+Version: v3.8.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 4e85a78
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 12:53:18
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.7.9 ------------------
+Version: v3.7.9
+Merge Commit: No
+
+Commit Details:
+- Revision: a76923c
+- Author: Bhavishya Kumar
+- Date: 2024-09-05 12:52:45
+- Message: post data using adhaar, mobile and email
+
+------------- v3.7.8 ------------------
+Version: v3.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 1dc596a
+- Author: Kshitiz Singh
+- Date: 2024-09-05 10:48:17
+- Message: Hmac sha3 for auth.py
+
+------------- v3.7.7 ------------------
+Version: v3.7.7
+Merge Commit: No
+
+Commit Details:
+- Revision: eea713c
+- Author: Kshitiz Singh
+- Date: 2024-09-05 10:42:04
+- Message: Hmac sha3 for auth.py
+
+------------- v3.7.6 ------------------
+Version: v3.7.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 3616670
+- Author: Kshitiz Singh
+- Date: 2024-09-05 10:14:38
+- Message: Hmac SHA3 for PAN, CIN and Udyam vification.
+
+------------- v3.7.5 ------------------
+Version: v3.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 4789422
+- Author: Subhash
+- Date: 2024-09-04 15:19:44
+- Message: Commit for active user status v-3
+
+------------- v3.7.4 ------------------
+Version: v3.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: bc3e312
+- Author: Subhash
+- Date: 2024-09-04 15:18:57
+- Message: Commit for active user status v-2
+
+------------- v3.7.3 ------------------
+Version: v3.7.3
+Merge Commit: No
+
+Commit Details:
+- Revision: a9096cd
+- Author: Subhash
+- Date: 2024-09-04 15:12:47
+- Message: Commit for active user status v-1
+
+------------- v3.7.2 ------------------
+Version: v3.7.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 11a8153
+- Author: Subhash
+- Date: 2024-09-04 13:41:05
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/active_users
+
+------------- v3.7.1 ------------------
+Version: v3.7.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 9ed6814
+- Author: saurabh
+- Date: 2024-09-04 13:13:56
+- Message: Merge branch 'feature/add_missing_apis' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.7.0 ------------------
+Version: v3.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: d82d8a8
+- Author: saurabh
+- Date: 2024-09-04 13:05:14
+- Message: updated
+
+------------- v3.6.9 ------------------
+Version: v3.6.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 1857876
+- Author: saurabh
+- Date: 2024-09-04 12:42:29
+- Message: updated generate JWT with hash
+
+------------- v3.6.8 ------------------
+Version: v3.6.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 8eafcd8
+- Author: Subhash
+- Date: 2024-09-04 10:53:11
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/active_users
+
+------------- v3.6.7 ------------------
+Version: v3.6.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 779ac89
+- Author: Subhash
+- Date: 2024-09-04 10:51:40
+- Message: Commit for active user status
+
+------------- v3.6.6 ------------------
+Version: v3.6.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: e8721e3
+- Author: Bhavishya Kumar
+- Date: 2024-09-03 17:22:50
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/add_missing_apis
+
+------------- v3.6.5 ------------------
+Version: v3.6.5
+Merge Commit: No
+
+Commit Details:
+- Revision: c516b61
+- Author: Bhavishya Kumar
+- Date: 2024-09-03 17:22:35
+- Message: update datetime
+
+------------- v3.6.4 ------------------
+Version: v3.6.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 2186393
+- Author: saurabh
+- Date: 2024-09-03 16:49:52
+- Message: updated lib
+
+------------- v3.6.3 ------------------
+Version: v3.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: f427a20
+- Author: Bhavishya Kumar
+- Date: 2024-09-03 15:33:59
+- Message: import datetime
+
+------------- v3.6.2 ------------------
+Version: v3.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: b458d0b
+- Author: Subhash
+- Date: 2024-09-03 15:30:18
+- Message: Active Users v-2
+
+------------- v3.6.1 ------------------
+Version: v3.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 237265a
+- Author: Subhash
+- Date: 2024-09-03 15:24:16
+- Message: Active Users v-1
+
+------------- v3.6.0 ------------------
+Version: v3.6.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 8f05709
+- Author: Subhash
+- Date: 2024-09-03 15:20:40
+- Message: Active Users
+
+------------- v3.5.9 ------------------
+Version: v3.5.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: ebead74
+- Author: saurabh
+- Date: 2024-09-03 15:20:02
+- Message: Merge branch 'develop'
+
+------------- v3.5.8 ------------------
+Version: v3.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: d33c9f2
+- Author: saurabh
+- Date: 2024-09-03 13:44:47
+- Message: move from org_locker to entity_auth
+
+------------- v3.5.7 ------------------
+Version: v3.5.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 866107d
+- Author: saurabh
+- Date: 2024-09-02 11:30:59
+- Message: Merge branch 'develop'
+
+------------- v3.5.6 ------------------
+Version: v3.5.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d3667fe
+- Author: saurabh
+- Date: 2024-09-02 11:30:13
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.5.5 ------------------
+Version: v3.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: c83c4f5
+- Author: Bhavishya Kumar
+- Date: 2024-08-29 12:53:18
+- Message: revoke access update validation
+
+------------- v3.5.4 ------------------
+Version: v3.5.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: f1f468c
+- Author: Bhavishya Kumar
+- Date: 2024-08-28 16:39:01
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v3.5.3 ------------------
+Version: v3.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 8e7153b
+- Author: Subhash
+- Date: 2024-08-28 15:56:54
+- Message: Commit for update udyam issue inside the profile
+
+------------- v3.5.2 ------------------
+Version: v3.5.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: e6d1270
+- Author: Bhavishya Kumar
+- Date: 2024-08-28 10:29:00
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v3.5.1 ------------------
+Version: v3.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: a0e7441
+- Author: Bhavishya Kumar
+- Date: 2024-08-28 10:28:47
+- Message: update revoke access validation
+
+------------- v3.5.0 ------------------
+Version: v3.5.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 6fe60fc
+- Author: Subhash
+- Date: 2024-08-27 11:21:29
+- Message: Commit for vify mobile otp
+
+------------- v3.4.9 ------------------
+Version: v3.4.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 984a3cd
+- Author: Bhavishya Kumar
+- Date: 2024-08-23 16:33:11
+- Message: update code
+
+------------- v3.4.8 ------------------
+Version: v3.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: e46cdcd
+- Author: Bhavishya Kumar
+- Date: 2024-08-23 15:34:07
+- Message: update code 1
+
+------------- v3.4.7 ------------------
+Version: v3.4.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 255feda
+- Author: Bhavishya Kumar
+- Date: 2024-08-23 15:27:01
+- Message: update code
+
+------------- v3.4.6 ------------------
+Version: v3.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 2448ac7
+- Author: Bhavishya Kumar
+- Date: 2024-08-23 15:23:13
+- Message: update revoke_access api
+
+------------- v3.4.5 ------------------
+Version: v3.4.5
+Merge Commit: No
+
+Commit Details:
+- Revision: b6cb53a
+- Author: Subhash
+- Date: 2024-08-23 13:36:39
+- Message: Commit for vify otp
+
+------------- v3.4.4 ------------------
+Version: v3.4.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 30950ee
+- Author: saurabh
+- Date: 2024-08-22 11:48:59
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.4.3 ------------------
+Version: v3.4.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 07d52c8
+- Author: saurabh
+- Date: 2024-08-22 11:48:25
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth
+
+------------- v3.4.2 ------------------
+Version: v3.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 47313f4
+- Author: saurabh
+- Date: 2024-08-22 11:47:35
+- Message: updated prod docker file
+
+------------- v3.4.1 ------------------
+Version: v3.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 6f9b74b
+- Author: Subhash
+- Date: 2024-08-21 09:42:33
+- Message: Commit for vify otp api issue
+
+------------- v3.4.0 ------------------
+Version: v3.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 7ab5640
+- Author: Subhash
+- Date: 2024-08-20 13:52:38
+- Message: Commit for mobile issue
+
+------------- v3.3.9 ------------------
+Version: v3.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: e72b6a2
+- Author: Subhash
+- Date: 2024-08-20 11:28:14
+- Message: Commit for save mobile number issue v-1
+
+------------- v3.3.8 ------------------
+Version: v3.3.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 843e102
+- Author: Subhash
+- Date: 2024-08-20 10:36:18
+- Message: Commit for save mobile number issue
+
+------------- v3.3.7 ------------------
+Version: v3.3.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 635e843
+- Author: Subhash
+- Date: 2024-08-20 09:50:00
+- Message: Commit for save mobile number issue
+
+------------- v3.3.6 ------------------
+Version: v3.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: d45a8ef
+- Author: saurabh
+- Date: 2024-08-19 16:23:32
+- Message: updated refrsh token validation with redis
+
+------------- v3.3.5 ------------------
+Version: v3.3.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: c9426a9
+- Author: saurabh
+- Date: 2024-08-19 15:57:22
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.3.4 ------------------
+Version: v3.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: d763b7a
+- Author: saurabh
+- Date: 2024-08-19 15:57:05
+- Message: updated the rersh token validaiton
+
+------------- v3.3.3 ------------------
+Version: v3.3.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: b6d9c48
+- Author: Abhilash
+- Date: 2024-08-19 15:15:19
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/cin@237378
+
+------------- v3.3.2 ------------------
+Version: v3.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: a034921
+- Author: Abhilash
+- Date: 2024-08-19 15:14:12
+- Message: Added aadhaar user exists from aadded request
+
+------------- v3.3.1 ------------------
+Version: v3.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 39cdaff
+- Author: saurabh
+- Date: 2024-08-19 13:51:45
+- Message: updated and working
+
+------------- v3.3.0 ------------------
+Version: v3.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 3a33a95
+- Author: saurabh
+- Date: 2024-08-19 11:30:38
+- Message: updated jwt
+
+------------- v3.2.9 ------------------
+Version: v3.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: e9f7cc6
+- Author: saurabh
+- Date: 2024-08-19 11:22:33
+- Message: updated
+
+------------- v3.2.8 ------------------
+Version: v3.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: b4a243b
+- Author: saurabh
+- Date: 2024-08-19 10:15:43
+- Message: updated
+
+------------- v3.2.7 ------------------
+Version: v3.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 99a3a62
+- Author: saurabh
+- Date: 2024-08-16 17:23:59
+- Message: try refreh token
+
+------------- v3.2.6 ------------------
+Version: v3.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f4b9b7e
+- Author: saurabh
+- Date: 2024-08-16 17:20:53
+- Message: try refreh token
+
+------------- v3.2.5 ------------------
+Version: v3.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 2e92647
+- Author: saurabh
+- Date: 2024-08-16 16:14:09
+- Message: upadted the error  logs filetering
+
+------------- v3.2.4 ------------------
+Version: v3.2.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 86040ff
+- Author: saurabh
+- Date: 2024-08-16 16:09:54
+- Message: upadted the error  logs filetering
+
+------------- v3.2.3 ------------------
+Version: v3.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 77ec6d4
+- Author: saurabh
+- Date: 2024-08-16 16:00:26
+- Message: upadted the error  logs filetering
+
+------------- v3.2.2 ------------------
+Version: v3.2.2
+Merge Commit: No
+
+Commit Details:
+- Revision: cd5dc59
+- Author: saurabh
+- Date: 2024-08-16 15:52:09
+- Message: upadted the error  logs filetering
+
+------------- v3.2.1 ------------------
+Version: v3.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: a33f8d0
+- Author: saurabh
+- Date: 2024-08-16 13:52:04
+- Message: updated logs
+
+------------- v3.2.0 ------------------
+Version: v3.2.0
+Merge Commit: Yes
+
+Commit Details:
+- Revision: b723d57
+- Author: saurabh
+- Date: 2024-08-16 13:40:25
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v3.1.9 ------------------
+Version: v3.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: df5307c
+- Author: saurabh
+- Date: 2024-08-16 13:39:56
+- Message: centralized logs
+
+------------- v3.1.8 ------------------
+Version: v3.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: af5e8b3
+- Author: Kshitiz Singh
+- Date: 2024-08-16 11:54:25
+- Message: update
+
+------------- v3.1.7 ------------------
+Version: v3.1.7
+Merge Commit: No
+
+Commit Details:
+- Revision: b9aa8bc
+- Author: Kshitiz Singh
+- Date: 2024-08-16 11:39:23
+- Message: update
+
+------------- v3.1.6 ------------------
+Version: v3.1.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: dd5936d
+- Author: Kshitiz Singh
+- Date: 2024-08-16 11:38:53
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/sendMobileOtpFix
+
+------------- v3.1.5 ------------------
+Version: v3.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: b4a7dbd
+- Author: Kshitiz Singh
+- Date: 2024-08-16 11:38:44
+- Message: update
+
+------------- v3.1.4 ------------------
+Version: v3.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 9930a85
+- Author: Subhash
+- Date: 2024-08-14 15:28:39
+- Message: error responce to error error_description v-2
+
+------------- v3.1.3 ------------------
+Version: v3.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 0180766
+- Author: Kshitiz Singh
+- Date: 2024-08-14 13:56:52
+- Message: Update.
+
+------------- v3.1.2 ------------------
+Version: v3.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: ec36cb7
+- Author: Kshitiz Singh
+- Date: 2024-08-14 13:26:23
+- Message: Update
+
+------------- v3.1.1 ------------------
+Version: v3.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 9ffe3eb
+- Author: Subhash
+- Date: 2024-08-14 13:22:27
+- Message: error responce to error error_description v-1
+
+------------- v3.1.0 ------------------
+Version: v3.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 3d8606d
+- Author: Subhash
+- Date: 2024-08-14 13:12:59
+- Message: error responce to error error_description
+
+------------- v3.0.9 ------------------
+Version: v3.0.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: d30c730
+- Author: Kshitiz Singh
+- Date: 2024-08-13 17:14:25
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/sendMobileOtpFix
+
+------------- v3.0.8 ------------------
+Version: v3.0.8
+Merge Commit: No
+
+Commit Details:
+- Revision: bdb12c5
+- Author: Kshitiz Singh
+- Date: 2024-08-13 16:26:15
+- Message: patch: send mobile otp
+
+------------- v3.0.7 ------------------
+Version: v3.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 8032481
+- Author: Kshitiz Singh
+- Date: 2024-08-13 16:10:44
+- Message: patch: send mobile otp
+
+------------- v3.0.6 ------------------
+Version: v3.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: b0b2a4e
+- Author: Kshitiz Singh
+- Date: 2024-08-13 15:47:02
+- Message: patch: send mobile otp
+
+------------- v3.0.5 ------------------
+Version: v3.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 339343b
+- Author: Kshitiz Singh
+- Date: 2024-08-13 15:35:06
+- Message: patch: send mobile otp
+
+------------- v3.0.4 ------------------
+Version: v3.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: cdfb06d
+- Author: Abhilash
+- Date: 2024-08-13 13:04:34
+- Message: Added another cin.py with HMAC
+
+------------- v3.0.3 ------------------
+Version: v3.0.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: c8a50cc
+- Author: Subhash
+- Date: 2024-08-13 11:09:48
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/udyam_api
+
+------------- v3.0.2 ------------------
+Version: v3.0.2
+Merge Commit: No
+
+Commit Details:
+- Revision: da7f2c3
+- Author: Subhash
+- Date: 2024-08-13 11:08:39
+- Message: Udyam chnages
+
+------------- v3.0.1 ------------------
+Version: v3.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 47299a3
+- Author: Subhash
+- Date: 2024-08-12 17:53:19
+- Message: Udyam api
+
+------------- v3.0.0 ------------------
+Version: v3.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 7dc060e
+- Author: saurabh
+- Date: 2024-08-12 15:24:12
+- Message: updated the elastic search and connectivity
+
+------------- v2.9.9 ------------------
+Version: v2.9.9
+Merge Commit: No
+
+Commit Details:
+- Revision: afb9fd6
+- Author: Subhash
+- Date: 2024-08-12 11:07:06
+- Message: commit for udyam v-2
+
+------------- v2.9.8 ------------------
+Version: v2.9.8
+Merge Commit: No
+
+Commit Details:
+- Revision: cd30074
+- Author: Subhash
+- Date: 2024-08-12 11:03:34
+- Message: commit for udyam v-1
+
+------------- v2.9.7 ------------------
+Version: v2.9.7
+Merge Commit: No
+
+Commit Details:
+- Revision: c83d101
+- Author: Subhash
+- Date: 2024-08-12 10:22:51
+- Message: commit for udyam
+
+------------- v2.9.6 ------------------
+Version: v2.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: c7dcae1
+- Author: Subhash
+- Date: 2024-08-12 10:09:37
+- Message: Commi for udyam api v-1
+
+------------- v2.9.5 ------------------
+Version: v2.9.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 9923a77
+- Author: Subhash
+- Date: 2024-08-12 10:01:53
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into develop
+
+------------- v2.9.4 ------------------
+Version: v2.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 685dee1
+- Author: Subhash
+- Date: 2024-08-12 09:58:01
+- Message: Commi for udyam api
+
+------------- v2.9.3 ------------------
+Version: v2.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: a1ee74e
+- Author: Subhash
+- Date: 2024-08-12 09:53:59
+- Message: Commi for udyam api
+
+------------- v2.9.2 ------------------
+Version: v2.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: be8e6db
+- Author: Abhilash
+- Date: 2024-08-09 13:46:31
+- Message: Updated Constants File desc
+
+------------- v2.9.1 ------------------
+Version: v2.9.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 7c6c65b
+- Author: Abhilash
+- Date: 2024-08-09 13:17:40
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/cin@237378
+
+------------- v2.9.0 ------------------
+Version: v2.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 058dd17
+- Author: Abhilash
+- Date: 2024-08-09 13:17:23
+- Message: Modified the status code in cin.py
+
+------------- v2.8.9 ------------------
+Version: v2.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 3b2fb06
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 14:08:47
+- Message: update get_access_rule
+
+------------- v2.8.8 ------------------
+Version: v2.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 6e563ab
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 13:51:38
+- Message: update code
+
+------------- v2.8.7 ------------------
+Version: v2.8.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 1018f49
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 13:30:46
+- Message: update code
+
+------------- v2.8.6 ------------------
+Version: v2.8.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 3a85900
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 13:07:21
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v2.8.5 ------------------
+Version: v2.8.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 7e5b92e
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 13:07:07
+- Message: update code
+
+------------- v2.8.4 ------------------
+Version: v2.8.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 59e92e3
+- Author: saurabh
+- Date: 2024-08-08 12:59:44
+- Message: updated elastic connection
+
+------------- v2.8.3 ------------------
+Version: v2.8.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 0b985fb
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 12:46:37
+- Message: update code
+
+------------- v2.8.2 ------------------
+Version: v2.8.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 17fda93
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 12:38:16
+- Message: remove photo from profile in get_access_rules
+
+------------- v2.8.1 ------------------
+Version: v2.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 8cc74cc
+- Author: Bhavishya Kumar
+- Date: 2024-08-08 09:48:04
+- Message: update get_access_rule active/ Inactive
+
+------------- v2.8.0 ------------------
+Version: v2.8.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 35fcc78
+- Author: Bhavishya Kumar
+- Date: 2024-08-07 16:58:44
+- Message: Comment active inactive in isactive in get_access_rule
+
+------------- v2.7.9 ------------------
+Version: v2.7.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 2cac742
+- Author: Bhavishya Kumar
+- Date: 2024-08-07 15:15:45
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v2.7.8 ------------------
+Version: v2.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 82eef83
+- Author: Bhavishya Kumar
+- Date: 2024-08-07 15:15:25
+- Message: update isactive to active and inactive
+
+------------- v2.7.7 ------------------
+Version: v2.7.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 8365ae0
+- Author: saurabh
+- Date: 2024-08-07 11:37:35
+- Message: updated validation for adding duplicate CIN
+
+------------- v2.7.6 ------------------
+Version: v2.7.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 1f630f0
+- Author: saurabh
+- Date: 2024-08-07 11:37:22
+- Message: updated validation for adding duplicate CIN
+
+------------- v2.7.5 ------------------
+Version: v2.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: c983b5d
+- Author: saurabh
+- Date: 2024-08-07 11:07:43
+- Message: updated the request type content in CIN
+
+------------- v2.7.4 ------------------
+Version: v2.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 365fe93
+- Author: saurabh
+- Date: 2024-08-07 10:51:22
+- Message: updated the request type content in CIN
+
+------------- v2.7.3 ------------------
+Version: v2.7.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 23eb0f1
+- Author: Abhilash
+- Date: 2024-08-06 09:20:29
+- Message: Pulled develop
+
+------------- v2.7.2 ------------------
+Version: v2.7.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 49f0559
+- Author: Abhilash
+- Date: 2024-08-05 16:51:24
+- Message: Updated logging in cin.py
+
+------------- v2.7.1 ------------------
+Version: v2.7.1
+Merge Commit: No
+
+Commit Details:
+- Revision: f9835ed
+- Author: Abhilash
+- Date: 2024-08-05 16:48:48
+- Message: Updated the Cin using JWT validation
+
+------------- v2.7.0 ------------------
+Version: v2.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 3aa7fac
+- Author: Bhavishya Kumar
+- Date: 2024-08-05 14:49:58
+- Message: update code
+
+------------- v2.6.9 ------------------
+Version: v2.6.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a4a37f2
+- Author: Bhavishya Kumar
+- Date: 2024-08-05 11:34:44
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v2.6.8 ------------------
+Version: v2.6.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 5cbd89a
+- Author: saurabh
+- Date: 2024-08-05 11:02:15
+- Message: updated services conf for filebeat configuration
+
+------------- v2.6.7 ------------------
+Version: v2.6.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 15006a6
+- Author: saurabh
+- Date: 2024-08-05 10:59:37
+- Message: updated services conf for filebeat configuration
+
+------------- v2.6.6 ------------------
+Version: v2.6.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 12ee436
+- Author: saurabh
+- Date: 2024-08-05 10:57:22
+- Message: updated services conf for filebeat configuration
+
+------------- v2.6.5 ------------------
+Version: v2.6.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 95e656f
+- Author: Bhavishya Kumar
+- Date: 2024-08-05 10:43:45
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v2.6.4 ------------------
+Version: v2.6.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 6ef6e1a
+- Author: saurabh
+- Date: 2024-08-05 10:30:46
+- Message: updated to log exceptions
+
+------------- v2.6.3 ------------------
+Version: v2.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: f0d715b
+- Author: saurabh
+- Date: 2024-08-05 10:21:37
+- Message: updated to log exceptions
+
+------------- v2.6.2 ------------------
+Version: v2.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 01ad899
+- Author: saurabh
+- Date: 2024-08-05 10:17:12
+- Message: updated to log exceptions
+
+------------- v2.6.1 ------------------
+Version: v2.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 063af07
+- Author: saurabh
+- Date: 2024-08-05 10:04:13
+- Message: updated to log exceptions
+
+------------- v2.6.0 ------------------
+Version: v2.6.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 7d836e8
+- Author: saurabh
+- Date: 2024-08-05 09:57:33
+- Message: updated to log exceptions
+
+------------- v2.5.9 ------------------
+Version: v2.5.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 691a959
+- Author: saurabh
+- Date: 2024-08-05 09:40:15
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/common_before_after_requests
+
+------------- v2.5.8 ------------------
+Version: v2.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 71be9d3
+- Author: saurabh
+- Date: 2024-08-05 09:38:55
+- Message: updated to log exceptions
+
+------------- v2.5.7 ------------------
+Version: v2.5.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 0c4bac7
+- Author: Abhilash
+- Date: 2024-08-02 16:51:27
+- Message: Removed datetime.datetime and imported logging
+
+------------- v2.5.6 ------------------
+Version: v2.5.6
+Merge Commit: No
+
+Commit Details:
+- Revision: b78a2d8
+- Author: saurabh
+- Date: 2024-08-02 15:39:19
+- Message: updated
+
+------------- v2.5.5 ------------------
+Version: v2.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 6f0afb6
+- Author: saurabh
+- Date: 2024-08-02 15:29:51
+- Message: updated before and after requests
+
+------------- v2.5.4 ------------------
+Version: v2.5.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 7a9b4dd
+- Author: saurabh
+- Date: 2024-08-02 15:29:28
+- Message: updated before and after requests
+
+------------- v2.5.3 ------------------
+Version: v2.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 7e1644f
+- Author: saurabh
+- Date: 2024-08-02 14:56:28
+- Message: updated before and after requests
+
+------------- v2.5.2 ------------------
+Version: v2.5.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 655f1f7
+- Author: saurabh
+- Date: 2024-08-02 14:35:27
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/common_before_after_requests
+
+------------- v2.5.1 ------------------
+Version: v2.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 2bd2a6b
+- Author: saurabh
+- Date: 2024-08-02 14:35:16
+- Message: updated
+
+------------- v2.5.0 ------------------
+Version: v2.5.0
+Merge Commit: No
+
+Commit Details:
+- Revision: efaa315
+- Author: Bhavishya Kumar
+- Date: 2024-08-02 13:32:47
+- Message: update endpoint of get_user_access_requests
+
+------------- v2.4.9 ------------------
+Version: v2.4.9
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0183552
+- Author: Bhavishya Kumar
+- Date: 2024-08-02 13:21:37
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/create_org_based_user@240370
+
+------------- v2.4.8 ------------------
+Version: v2.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 5fb53bd
+- Author: Bhavishya Kumar
+- Date: 2024-08-02 13:21:16
+- Message: org based user and manager access
+
+------------- v2.4.7 ------------------
+Version: v2.4.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 9024ed7
+- Author: saurabh
+- Date: 2024-08-02 12:33:28
+- Message: updated docker file
+
+------------- v2.4.6 ------------------
+Version: v2.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 29ecde1
+- Author: saurabh
+- Date: 2024-08-02 12:28:06
+- Message: updaated logs
+
+------------- v2.4.5 ------------------
+Version: v2.4.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 89ee59f
+- Author: Abhilash
+- Date: 2024-08-02 11:41:55
+- Message: added cin.py
+
+------------- v2.4.4 ------------------
+Version: v2.4.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 4925195
+- Author: Abhilash
+- Date: 2024-08-02 10:53:19
+- Message: Modified Cin.py and removed din in validations
+
+------------- v2.4.3 ------------------
+Version: v2.4.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: e81901a
+- Author: Subhash
+- Date: 2024-08-02 10:48:59
+- Message: Merge branch 'develop' into feature/add_log_entity_auth_api
+
+------------- v2.4.2 ------------------
+Version: v2.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 010c60e
+- Author: Subhash
+- Date: 2024-08-02 10:31:08
+- Message: Commit gstin and gstin  api intigrating from frontend v-2
+
+------------- v2.4.1 ------------------
+Version: v2.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 6687ad5
+- Author: Subhash
+- Date: 2024-08-02 10:13:59
+- Message: Commit gstin and gstin  api intigrating from frontend v-1
+
+------------- v2.4.0 ------------------
+Version: v2.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 121afeb
+- Author: Subhash
+- Date: 2024-08-02 10:09:58
+- Message: Commit gstin and gstin  api intigrating from frontend
+
+------------- v2.3.9 ------------------
+Version: v2.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: c46e56a
+- Author: Subhash
+- Date: 2024-08-02 08:51:36
+- Message: Commit for gstin api calling
+
+------------- v2.3.8 ------------------
+Version: v2.3.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 932d3e2
+- Author: Subhash
+- Date: 2024-08-01 19:53:11
+- Message: Commit for udyam and add logs
+
+------------- v2.3.7 ------------------
+Version: v2.3.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 5fc5554
+- Author: Bhavishya Kumar
+- Date: 2024-08-01 12:37:22
+- Message: Merge branch 'develop' into feature/get_access_rule_add_org_user_request
+
+------------- v2.3.6 ------------------
+Version: v2.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 8d852c6
+- Author: Bhavishya Kumar
+- Date: 2024-08-01 12:36:28
+- Message: revoke get_uaer_access
+
+------------- v2.3.5 ------------------
+Version: v2.3.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 2f34b3f
+- Author: Subhash
+- Date: 2024-07-31 18:04:49
+- Message: Commit for GSTIN
+
+------------- v2.3.4 ------------------
+Version: v2.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 67c5d0f
+- Author: Subhash
+- Date: 2024-07-31 17:23:07
+- Message: Commit for GSTIN
+
+------------- v2.3.3 ------------------
+Version: v2.3.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 81c9d35
+- Author: Subhash
+- Date: 2024-07-31 13:05:07
+- Message: Commit for gstin
+
+------------- v2.3.2 ------------------
+Version: v2.3.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 94ac17e
+- Author: Subhash
+- Date: 2024-07-31 12:54:31
+- Message: Merge branch 'develop' into feature/gsin_update
+
+------------- v2.3.1 ------------------
+Version: v2.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 6a5c4d0
+- Author: Subhash
+- Date: 2024-07-31 12:52:19
+- Message: Commit for gstin
+
+------------- v2.3.0 ------------------
+Version: v2.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 7234f40
+- Author: Kshitiz Singh
+- Date: 2024-07-30 13:11:15
+- Message: Exception message remov from error description.
+
+------------- v2.2.9 ------------------
+Version: v2.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 1cd246c
+- Author: Kshitiz Singh
+- Date: 2024-07-30 12:59:27
+- Message: Manager rule name update in constants
+
+------------- v2.2.8 ------------------
+Version: v2.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 7973e4a
+- Author: Kshitiz Singh
+- Date: 2024-07-30 12:55:07
+- Message: Manager rule name update in constants
+
+------------- v2.2.7 ------------------
+Version: v2.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 4329400
+- Author: Kshitiz Singh
+- Date: 2024-07-30 12:54:22
+- Message: Manager rule name update in constants
+
+------------- v2.2.6 ------------------
+Version: v2.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 64ab685
+- Author: Kshitiz Singh
+- Date: 2024-07-30 12:12:06
+- Message: Manager rule name update in constants
+
+------------- v2.2.5 ------------------
+Version: v2.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: e611648
+- Author: Kshitiz Singh
+- Date: 2024-07-30 12:09:59
+- Message: Manager rule name update in constants
+
+------------- v2.2.4 ------------------
+Version: v2.2.4
+Merge Commit: Yes
+
+Commit Details:
+- Revision: be78b3c
+- Author: Bhavishya Kumar
+- Date: 2024-07-29 17:19:53
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/get_access_rule_add_org_user_request
+
+------------- v2.2.3 ------------------
+Version: v2.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 4e392de
+- Author: Bhavishya Kumar
+- Date: 2024-07-29 17:19:34
+- Message: update pool user code
+
+------------- v2.2.2 ------------------
+Version: v2.2.2
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 6ec5000
+- Author: Kshitiz Singh
+- Date: 2024-07-29 16:16:05
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/otpServicesFix
+
+------------- v2.2.1 ------------------
+Version: v2.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: ca9ddb5
+- Author: Kshitiz Singh
+- Date: 2024-07-29 16:15:54
+- Message: update.
+
+------------- v2.2.0 ------------------
+Version: v2.2.0
+Merge Commit: No
+
+Commit Details:
+- Revision: af0a544
+- Author: Bhavishya Kumar
+- Date: 2024-07-29 10:45:01
+- Message: add email in username
+
+------------- v2.1.9 ------------------
+Version: v2.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 2e71bd5
+- Author: Bhavishya Kumar
+- Date: 2024-07-26 17:01:35
+- Message: update code
+
+------------- v2.1.8 ------------------
+Version: v2.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: c7b0bca
+- Author: Bhavishya Kumar
+- Date: 2024-07-26 16:33:14
+- Message: use append instead of extend
+
+------------- v2.1.7 ------------------
+Version: v2.1.7
+Merge Commit: Yes
+
+Commit Details:
+- Revision: bbc8a51
+- Author: Bhavishya Kumar
+- Date: 2024-07-26 16:20:29
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/debug_code_entity_auth
+
+------------- v2.1.6 ------------------
+Version: v2.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 50dd9c6
+- Author: Bhavishya Kumar
+- Date: 2024-07-26 16:15:41
+- Message: add org_user_request collection in get_access_rules
+
+------------- v2.1.5 ------------------
+Version: v2.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 4a563ae
+- Author: Subhash
+- Date: 2024-07-25 18:11:58
+- Message: Commit for gstin update v-3
+
+------------- v2.1.4 ------------------
+Version: v2.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 09a63e7
+- Author: Subhash
+- Date: 2024-07-25 15:20:20
+- Message: Commit for gstin update v-2
+
+------------- v2.1.3 ------------------
+Version: v2.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 15f7504
+- Author: Kshitiz Singh
+- Date: 2024-07-25 15:14:59
+- Message: OTP serveices for signup.
+
+------------- v2.1.2 ------------------
+Version: v2.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 732c411
+- Author: Subhash
+- Date: 2024-07-25 15:14:44
+- Message: Commit for gstin update v-1
+
+------------- v2.1.1 ------------------
+Version: v2.1.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 79ef1bd
+- Author: Kshitiz Singh
+- Date: 2024-07-25 15:04:29
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/otpServicesFix
+
+------------- v2.1.0 ------------------
+Version: v2.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 21344ef
+- Author: Kshitiz Singh
+- Date: 2024-07-25 15:04:15
+- Message: OTP serveices for signup.
+
+------------- v2.0.9 ------------------
+Version: v2.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 13c525d
+- Author: Subhash
+- Date: 2024-07-25 14:59:27
+- Message: Commit for gstn api
+
+------------- v2.0.8 ------------------
+Version: v2.0.8
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 326f8a6
+- Author: Subhash
+- Date: 2024-07-25 14:58:18
+- Message: Merge branch 'develop' into feature/gsin_update
+
+------------- v2.0.7 ------------------
+Version: v2.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 5c8b4ac
+- Author: Subhash
+- Date: 2024-07-25 14:54:38
+- Message: Commit for gstn api
+
+------------- v2.0.6 ------------------
+Version: v2.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: d0085d6
+- Author: Kshitiz Singh
+- Date: 2024-07-25 13:42:30
+- Message: Save PAN after PAN vification.
+
+------------- v2.0.5 ------------------
+Version: v2.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: a093179
+- Author: Kshitiz Singh
+- Date: 2024-07-25 13:41:38
+- Message: Save PAN after PAN vification.
+
+------------- v2.0.4 ------------------
+Version: v2.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 4080ead
+- Author: Kshitiz Singh
+- Date: 2024-07-25 13:40:43
+- Message: Save PAN after PAN vification.
+
+------------- v2.0.3 ------------------
+Version: v2.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 7321b31
+- Author: Subhash
+- Date: 2024-07-25 11:44:59
+- Message: Commit for gstin update
+
+------------- v2.0.2 ------------------
+Version: v2.0.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 23fc86f
+- Author: Kshitiz Singh
+- Date: 2024-07-24 13:21:27
+- Message: count added in get users
+
+------------- v2.0.1 ------------------
+Version: v2.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 1cf2bfc
+- Author: Kshitiz Singh
+- Date: 2024-07-23 12:56:47
+- Message: otpservices library fix.
+
+------------- v2.0.0 ------------------
+Version: v2.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 95d5b36
+- Author: Bhavishya Kumar
+- Date: 2024-07-18 11:35:07
+- Message: update collection_user_pool
+
+------------- v1.9.9 ------------------
+Version: v1.9.9
+Merge Commit: No
+
+Commit Details:
+- Revision: a889775
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 16:07:34
+- Message: update code
+
+------------- v1.9.8 ------------------
+Version: v1.9.8
+Merge Commit: No
+
+Commit Details:
+- Revision: dc8fa5e
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 16:06:17
+- Message: debug code
+
+------------- v1.9.7 ------------------
+Version: v1.9.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 881d3e2
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 12:07:06
+- Message: update code
+
+------------- v1.9.6 ------------------
+Version: v1.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 1a18ef5
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 12:02:48
+- Message: some changes revt
+
+------------- v1.9.5 ------------------
+Version: v1.9.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 40d51be
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 11:53:06
+- Message: debug aes_decryption_v2
+
+------------- v1.9.4 ------------------
+Version: v1.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 91e9ece
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 11:14:44
+- Message: add debug code
+
+------------- v1.9.3 ------------------
+Version: v1.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: bcb5f07
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 10:51:25
+- Message: revt code
+
+------------- v1.9.2 ------------------
+Version: v1.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 608b651
+- Author: Bhavishya Kumar
+- Date: 2024-07-16 10:38:33
+- Message: debug code create_access_rule_v2
+
+------------- v1.9.1 ------------------
+Version: v1.9.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 2aae61e
+- Author: Bhavishya Kumar
+- Date: 2024-07-12 11:08:24
+- Message: update code
+
+------------- v1.9.0 ------------------
+Version: v1.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: f05a2e5
+- Author: Bhavishya Kumar
+- Date: 2024-07-12 10:59:30
+- Message: acsapi replicate to entity_auth
+
+------------- v1.8.9 ------------------
+Version: v1.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 0848cb1
+- Author: saurabh
+- Date: 2024-07-12 10:10:26
+- Message: remove duplicate code
+
+------------- v1.8.8 ------------------
+Version: v1.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: fba9e9b
+- Author: Bhavishya Kumar
+- Date: 2024-07-11 15:49:55
+- Message: add all missing  apis in org.py
+
+------------- v1.8.7 ------------------
+Version: v1.8.7
+Merge Commit: No
+
+Commit Details:
+- Revision: feba320
+- Author: Subhash
+- Date: 2024-07-08 12:25:12
+- Message: Commit for validation for pan varification
+
+------------- v1.8.6 ------------------
+Version: v1.8.6
+Merge Commit: No
+
+Commit Details:
+- Revision: ef6d440
+- Author: Subhash
+- Date: 2024-07-05 12:32:28
+- Message: Commit for signup_v-4
+
+------------- v1.8.5 ------------------
+Version: v1.8.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 5707fab
+- Author: Subhash
+- Date: 2024-07-04 16:52:23
+- Message: Commit for  Signup api v-1
+
+------------- v1.8.4 ------------------
+Version: v1.8.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 970a4e9
+- Author: Subhash
+- Date: 2024-07-04 16:37:04
+- Message: Commit for  Signup api
+
+------------- v1.8.3 ------------------
+Version: v1.8.3
+Merge Commit: No
+
+Commit Details:
+- Revision: fcf607c
+- Author: Subhash
+- Date: 2024-07-03 15:25:28
+- Message: Commit for send mobile otp v-11
+
+------------- v1.8.2 ------------------
+Version: v1.8.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 2bd5515
+- Author: Subhash
+- Date: 2024-07-03 13:01:20
+- Message: Commit for send mobile otp v-10
+
+------------- v1.8.1 ------------------
+Version: v1.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: ad08ebd
+- Author: Subhash
+- Date: 2024-07-03 12:55:29
+- Message: Commit for send mobile otp v-9
+
+------------- v1.8.0 ------------------
+Version: v1.8.0
+Merge Commit: No
+
+Commit Details:
+- Revision: c022cfa
+- Author: Subhash
+- Date: 2024-07-03 12:38:19
+- Message: Commit for send mobile otp v-8
+
+------------- v1.7.9 ------------------
+Version: v1.7.9
+Merge Commit: No
+
+Commit Details:
+- Revision: b70a38a
+- Author: Subhash
+- Date: 2024-07-03 12:26:55
+- Message: Commit for send mobile otp v-7
+
+------------- v1.7.8 ------------------
+Version: v1.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: e25977e
+- Author: Subhash
+- Date: 2024-07-03 12:17:17
+- Message: Commit for send mobile otp v-6
+
+------------- v1.7.7 ------------------
+Version: v1.7.7
+Merge Commit: No
+
+Commit Details:
+- Revision: e57a22f
+- Author: Subhash
+- Date: 2024-07-03 12:15:18
+- Message: Commit for send mobile otp v-5
+
+------------- v1.7.6 ------------------
+Version: v1.7.6
+Merge Commit: No
+
+Commit Details:
+- Revision: d5b2f30
+- Author: Subhash
+- Date: 2024-07-03 12:07:07
+- Message: Commit for send mobile otp v-4
+
+------------- v1.7.5 ------------------
+Version: v1.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: c821380
+- Author: Subhash
+- Date: 2024-07-03 11:09:23
+- Message: Commit for hmac authentication v-2
+
+------------- v1.7.4 ------------------
+Version: v1.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 149461d
+- Author: Subhash
+- Date: 2024-07-03 10:41:01
+- Message: Commit for hmac authentication v-1
+
+------------- v1.7.3 ------------------
+Version: v1.7.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 636bab9
+- Author: Subhash
+- Date: 2024-07-03 10:03:12
+- Message: Commit for hmac authentication
+
+------------- v1.7.2 ------------------
+Version: v1.7.2
+Merge Commit: No
+
+Commit Details:
+- Revision: d792c36
+- Author: Subhash
+- Date: 2024-07-02 16:10:19
+- Message: Commit for send mobile otp
+
+------------- v1.7.1 ------------------
+Version: v1.7.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e27b6d9
+- Author: Subhash
+- Date: 2024-07-01 19:59:40
+- Message: Commit for hmac authentication v-9
+
+------------- v1.7.0 ------------------
+Version: v1.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 3fa7508
+- Author: Subhash
+- Date: 2024-07-01 19:55:45
+- Message: Commit for hmac authentication v-8
+
+------------- v1.6.9 ------------------
+Version: v1.6.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 2cd8783
+- Author: Subhash
+- Date: 2024-07-01 19:13:03
+- Message: Commit for hmac authentication v-7
+
+------------- v1.6.8 ------------------
+Version: v1.6.8
+Merge Commit: No
+
+Commit Details:
+- Revision: b9c2c5a
+- Author: Subhash
+- Date: 2024-07-01 19:08:43
+- Message: Commit for hmac authentication v-6
+
+------------- v1.6.7 ------------------
+Version: v1.6.7
+Merge Commit: No
+
+Commit Details:
+- Revision: e26850b
+- Author: Subhash
+- Date: 2024-07-01 18:58:31
+- Message: Commit for hmac authentication v-5
+
+------------- v1.6.6 ------------------
+Version: v1.6.6
+Merge Commit: No
+
+Commit Details:
+- Revision: ca531cb
+- Author: Subhash
+- Date: 2024-07-01 17:40:14
+- Message: Commit for hmac authentication v-4
+
+------------- v1.6.5 ------------------
+Version: v1.6.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 7e76467
+- Author: Subhash
+- Date: 2024-07-01 17:21:34
+- Message: Commit for hmac authentication v-3
+
+------------- v1.6.4 ------------------
+Version: v1.6.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 687481f
+- Author: Subhash
+- Date: 2024-07-01 17:11:46
+- Message: Commit for hmac authentication v-2
+
+------------- v1.6.3 ------------------
+Version: v1.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 9cac4ed
+- Author: Subhash
+- Date: 2024-07-01 17:05:20
+- Message: Commit for hmac authentication v-1
+
+------------- v1.6.2 ------------------
+Version: v1.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 417c0e7
+- Author: Subhash
+- Date: 2024-07-01 17:02:09
+- Message: Commit for hmac authentication
+
+------------- v1.6.1 ------------------
+Version: v1.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: f1cd8d2
+- Author: Subhash
+- Date: 2024-06-28 11:22:35
+- Message: Commit for multi user client v-2
+
+------------- v1.6.0 ------------------
+Version: v1.6.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 32c5eb0
+- Author: Subhash
+- Date: 2024-06-28 11:18:21
+- Message: Commit for multi user client v-1
+
+------------- v1.5.9 ------------------
+Version: v1.5.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 61ef64a
+- Author: Subhash
+- Date: 2024-06-28 10:26:40
+- Message: Commit for multi user client
+
+------------- v1.5.8 ------------------
+Version: v1.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: bb43532
+- Author: Subhash
+- Date: 2024-06-27 17:36:42
+- Message: Commit for data format issue v -62
+
+------------- v1.5.7 ------------------
+Version: v1.5.7
+Merge Commit: No
+
+Commit Details:
+- Revision: a5f71eb
+- Author: Subhash
+- Date: 2024-06-27 17:26:08
+- Message: Commit for data format issue v -61
+
+------------- v1.5.6 ------------------
+Version: v1.5.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f0cf1f2
+- Author: Subhash
+- Date: 2024-06-27 17:20:07
+- Message: Commit for data format issue v -60
+
+------------- v1.5.5 ------------------
+Version: v1.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: dadd563
+- Author: Subhash
+- Date: 2024-06-27 17:16:08
+- Message: Commit for data format issue v -59
+
+------------- v1.5.4 ------------------
+Version: v1.5.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 1068862
+- Author: Subhash
+- Date: 2024-06-27 17:13:39
+- Message: Commit for data format issue v -58
+
+------------- v1.5.3 ------------------
+Version: v1.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 0721308
+- Author: Subhash
+- Date: 2024-06-27 17:08:21
+- Message: Commit for data format issue v -57
+
+------------- v1.5.2 ------------------
+Version: v1.5.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 1a058ca
+- Author: Subhash
+- Date: 2024-06-27 17:05:45
+- Message: Commit for data format issue v -56
+
+------------- v1.5.1 ------------------
+Version: v1.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 932c9ee
+- Author: Subhash
+- Date: 2024-06-27 16:56:44
+- Message: Commit for data format issue v -55
+
+------------- v1.5.0 ------------------
+Version: v1.5.0
+Merge Commit: No
+
+Commit Details:
+- Revision: b74f9c5
+- Author: Subhash
+- Date: 2024-06-27 16:53:25
+- Message: Commit for data format issue v -54
+
+------------- v1.4.9 ------------------
+Version: v1.4.9
+Merge Commit: No
+
+Commit Details:
+- Revision: a1e971a
+- Author: Subhash
+- Date: 2024-06-27 16:30:43
+- Message: Commit for data format issue v -53
+
+------------- v1.4.8 ------------------
+Version: v1.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 7d09d98
+- Author: Subhash
+- Date: 2024-06-27 16:10:53
+- Message: Commit for data format issue v -52
+
+------------- v1.4.7 ------------------
+Version: v1.4.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 448f251
+- Author: Subhash
+- Date: 2024-06-27 15:57:58
+- Message: Commit for data format issue v -51
+
+------------- v1.4.6 ------------------
+Version: v1.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: e85caaf
+- Author: Subhash
+- Date: 2024-06-27 15:56:01
+- Message: Commit for data format issue v -50
+
+------------- v1.4.5 ------------------
+Version: v1.4.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 7be3bb3
+- Author: Subhash
+- Date: 2024-06-27 15:39:20
+- Message: Commit for data format issue v -49
+
+------------- v1.4.4 ------------------
+Version: v1.4.4
+Merge Commit: No
+
+Commit Details:
+- Revision: f0f0ad0
+- Author: Subhash
+- Date: 2024-06-27 15:34:48
+- Message: Commit for data format issue v -48
+
+------------- v1.4.3 ------------------
+Version: v1.4.3
+Merge Commit: No
+
+Commit Details:
+- Revision: df306b9
+- Author: Subhash
+- Date: 2024-06-27 15:30:48
+- Message: Commit for data format issue v -47
+
+------------- v1.4.2 ------------------
+Version: v1.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 50aefc8
+- Author: Subhash
+- Date: 2024-06-27 15:28:08
+- Message: Commit for data format issue v -46
+
+------------- v1.4.1 ------------------
+Version: v1.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 0e53abd
+- Author: Subhash
+- Date: 2024-06-27 15:26:17
+- Message: Commit for data format issue v -45
+
+------------- v1.4.0 ------------------
+Version: v1.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 69bab5f
+- Author: Subhash
+- Date: 2024-06-27 15:23:57
+- Message: Commit for data format issue v -44
+
+------------- v1.3.9 ------------------
+Version: v1.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: aba225f
+- Author: Subhash
+- Date: 2024-06-27 15:21:48
+- Message: Commit for data format issue v -43
+
+------------- v1.3.8 ------------------
+Version: v1.3.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 844d783
+- Author: Subhash
+- Date: 2024-06-27 15:18:50
+- Message: Commit for data format issue v -42
+
+------------- v1.3.7 ------------------
+Version: v1.3.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 95b4f42
+- Author: Subhash
+- Date: 2024-06-27 15:16:49
+- Message: Commit for data format issue v -41
+
+------------- v1.3.6 ------------------
+Version: v1.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: fa8f70a
+- Author: Subhash
+- Date: 2024-06-27 15:15:04
+- Message: Commit for data format issue v -40
+
+------------- v1.3.5 ------------------
+Version: v1.3.5
+Merge Commit: No
+
+Commit Details:
+- Revision: d7b92a8
+- Author: Subhash
+- Date: 2024-06-27 15:10:59
+- Message: Commit for data format issue v -39
+
+------------- v1.3.4 ------------------
+Version: v1.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 928e2f9
+- Author: Subhash
+- Date: 2024-06-27 15:07:05
+- Message: Commit for data format issue v -38
+
+------------- v1.3.3 ------------------
+Version: v1.3.3
+Merge Commit: No
+
+Commit Details:
+- Revision: e569f35
+- Author: Subhash
+- Date: 2024-06-27 15:00:35
+- Message: Commit for data format issue v -37
+
+------------- v1.3.2 ------------------
+Version: v1.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: efdffd4
+- Author: Subhash
+- Date: 2024-06-27 14:45:28
+- Message: Commit for data format issue v -36
+
+------------- v1.3.1 ------------------
+Version: v1.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 50ace40
+- Author: Subhash
+- Date: 2024-06-27 14:40:31
+- Message: Commit for data format issue v -35
+
+------------- v1.3.0 ------------------
+Version: v1.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: ff0d69f
+- Author: Subhash
+- Date: 2024-06-27 14:01:14
+- Message: Commit for data format issue v -34
+
+------------- v1.2.9 ------------------
+Version: v1.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 942ec3c
+- Author: Subhash
+- Date: 2024-06-27 13:34:54
+- Message: Commit for data format issue v -33
+
+------------- v1.2.8 ------------------
+Version: v1.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 5514044
+- Author: Subhash
+- Date: 2024-06-27 13:32:01
+- Message: Commit for data format issue v -32
+
+------------- v1.2.7 ------------------
+Version: v1.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 8d4978b
+- Author: Subhash
+- Date: 2024-06-27 13:30:04
+- Message: Commit for data format issue v -31
+
+------------- v1.2.6 ------------------
+Version: v1.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f46e653
+- Author: Subhash
+- Date: 2024-06-27 13:28:37
+- Message: Commit for data format issue v -30
+
+------------- v1.2.5 ------------------
+Version: v1.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 13769cb
+- Author: Subhash
+- Date: 2024-06-27 13:24:55
+- Message: Commit for data format issue v -29
+
+------------- v1.2.4 ------------------
+Version: v1.2.4
+Merge Commit: No
+
+Commit Details:
+- Revision: c34901f
+- Author: Subhash
+- Date: 2024-06-27 13:19:25
+- Message: Commit for data format issue v -28
+
+------------- v1.2.3 ------------------
+Version: v1.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 77c1bee
+- Author: Subhash
+- Date: 2024-06-27 13:15:06
+- Message: Commit for data format issue v -27
+
+------------- v1.2.2 ------------------
+Version: v1.2.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 6b79876
+- Author: Subhash
+- Date: 2024-06-27 13:11:45
+- Message: Commit for data format issue v -26
+
+------------- v1.2.1 ------------------
+Version: v1.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 876b036
+- Author: Subhash
+- Date: 2024-06-27 13:08:42
+- Message: Commit for data format issue v -25
+
+------------- v1.2.0 ------------------
+Version: v1.2.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 11dc931
+- Author: Subhash
+- Date: 2024-06-27 13:06:30
+- Message: Commit for data format issue v -24
+
+------------- v1.1.9 ------------------
+Version: v1.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 6bc1ec4
+- Author: Subhash
+- Date: 2024-06-27 13:03:35
+- Message: Commit for data format issue v -23
+
+------------- v1.1.8 ------------------
+Version: v1.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: c02cda6
+- Author: Subhash
+- Date: 2024-06-27 12:58:23
+- Message: Commit for data format issue v -22
+
+------------- v1.1.7 ------------------
+Version: v1.1.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 4c3a0ea
+- Author: Subhash
+- Date: 2024-06-27 12:43:56
+- Message: Commit for data format issue v -21
+
+------------- v1.1.6 ------------------
+Version: v1.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: ee4cb56
+- Author: Subhash
+- Date: 2024-06-27 12:40:36
+- Message: Commit for data format issue v -20
+
+------------- v1.1.5 ------------------
+Version: v1.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 951a3d4
+- Author: Subhash
+- Date: 2024-06-27 12:36:19
+- Message: Commit for data format issue v -19
+
+------------- v1.1.4 ------------------
+Version: v1.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 5249482
+- Author: Subhash
+- Date: 2024-06-27 12:29:20
+- Message: Commit for data format issue v -18
+
+------------- v1.1.3 ------------------
+Version: v1.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 4861f62
+- Author: Subhash
+- Date: 2024-06-27 12:26:33
+- Message: Commit for data format issue v -17
+
+------------- v1.1.2 ------------------
+Version: v1.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 5101e3d
+- Author: Subhash
+- Date: 2024-06-27 12:22:54
+- Message: Commit for data format issue v -16
+
+------------- v1.1.1 ------------------
+Version: v1.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 216c72a
+- Author: Subhash
+- Date: 2024-06-27 12:15:52
+- Message: Commit for data format issue v -15
+
+------------- v1.1.0 ------------------
+Version: v1.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 1f7ef14
+- Author: Subhash
+- Date: 2024-06-27 12:14:14
+- Message: Commit for data format issue v -14
+
+------------- v1.0.9 ------------------
+Version: v1.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 206c3c6
+- Author: Subhash
+- Date: 2024-06-27 12:07:53
+- Message: Commit for data format issue v -13
+
+------------- v1.0.8 ------------------
+Version: v1.0.8
+Merge Commit: No
+
+Commit Details:
+- Revision: bb61936
+- Author: Subhash
+- Date: 2024-06-27 12:05:45
+- Message: Commit for data format issue v -12
+
+------------- v1.0.7 ------------------
+Version: v1.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 0539ff1
+- Author: Subhash
+- Date: 2024-06-27 12:02:45
+- Message: Commit for data format issue v -11
+
+------------- v1.0.6 ------------------
+Version: v1.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 920b21e
+- Author: Subhash
+- Date: 2024-06-27 11:54:00
+- Message: Commit for data format issue v -10
+
+------------- v1.0.5 ------------------
+Version: v1.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 39feba0
+- Author: Subhash
+- Date: 2024-06-27 11:50:21
+- Message: Commit for data format issue v -9
+
+------------- v1.0.4 ------------------
+Version: v1.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 360aaf6
+- Author: Subhash
+- Date: 2024-06-27 11:48:16
+- Message: Commit for data format issue v -8
+
+------------- v1.0.3 ------------------
+Version: v1.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 8892f2d
+- Author: Subhash
+- Date: 2024-06-27 11:47:00
+- Message: Commit for data format issue v -7
+
+------------- v1.0.2 ------------------
+Version: v1.0.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 013bf01
+- Author: Subhash
+- Date: 2024-06-27 11:35:36
+- Message: Commit for data format issue v -6
+
+------------- v1.0.1 ------------------
+Version: v1.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 10687a3
+- Author: Subhash
+- Date: 2024-06-27 11:33:55
+- Message: Commit for data format issue v -5
+
+------------- v1.0.0 ------------------
+Version: v1.0.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 0ce54b8
+- Author: Subhash
+- Date: 2024-06-27 11:30:07
+- Message: Commit for data format issue v -4
+
+------------- v0.9.9 ------------------
+Version: v0.9.9
+Merge Commit: No
+
+Commit Details:
+- Revision: e5144c3
+- Author: Subhash
+- Date: 2024-06-27 11:27:45
+- Message: Commit for data format issue v -3
+
+------------- v0.9.8 ------------------
+Version: v0.9.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 1989c7f
+- Author: Subhash
+- Date: 2024-06-27 11:24:39
+- Message: Commit for data format issue v -2
+
+------------- v0.9.7 ------------------
+Version: v0.9.7
+Merge Commit: No
+
+Commit Details:
+- Revision: ecdb7c6
+- Author: Subhash
+- Date: 2024-06-27 11:21:45
+- Message: Commit for data format issue v -1
+
+------------- v0.9.6 ------------------
+Version: v0.9.6
+Merge Commit: No
+
+Commit Details:
+- Revision: ad934a1
+- Author: Subhash
+- Date: 2024-06-27 11:04:25
+- Message: Testing for mobile deta v-8
+
+------------- v0.9.5 ------------------
+Version: v0.9.5
+Merge Commit: No
+
+Commit Details:
+- Revision: bd9a5bb
+- Author: Subhash
+- Date: 2024-06-27 11:01:14
+- Message: Testing for mobile deta v-7
+
+------------- v0.9.4 ------------------
+Version: v0.9.4
+Merge Commit: No
+
+Commit Details:
+- Revision: ae0a807
+- Author: Subhash
+- Date: 2024-06-27 10:57:51
+- Message: Testing for mobile deta v-6
+
+------------- v0.9.3 ------------------
+Version: v0.9.3
+Merge Commit: No
+
+Commit Details:
+- Revision: ec786dc
+- Author: Subhash
+- Date: 2024-06-27 10:53:20
+- Message: Testing for mobile deta v-5
+
+------------- v0.9.2 ------------------
+Version: v0.9.2
+Merge Commit: No
+
+Commit Details:
+- Revision: c8177b1
+- Author: Subhash
+- Date: 2024-06-27 10:12:45
+- Message: Testing for mobile deta v-4
+
+------------- v0.9.1 ------------------
+Version: v0.9.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 06c0ec4
+- Author: Subhash
+- Date: 2024-06-27 10:08:56
+- Message: Testing for mobile deta v-3
+
+------------- v0.9.0 ------------------
+Version: v0.9.0
+Merge Commit: No
+
+Commit Details:
+- Revision: e6818b4
+- Author: Subhash
+- Date: 2024-06-27 09:57:35
+- Message: Testing for mobile deta v-2
+
+------------- v0.8.9 ------------------
+Version: v0.8.9
+Merge Commit: No
+
+Commit Details:
+- Revision: d6909e5
+- Author: Subhash
+- Date: 2024-06-27 09:54:10
+- Message: Testing for mobile deta v-1
+
+------------- v0.8.8 ------------------
+Version: v0.8.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 709bdc5
+- Author: Subhash
+- Date: 2024-06-26 19:35:23
+- Message: Commit for encryption / decryption digilockerid v-25
+
+------------- v0.8.7 ------------------
+Version: v0.8.7
+Merge Commit: No
+
+Commit Details:
+- Revision: f35ee80
+- Author: Subhash
+- Date: 2024-06-26 19:32:29
+- Message: Commit for encryption / decryption digilockerid v-24
+
+------------- v0.8.6 ------------------
+Version: v0.8.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 2b6aa47
+- Author: Subhash
+- Date: 2024-06-26 19:17:39
+- Message: Commit for encryption / decryption digilockerid v-23
+
+------------- v0.8.5 ------------------
+Version: v0.8.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 0b0f3a6
+- Author: Subhash
+- Date: 2024-06-26 19:12:06
+- Message: Commit for encryption / decryption digilockerid v-22
+
+------------- v0.8.4 ------------------
+Version: v0.8.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 1e32e8a
+- Author: Subhash
+- Date: 2024-06-26 19:10:09
+- Message: Commit for encryption / decryption digilockerid v-21
+
+------------- v0.8.3 ------------------
+Version: v0.8.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 9590cbf
+- Author: Subhash
+- Date: 2024-06-26 19:03:28
+- Message: Commit for encryption / decryption digilockerid v-20
+
+------------- v0.8.2 ------------------
+Version: v0.8.2
+Merge Commit: No
+
+Commit Details:
+- Revision: c8011f8
+- Author: Subhash
+- Date: 2024-06-26 18:58:42
+- Message: Commit for encryption / decryption digilockerid v-19
+
+------------- v0.8.1 ------------------
+Version: v0.8.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e029dd7
+- Author: Subhash
+- Date: 2024-06-26 18:52:01
+- Message: Commit for encryption / decryption digilockerid v-18
+
+------------- v0.8.0 ------------------
+Version: v0.8.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 28803d3
+- Author: Subhash
+- Date: 2024-06-26 16:35:36
+- Message: Commit for encryption / decryption digilockerid v-17
+
+------------- v0.7.9 ------------------
+Version: v0.7.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 22b07da
+- Author: Subhash
+- Date: 2024-06-26 16:27:07
+- Message: Commit for encryption / decryption digilockerid v-16
+
+------------- v0.7.8 ------------------
+Version: v0.7.8
+Merge Commit: No
+
+Commit Details:
+- Revision: dfbd4c5
+- Author: Subhash
+- Date: 2024-06-26 16:22:49
+- Message: Commit for encryption / decryption digilockerid v-15
+
+------------- v0.7.7 ------------------
+Version: v0.7.7
+Merge Commit: No
+
+Commit Details:
+- Revision: f56bd7c
+- Author: Subhash
+- Date: 2024-06-26 16:21:20
+- Message: Commit for encryption / decryption digilockerid v-14
+
+------------- v0.7.6 ------------------
+Version: v0.7.6
+Merge Commit: No
+
+Commit Details:
+- Revision: f723cc6
+- Author: Subhash
+- Date: 2024-06-26 16:19:01
+- Message: Commit for encryption / decryption digilockerid v-13
+
+------------- v0.7.5 ------------------
+Version: v0.7.5
+Merge Commit: No
+
+Commit Details:
+- Revision: a706e71
+- Author: Subhash
+- Date: 2024-06-26 16:15:23
+- Message: Commit for encryption / decryption digilockerid v-12
+
+------------- v0.7.4 ------------------
+Version: v0.7.4
+Merge Commit: No
+
+Commit Details:
+- Revision: b466b72
+- Author: Subhash
+- Date: 2024-06-26 16:13:05
+- Message: Commit for encryption / decryption digilockerid v-11
+
+------------- v0.7.3 ------------------
+Version: v0.7.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 01d5b31
+- Author: Subhash
+- Date: 2024-06-26 16:12:01
+- Message: Commit for encryption / decryption digilockerid v-10
+
+------------- v0.7.2 ------------------
+Version: v0.7.2
+Merge Commit: No
+
+Commit Details:
+- Revision: ec45cc9
+- Author: Subhash
+- Date: 2024-06-26 16:09:21
+- Message: Commit for encryption / decryption digilockerid v-9
+
+------------- v0.7.1 ------------------
+Version: v0.7.1
+Merge Commit: No
+
+Commit Details:
+- Revision: fb5b00e
+- Author: Subhash
+- Date: 2024-06-26 16:03:34
+- Message: Commit for encryption / decryption digilockerid v-8
+
+------------- v0.7.0 ------------------
+Version: v0.7.0
+Merge Commit: No
+
+Commit Details:
+- Revision: ba642a2
+- Author: Subhash
+- Date: 2024-06-26 16:00:07
+- Message: Commit for encryption / decryption digilockerid v-7
+
+------------- v0.6.9 ------------------
+Version: v0.6.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 9d6cc75
+- Author: Subhash
+- Date: 2024-06-26 15:55:31
+- Message: Commit for encryption / decryption digilockerid v-6
+
+------------- v0.6.8 ------------------
+Version: v0.6.8
+Merge Commit: No
+
+Commit Details:
+- Revision: c169717
+- Author: Subhash
+- Date: 2024-06-26 15:50:46
+- Message: Commit for encryption / decryption digilockerid v-5
+
+------------- v0.6.7 ------------------
+Version: v0.6.7
+Merge Commit: No
+
+Commit Details:
+- Revision: b4124be
+- Author: Subhash
+- Date: 2024-06-26 15:47:41
+- Message: Commit for encryption / decryption digilockerid v-4
+
+------------- v0.6.6 ------------------
+Version: v0.6.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 1c289f9
+- Author: Subhash
+- Date: 2024-06-26 15:43:36
+- Message: Commit for encryption / decryption digilockerid v-3
+
+------------- v0.6.5 ------------------
+Version: v0.6.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 06bb74a
+- Author: Subhash
+- Date: 2024-06-26 15:31:24
+- Message: Commit for encryption / decryption digilockerid v-2
+
+------------- v0.6.4 ------------------
+Version: v0.6.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 0ae9539
+- Author: Subhash
+- Date: 2024-06-26 12:17:52
+- Message: Commit for encryption / decryption digilockerid v-1
+
+------------- v0.6.3 ------------------
+Version: v0.6.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 9fb4b60
+- Author: Subhash
+- Date: 2024-06-26 11:17:57
+- Message: Commit for encryption / decryption digilockerid
+
+------------- v0.6.2 ------------------
+Version: v0.6.2
+Merge Commit: No
+
+Commit Details:
+- Revision: a0815c8
+- Author: Subhash
+- Date: 2024-06-25 11:23:21
+- Message: call org-api for get access rule v-3
+
+------------- v0.6.1 ------------------
+Version: v0.6.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e37476b
+- Author: Subhash
+- Date: 2024-06-25 11:04:53
+- Message: call org-api for get access rule v-2
+
+------------- v0.6.0 ------------------
+Version: v0.6.0
+Merge Commit: No
+
+Commit Details:
+- Revision: c8fc320
+- Author: Subhash
+- Date: 2024-06-25 10:57:11
+- Message: call org-api for get access rule v-1
+
+------------- v0.5.9 ------------------
+Version: v0.5.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 53461a9
+- Author: Subhash
+- Date: 2024-06-25 10:35:22
+- Message: call org-api for get access rule
+
+------------- v0.5.8 ------------------
+Version: v0.5.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 2d81251
+- Author: Subhash
+- Date: 2024-06-24 20:27:02
+- Message: JWT issue v-6
+
+------------- v0.5.7 ------------------
+Version: v0.5.7
+Merge Commit: No
+
+Commit Details:
+- Revision: ef3391f
+- Author: Subhash
+- Date: 2024-06-24 20:09:11
+- Message: JWT issue v-5
+
+------------- v0.5.6 ------------------
+Version: v0.5.6
+Merge Commit: No
+
+Commit Details:
+- Revision: b64b8ba
+- Author: Subhash
+- Date: 2024-06-24 19:56:42
+- Message: JWT issue v-4
+
+------------- v0.5.5 ------------------
+Version: v0.5.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 999d592
+- Author: Subhash
+- Date: 2024-06-24 19:52:32
+- Message: JWT issue v-3
+
+------------- v0.5.4 ------------------
+Version: v0.5.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 4a55590
+- Author: Subhash
+- Date: 2024-06-24 19:45:15
+- Message: JWT issue v-2
+
+------------- v0.5.3 ------------------
+Version: v0.5.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 65f4ed1
+- Author: Subhash
+- Date: 2024-06-24 19:42:10
+- Message: JWT issue v-1
+
+------------- v0.5.2 ------------------
+Version: v0.5.2
+Merge Commit: No
+
+Commit Details:
+- Revision: c1731d7
+- Author: Subhash
+- Date: 2024-06-24 19:33:37
+- Message: JWT issue
+
+------------- v0.5.1 ------------------
+Version: v0.5.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 092db03
+- Author: Subhash
+- Date: 2024-06-24 16:35:53
+- Message: Commit for signin v-3
+
+------------- v0.5.0 ------------------
+Version: v0.5.0
+Merge Commit: No
+
+Commit Details:
+- Revision: df4c0e1
+- Author: Subhash
+- Date: 2024-06-24 16:29:48
+- Message: Commit for signin v-2
+
+------------- v0.4.9 ------------------
+Version: v0.4.9
+Merge Commit: No
+
+Commit Details:
+- Revision: fb31649
+- Author: Subhash
+- Date: 2024-06-24 15:51:49
+- Message: Commit for signin v-1
+
+------------- v0.4.8 ------------------
+Version: v0.4.8
+Merge Commit: No
+
+Commit Details:
+- Revision: b61e901
+- Author: Subhash
+- Date: 2024-06-24 15:22:20
+- Message: Commit for signin
+
+------------- v0.4.7 ------------------
+Version: v0.4.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 4e24e5b
+- Author: Subhash
+- Date: 2024-06-24 14:48:50
+- Message: Commit for token issue v-16
+
+------------- v0.4.6 ------------------
+Version: v0.4.6
+Merge Commit: No
+
+Commit Details:
+- Revision: fd7e374
+- Author: Subhash
+- Date: 2024-06-24 14:44:53
+- Message: Commit for token issue v-15
+
+------------- v0.4.5 ------------------
+Version: v0.4.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 60b3e59
+- Author: Subhash
+- Date: 2024-06-24 14:28:17
+- Message: Commit for token issue v-14
+
+------------- v0.4.4 ------------------
+Version: v0.4.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 3d69b64
+- Author: Subhash
+- Date: 2024-06-24 14:14:53
+- Message: Commit for token issue v-13
+
+------------- v0.4.3 ------------------
+Version: v0.4.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 6e0cead
+- Author: Subhash
+- Date: 2024-06-24 13:48:41
+- Message: Commit for token issue v-12
+
+------------- v0.4.2 ------------------
+Version: v0.4.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 903d043
+- Author: Subhash
+- Date: 2024-06-24 13:41:42
+- Message: Commit for token issue v-12
+
+------------- v0.4.1 ------------------
+Version: v0.4.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 99e7066
+- Author: Subhash
+- Date: 2024-06-24 13:27:23
+- Message: Commit for token issue v-11
+
+------------- v0.4.0 ------------------
+Version: v0.4.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 0d77c24
+- Author: Subhash
+- Date: 2024-06-24 12:36:49
+- Message: Commit for token issue v-10
+
+------------- v0.3.9 ------------------
+Version: v0.3.9
+Merge Commit: No
+
+Commit Details:
+- Revision: a6a1be1
+- Author: Subhash
+- Date: 2024-06-24 12:23:40
+- Message: Commit for token issue v-9
+
+------------- v0.3.8 ------------------
+Version: v0.3.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 3e3917c
+- Author: Subhash
+- Date: 2024-06-24 12:18:52
+- Message: Commit for token issue v-8
+
+------------- v0.3.7 ------------------
+Version: v0.3.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 3e7cb98
+- Author: Subhash
+- Date: 2024-06-24 12:14:14
+- Message: Commit for token issue v-7
+
+------------- v0.3.6 ------------------
+Version: v0.3.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 39bd12a
+- Author: Subhash
+- Date: 2024-06-24 12:09:51
+- Message: Commit for token issue v-6
+
+------------- v0.3.5 ------------------
+Version: v0.3.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 81059f4
+- Author: Subhash
+- Date: 2024-06-24 12:04:32
+- Message: Commit for token issue v-5
+
+------------- v0.3.4 ------------------
+Version: v0.3.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 99efe54
+- Author: Subhash
+- Date: 2024-06-24 12:01:12
+- Message: Commit for token issue v-4
+
+------------- v0.3.3 ------------------
+Version: v0.3.3
+Merge Commit: No
+
+Commit Details:
+- Revision: 88fc8d1
+- Author: Subhash
+- Date: 2024-06-24 11:55:41
+- Message: Commit for token issue v-3
+
+------------- v0.3.2 ------------------
+Version: v0.3.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 50f68c4
+- Author: Subhash
+- Date: 2024-06-24 11:54:01
+- Message: Commit for token issue v-2
+
+------------- v0.3.1 ------------------
+Version: v0.3.1
+Merge Commit: No
+
+Commit Details:
+- Revision: c05c5f5
+- Author: Subhash
+- Date: 2024-06-24 11:34:55
+- Message: Commit for token issue v-1
+
+------------- v0.3.0 ------------------
+Version: v0.3.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 2f864bb
+- Author: Subhash
+- Date: 2024-06-24 10:52:43
+- Message: Commit for token issue
+
+------------- v0.2.9 ------------------
+Version: v0.2.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 97fbd2b
+- Author: Subhash
+- Date: 2024-06-21 11:28:23
+- Message: Commit for signin error handling
+
+------------- v0.2.8 ------------------
+Version: v0.2.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 29a6391
+- Author: Subhash
+- Date: 2024-06-20 15:47:13
+- Message: multi user client v-1
+
+------------- v0.2.7 ------------------
+Version: v0.2.7
+Merge Commit: No
+
+Commit Details:
+- Revision: bc0d912
+- Author: Subhash
+- Date: 2024-06-20 15:17:29
+- Message: multi user client
+
+------------- v0.2.6 ------------------
+Version: v0.2.6
+Merge Commit: No
+
+Commit Details:
+- Revision: bfe3cc9
+- Author: Subhash
+- Date: 2024-06-19 11:23:47
+- Message: Commit for sign in
+
+------------- v0.2.5 ------------------
+Version: v0.2.5
+Merge Commit: No
+
+Commit Details:
+- Revision: cf12b95
+- Author: Subhash
+- Date: 2024-06-18 10:32:24
+- Message: Commit for reset pin- 18-June-2024 - v-1
+
+------------- v0.2.4 ------------------
+Version: v0.2.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 9b4977a
+- Author: Subhash
+- Date: 2024-06-18 10:12:26
+- Message: Commit for reset pin- 18-June-2024
+
+------------- v0.2.3 ------------------
+Version: v0.2.3
+Merge Commit: No
+
+Commit Details:
+- Revision: f502282
+- Author: Subhash
+- Date: 2024-06-17 10:46:03
+- Message: Commit for reset pin
+
+------------- v0.2.2 ------------------
+Version: v0.2.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 5c8686c
+- Author: Subhash
+- Date: 2024-06-14 23:02:58
+- Message: Commit for reset pin v-3
+
+------------- v0.2.1 ------------------
+Version: v0.2.1
+Merge Commit: No
+
+Commit Details:
+- Revision: 5f317b2
+- Author: Subhash
+- Date: 2024-06-14 23:01:18
+- Message: Commit for reset pin v-2
+
+------------- v0.2.0 ------------------
+Version: v0.2.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 6adcc36
+- Author: Subhash
+- Date: 2024-06-14 22:52:08
+- Message: Commit for reset pin v-1
+
+------------- v0.1.9 ------------------
+Version: v0.1.9
+Merge Commit: No
+
+Commit Details:
+- Revision: 913eefe
+- Author: Subhash
+- Date: 2024-06-14 22:46:46
+- Message: Commit for reset pin
+
+------------- v0.1.8 ------------------
+Version: v0.1.8
+Merge Commit: No
+
+Commit Details:
+- Revision: faca084
+- Author: Subhash
+- Date: 2024-06-13 16:09:12
+- Message: Commit for DOB vification
+
+------------- v0.1.7 ------------------
+Version: v0.1.7
+Merge Commit: No
+
+Commit Details:
+- Revision: e913dae
+- Author: Subhash
+- Date: 2024-06-13 11:26:31
+- Message: Commit for date of birth vification
+
+------------- v0.1.6 ------------------
+Version: v0.1.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 36f5688
+- Author: Subhash
+- Date: 2024-06-12 15:26:15
+- Message: Commit for clean the code
+
+------------- v0.1.5 ------------------
+Version: v0.1.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 27f8977
+- Author: Subhash
+- Date: 2024-06-12 13:47:25
+- Message: Commit for add Route
+
+------------- v0.1.4 ------------------
+Version: v0.1.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 7b16b06
+- Author: Subhash
+- Date: 2024-06-12 12:31:41
+- Message: Commit for vify the pin and handle the database validation
+
+------------- v0.1.3 ------------------
+Version: v0.1.3
+Merge Commit: No
+
+Commit Details:
+- Revision: dc0ea2a
+- Author: Subhash
+- Date: 2024-06-12 10:29:50
+- Message: Commit for set the pin
+
+------------- v0.1.2 ------------------
+Version: v0.1.2
+Merge Commit: No
+
+Commit Details:
+- Revision: 4823007
+- Author: Kshitiz Singh
+- Date: 2024-05-27 10:46:11
+- Message: Debug fix
+
+------------- v0.1.1 ------------------
+Version: v0.1.1
+Merge Commit: No
+
+Commit Details:
+- Revision: c615151
+- Author: Kshitiz Singh
+- Date: 2024-05-22 14:42:10
+- Message: Healthcheck fix.
+
+------------- v0.1.0 ------------------
+Version: v0.1.0
+Merge Commit: No
+
+Commit Details:
+- Revision: 20c444a
+- Author: Kshitiz Singh
+- Date: 2024-05-21 16:53:18
+- Message: Base name correction in dockerfiles.
+
+------------- v0.0.9 ------------------
+Version: v0.0.9
+Merge Commit: No
+
+Commit Details:
+- Revision: d9122f5
+- Author: Kshitiz Singh
+- Date: 2024-05-21 16:30:14
+- Message: Base name correction in dockerfiles.
+
+------------- v0.0.8 ------------------
+Version: v0.0.8
+Merge Commit: No
+
+Commit Details:
+- Revision: 94d6371
+- Author: Kshitiz Singh
+- Date: 2024-05-21 16:23:40
+- Message: Base name correction in dockerfiles.
+
+------------- v0.0.7 ------------------
+Version: v0.0.7
+Merge Commit: No
+
+Commit Details:
+- Revision: 024d373
+- Author: Kshitiz Singh
+- Date: 2024-05-21 16:11:33
+- Message: Configurations
+
+------------- v0.0.6 ------------------
+Version: v0.0.6
+Merge Commit: No
+
+Commit Details:
+- Revision: 7adc9b1
+- Author: Kshitiz Singh
+- Date: 2024-05-21 14:04:45
+- Message: Docker setup with supervisord
+
+------------- v0.0.5 ------------------
+Version: v0.0.5
+Merge Commit: No
+
+Commit Details:
+- Revision: 4450422
+- Author: Kshitiz Singh
+- Date: 2024-05-21 13:56:09
+- Message: Docker setup with supervisord
+
+------------- v0.0.4 ------------------
+Version: v0.0.4
+Merge Commit: No
+
+Commit Details:
+- Revision: 685d734
+- Author: saurabh
+- Date: 2024-05-21 11:34:40
+- Message: updated base image
+
+------------- v0.0.3 ------------------
+Version: v0.0.3
+Merge Commit: No
+
+Commit Details:
+- Revision: b688716
+- Author: saurabh
+- Date: 2024-05-21 11:34:29
+- Message: updated base image
+
+------------- v0.0.2 ------------------
+Version: v0.0.2
+Merge Commit: No
+
+Commit Details:
+- Revision: ebfb43e
+- Author: Bhavishya Kumar
+- Date: 2024-05-15 16:20:27
+- Message: clean code
+
+------------- v0.0.1 ------------------
+Version: v0.0.1
+Merge Commit: No
+
+Commit Details:
+- Revision: e285c0a
+- Author: Bhavishya Kumar
+- Date: 2024-05-15 12:14:40
+- Message: initallize
+
