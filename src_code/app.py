@@ -2,13 +2,14 @@ import json
 import os
 import time
 import uuid
-from flask import Blueprint, request, g
+from flask import Blueprint, jsonify, request, g
 from datetime import datetime
 import dotenv
 import logging
 from pythonjsonlogger import jsonlogger
 import traceback
 import sys
+from lib.constants import *
 dotenv.load_dotenv()
 from flask import Flask
 from flask_cors import CORS
@@ -22,59 +23,11 @@ current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
 formatter = jsonlogger.JsonFormatter()
-
-def log_uncaught_exceptions(exc_type, exc_value, exc_traceback):
-    error_log_data = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'level': 'CRITICAL',
-        'event': 'uncaught_exception',
-        'error_type': exc_type.__name__,
-        'error': str(exc_value),
-        'traceback': ''.join(traceback.format_tb(exc_traceback)),
-        'transaction_id': getattr(g, 'transaction_id', 'N/A')
-    }
-    logger.critical(json.dumps(error_log_data))
-    sys.__excepthook__(exc_type, exc_value, exc_traceback)
-
-sys.excepthook = log_uncaught_exceptions
 logHandler.setFormatter(formatter)
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
 
-@app.route('/healthcheck', methods=['GET'])
-@app.route('/', methods=['GET'])
-def healthcheck():
-    return {"status": "success"}, 200
-
-@app.before_request
-def before_request():
-    ''' before request'''
-    try:
-        g.start_time = time.time()
-        g.after_request_logged = False
-        g.transaction_id = request.headers.get('X-REQUEST-ID', str(uuid.uuid4()))
-        log_data = {
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': 'INFO',
-            'event': 'request_started',
-            'method': request.method,
-            'url': request.url,
-            'headers': dict(request.headers),
-            'body': request.get_data(as_text=True),
-            'transaction_id': g.transaction_id
-        }
-        logger.info(json.dumps(log_data))
-    except Exception as e:
-        error_log_data = {
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': 'ERROR',
-            'event': 'before_request_error',
-            'error': str(e),
-            'traceback': traceback.format_exc(),
-            'transaction_id': getattr(g, 'transaction_id', 'N/A')
-        }
-        logger.error(json.dumps(error_log_data))
 
 from api.filelock import bp as filelock_bp
 # importing APIs
@@ -130,80 +83,85 @@ app.register_blueprint(user_status_bp, url_prefix='/status')
 app.register_blueprint(user_name_bp, url_prefix='/search/v1')
 app.register_blueprint(count_bp, url_prefix='/')
 
+@app.before_request
+def before_request():
+    ''' before request'''
+    g.request_id = str(uuid.uuid4())
+    g.after_request_logged = False
+    request_data = {
+        'time_start': datetime.utcnow().isoformat(),
+        'method': request.method,
+        'endpoint': request.path,
+        'url': request.url,
+        'headers': dict(request.headers),
+        'body': request.get_data(as_text=True),
+        'request': {}
+    }
+    if dict(request.args):
+        request_data[REQUEST].update(dict(request.args))
+    if dict(request.values):
+        request_data[REQUEST].update(dict(request.values))
+    if request.headers.get('Content-Type') == "application/json":
+        request_data[REQUEST].update(dict(request.json))
+    request.logger_data = request_data
+
 
 @app.after_request
 def after_request(response):
     try:
-        g.after_request_logged = True
         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'"
-        response.headers['X-REQUEST-ID'] = getattr(g, 'transaction_id', str(uuid.uuid4()))
-        
-        duration = time.time() - getattr(g, 'start_time', time.time())
-        log_data = {
-            'timestamp': datetime.utcnow().isoformat(),
-            'level': 'INFO',
-            'event': 'request_completed',
-            'method': request.method,
-            'url': request.url,
-            'status_code': response.status_code,
-            'duration': duration,
-            'headers': dict(response.headers),
-            'transaction_id': getattr(g, 'transaction_id', 'N/A')
-        }
-        logger.info(json.dumps(log_data))
-        
-        # Log successful responses
-        if 200 <= response.status_code < 300:
-            success_log_data = {
-                'timestamp': datetime.utcnow().isoformat(),
-                'level': 'INFO',
-                'event': 'successful_response',
-                'method': request.method,
-                'url': request.url,
-                'status_code': response.status_code,
-                'transaction_id': getattr(g, 'transaction_id', 'N/A')
-            }
-            logger.info(json.dumps(success_log_data))
-        
-        # Original logging logic
-        response_data = {
-            'status_code': response.status_code,
-            'headers': dict(response.headers),
-            'body': response.get_data(as_text=True)
-        }
-        logger.info(f"Outgoing response: {json.dumps(response_data)}")
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers['X-Frame-Options'] = 'SAMEORIGIN'
         response.headers['X-XSS-Protection'] = '1; mode=block'
         response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        response.headers['Access-Control-Allow-Headers'] = 'x-requested-with, Content-Type, origin, authorization, Origin, Authorization, accept, jtoken, Jtoken, is_encrypted, client-security-token, requesttoken, XMLHttpRequest, Device-Security-Id, Source, device-security-id'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Requested-With'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, POST'
         response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
         response.headers['Expect-CT'] = 'max-age=86400, enforce'
         ref = str(request.headers.get('Origin'))
-        if ref is not None and ref in os.getenv('ALLOWED_ORIGIN'):
+        if ref is not None and ref in os.getenv('allowed_origin'):
             response.headers.add("Access-Control-Allow-Origin", ref)
         else:
-            response.headers.add("Access-Control-Allow-Origin", "https://entity.digilocker.gov.in")
+            response.headers.add("Access-Control-Allow-Origin", "https://www.digilocker.gov.in")
         
-        if "healthcheck" in request.url or getattr(g, 'after_request_logged', False):
+        response.headers["Server"] = "Hidden"
+        
+        if request.path in ('/healthcheck/', '/'):
+            g.after_request_logged = True
+        
+        ''' Skip logging for after_request_logged == True '''
+        if getattr(g, 'after_request_logged', False):
             return response
-        if "orgcount" in request.url or getattr(g, 'after_request_logged', False):
+        if g.after_request_logged:
             return response
         
+        try:
+            tech_msg = response.json.pop(RESPONSE, None)
+        except Exception:
+            tech_msg = response.get_data(as_text=True)
+        try:
+            code = response.status_code
+        except Exception:
+            code = 400
+
         response_data = {
             'status': response.status,
             'headers': dict(response.headers),
             'body': response.get_data(as_text=True),
-            'time_end': datetime.utcnow().isoformat()
+            'error': tech_msg,
+            'status_code': code,
+            'time_end': datetime.datetime.utcnow().isoformat()
         }
+        
         log_data = {
-            'request': request.logger_data,
+            'request_id': g.request_id,
+            'request': getattr(request, 'logger_data', {}),
             'response': response_data
         }
         logger.info(log_data)
+        g.after_request_logged = True
         return response
     except Exception as e:
         print(f"Logging error: {str(e)}")
@@ -211,36 +169,28 @@ def after_request(response):
 
 @app.errorhandler(Exception)
 def handle_exception(e):
+    ''' final error excpetion handler'''
     tb = traceback.format_exc()
     log_data = {
-        'timestamp': datetime.utcnow().isoformat(),
-        'level': 'ERROR',
-        'event': 'unhandled_exception',
         'error': str(e),
-        'error_type': type(e).__name__,
         'traceback': tb,
+        'time': datetime.datetime.utcnow().isoformat(),
+        'endpoint': request.path,
         'request': {
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
             'body': request.get_data(as_text=True)
-        },
-        'user': getattr(g, 'user', None),
-        'endpoint': request.endpoint,
-        'args': request.args.to_dict(),
-        'form': request.form.to_dict(),
-        'json': request.json if request.is_json else None,
-        'transaction_id': getattr(g, 'transaction_id', 'N/A'),
-        'ip_address': request.remote_addr
+        }
     }
-    
-    # Log to file
-    logger.error(json.dumps(log_data))
-
-    # Return a generic error response
-    response = {"status": "ERROR", "error_description": "Internal Server Error"}
-    response['status_code'] = 500
+    logger.error(log_data)
+    response = jsonify({STATUS: ERROR, ERROR_DES: "Some technical error occurred."})
+    response.status_code = 400
     return response
+
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return {"status": "success"}
 
 WSGIRequestHandler.protocol_version = 'HTTP/1.1'
 app.run(host=os.getenv('host'), port=int(os.getenv('port', 80)), debug=False)
