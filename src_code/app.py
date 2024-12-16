@@ -152,7 +152,7 @@ def after_request(response):
             'body': response.get_data(as_text=True),
             'error': tech_msg,
             'status_code': code,
-            'time_end': datetime.datetime.utcnow().isoformat()
+            'time_end': datetime.utcnow().isoformat()
         }
         
         log_data = {
@@ -174,7 +174,7 @@ def handle_exception(e):
     log_data = {
         'error': str(e),
         'traceback': tb,
-        'time': datetime.datetime.utcnow().isoformat(),
+        'time': datetime.utcnow().isoformat(),
         'endpoint': request.path,
         'request': {
             'method': request.method,
