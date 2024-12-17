@@ -104,13 +104,11 @@ def before_request():
     if request.headers.get('Content-Type') == "application/json":
         request_data[REQUEST].update(dict(request.json))
     request.logger_data = request_data
-    # print(request.logger_data)
 
 
 @app.after_request
 def after_request(response):
     try:
-        
         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'"
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -122,15 +120,13 @@ def after_request(response):
         response.headers['Permissions-Policy'] = 'geolocation=(self), microphone=()'
         response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, proxy-revalidate'
         response.headers['Expect-CT'] = 'max-age=86400, enforce'
-        
         ref = str(request.headers.get('Origin'))
         if ref is not None and ref in os.getenv('ALLOWED_ORIGIN'):
             response.headers.add("Access-Control-Allow-Origin", ref)
         else:
             response.headers.add("Access-Control-Allow-Origin", "https://entity.digilocker.gov.in")
-        print(getattr(request, 'logger_data', {}),"11112")
         response.headers["Server"] = "Hidden"
-        print(getattr(request, 'logger_data', {}),"11113")
+        
         if request.path in ('/healthcheck/', '/'):
             g.after_request_logged = True
         
@@ -148,8 +144,6 @@ def after_request(response):
             code = response.status_code
         except Exception:
             code = 400
-        
-        
 
         response_data = {
             'status': response.status,
@@ -165,7 +159,6 @@ def after_request(response):
             'request': getattr(request, 'logger_data', {}),
             'response': response_data
         }
-        
         logger.info(log_data)
         g.after_request_logged = True
         return response
