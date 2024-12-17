@@ -1,3 +1,14 @@
+------------- v6.5.5 ------------------
+Version: v6.5.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 8e40fe6
+- Author: Bhavishya Kumar
+- Date: 2024-12-16 16:20:40
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/optimize_logs
+
+Previous Versions:
 ------------- v6.5.4 ------------------
 Version: v6.5.4
 Merge Commit: Yes

@@ -226,7 +226,7 @@ def activitylist_response(rowitems, rowcount = '') :
         "file_deleted","file_renamed","uri_saved","uri_deleted","share_self","share_to","move_self","icai_updated","cin_updated",
         "udyam_updated","request_created","request_cancelled","download_shared","esign_consent","create_department",
         "access_department","update_department","department_assign","revoke_department","active_department","create_section","access_section",
-        "update_section","assign_section","revoke_section","read","download"
+        "update_section","assign_section","revoke_section","read","download","user_changed","user_removed"
     }
     activity_response = []
     for row in list(rowitems) :
@@ -263,8 +263,10 @@ def translation(app, subject,user,user_affected= "", filename="", role_id="",val
             "metadata_update": username + ' updated file information for ' + prepared_params + ' to ' + (value or ''),
             "doc_type_update": username + ' updated doc type for ' + prepared_params + ' to ' + (value or ''),  
             "user_added": username + ' added ' + username_affected +' with %s access'%(role_id.capitalize() if role_id else '') + ' of' + (value or '') + 'Department',
+            "user_changed": username_affected +' with %s access'%(role_id.capitalize() if role_id else '') + ' was added by System',
             "user_activated":username + ' activated ' + username_affected,
             "user_deactivated":username + ' deactivated ' + username_affected,
+            "user_removed": username_affected + " was deactivated by System.",
             "assign_role":username + ' assigned ' + (role_id or '') +' access to ' + username_affected,
             "email_updated":username + ' updated email to ' + (value or ''),
             "mobile_updated":username + ' updated mobile to ' + (value or ''),
