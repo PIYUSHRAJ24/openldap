@@ -21,13 +21,13 @@ from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 import logging
 
-# from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import jsonlogger
 
 current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
-# formatter = jsonlogger.JsonFormatter()
-# logHandler.setFormatter(formatter)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)

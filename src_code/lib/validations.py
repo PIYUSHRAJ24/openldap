@@ -19,7 +19,7 @@ from lib.mongolib import MongoLib
 from lib.commonlib import CommonLib
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 import logging
-# from pythonjsonlogger import jsonlogger
+from pythonjsonlogger import jsonlogger
 
 
 RABBITMQ_LOGSTASH = RabbitMQTaskClientLogstash()
@@ -30,8 +30,8 @@ MONGOLIB = MongoLib()
 current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
-# formatter = jsonlogger.JsonFormatter()
-# logHandler.setFormatter(formatter)
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
 logger = logging.getLogger()
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
