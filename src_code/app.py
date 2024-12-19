@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
 
-from api.healthcheck import bp as healthcheck_bp
 from api.filelock import bp as filelock_bp
 # importing APIs
 from api.image import bp as image_bp
@@ -56,6 +55,7 @@ from api.user_status import bp as user_status_bp
 from api.user_name import bp as user_name_bp
 from api.count import bp as count_bp
 from api.gst import bp as gst_bp
+
 
 # calling the APIs
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
