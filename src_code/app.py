@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logHandler)
 logger.setLevel(logging.INFO)
 
-
+from api.healthcheck import bp as healthcheck_bp
 from api.filelock import bp as filelock_bp
 # importing APIs
 from api.image import bp as image_bp
@@ -57,7 +57,9 @@ from api.user_name import bp as user_name_bp
 from api.count import bp as count_bp
 from api.gst import bp as gst_bp
 
+
 # calling the APIs
+app.register_blueprint(healthcheck_bp, url_prefix='/healthcheck')
 app.register_blueprint(name_match_bp, url_prefix='/name_match')
 app.register_blueprint(image_bp, url_prefix='/image')
 app.register_blueprint(org_activity_bp, url_prefix='/org_activity')
@@ -175,12 +177,14 @@ def handle_exception(e):
         'traceback': tb,
         'time': datetime.utcnow().isoformat(),
         'endpoint': request.path,
-        'request': {
+        'request': getattr(request, 'logger_data',
+           {
             'method': request.method,
             'url': request.url,
             'headers': dict(request.headers),
             'body': request.get_data(as_text=True)
-        }
+        } 
+        )
     }
     logger.error(log_data)
     response = jsonify({STATUS: ERROR, ERROR_DES: "Some technical error occurred."})
