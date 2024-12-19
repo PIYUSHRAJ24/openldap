@@ -191,6 +191,7 @@ def handle_exception(e):
     response.status_code = 400
     return response
 
+@app.route('/healthcheck', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return {"status": "success"}

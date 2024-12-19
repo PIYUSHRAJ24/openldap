@@ -23,10 +23,6 @@ from assets.images import default_avatars
 from lib.secretsmanager import SecretManager
 from lib.rabbitMQTaskClientLogstash import RabbitMQTaskClientLogstash
 
-import traceback
-import logging
-from pythonjsonlogger import jsonlogger
-
 ELASTICLIB = ElasticLib()
 VALIDATIONS = Validations()
 MONGOLIB = MongoLib()
