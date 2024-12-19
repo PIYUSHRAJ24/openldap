@@ -127,7 +127,7 @@ def after_request(response):
         #     response.headers.add("Access-Control-Allow-Origin", "https://entity.digilocker.gov.in")
         response.headers["Server"] = "Hidden"
         
-        if request.path in ('/healthcheck/', '/'):
+        if 'healthcheck' in request.path or request.path == '/':
             g.after_request_logged = True
         
         ''' Skip logging for after_request_logged == True '''
