@@ -109,6 +109,9 @@ def before_request():
 @app.after_request
 def after_request(response):
     try:
+        if 'healthcheck' in request.path or request.path == '/':
+            g.after_request_logged = True
+            return response
         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'"
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
         response.headers['X-Content-Type-Options'] = 'nosniff'
@@ -126,15 +129,6 @@ def after_request(response):
         # else:
         #     response.headers.add("Access-Control-Allow-Origin", "https://entity.digilocker.gov.in")
         response.headers["Server"] = "Hidden"
-        
-        if 'healthcheck' in request.path or request.path == '/':
-            g.after_request_logged = True
-        
-        ''' Skip logging for after_request_logged == True '''
-        if getattr(g, 'after_request_logged', False):
-            return response
-        if g.after_request_logged:
-            return response
         
         try:
             tech_msg = response.json.pop(RESPONSE, None)
