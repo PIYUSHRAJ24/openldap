@@ -6,7 +6,7 @@ from flask import Blueprint, jsonify, request, g
 from datetime import datetime
 import dotenv
 import logging
-from pythonjsonlogger import jsonlogger
+# from pythonjsonlogger import jsonlogger
 import traceback
 import sys
 from lib.constants import *
@@ -22,11 +22,11 @@ app.config['SERVER_NAME'] = None
 current_date = datetime.now().strftime("%Y-%m-%d")
 log_file_path = f"ORG-AUTH-logs-{current_date}.log"
 logHandler = logging.FileHandler(log_file_path)
-formatter = jsonlogger.JsonFormatter()
-logHandler.setFormatter(formatter)
+# formatter = jsonlogger.JsonFormatter()
+# logHandler.setFormatter(formatter)
 logger = logging.getLogger(__name__)
-logger.addHandler(logHandler)
-logger.setLevel(logging.INFO)
+# logger.addHandler(logHandler)
+# logger.setLevel(logging.INFO)
 
 
 from api.filelock import bp as filelock_bp
@@ -188,6 +188,7 @@ def handle_exception(e):
     response.status_code = 400
     return response
 
+@app.route('/healthcheck', methods=['GET', 'POST'])
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return {"status": "success"}
