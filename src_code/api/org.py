@@ -701,14 +701,14 @@ def revoke_access():
             return res, status_code
         logarray.update({RESPONSE: {"org_access_rules_update": res}})
 
-        if rule_id == 'ORGR001' and designation == "director":
-            data1 = {'org_id': g.org_id, 'dir_info': [{'digilocker_id': did, 'is_active' : 'N'}]}
-            res, status_code = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
-            if status_code != 200:
-                logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
-                RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
-                return res, status_code
-            logarray[RESPONSE].update({"org_details_update": res})
+        # if rule_id == 'ORGR001' and designation == "director":
+        #     data1 = {'org_id': g.org_id, 'dir_info': [{'digilocker_id': did, 'is_active' : 'N'}]}
+        #     res, status_code = RABBITMQ.send_to_queue({"data": data1}, 'Organization_Xchange', 'org_update_details_')
+        #     if status_code != 200:
+        #         logarray.update({RESPONSE: {STATUS: ERROR, RESPONSE: res.pop(RESPONSE) if res.get(RESPONSE) else res}})
+        #         RABBITMQ_LOGSTASH.log_stash_logeer(logarray, logs_queue, g.endpoint)
+        #         return res, status_code
+        #     logarray[RESPONSE].update({"org_details_update": res})
 
         res = {STATUS: SUCCESS, MESSAGE: Messages.message('MSG_102')}
         logarray[RESPONSE].update(res)
