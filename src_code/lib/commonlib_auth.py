@@ -246,7 +246,7 @@ class CommonLib:
             if type(dec_did) == type({}) and dec_did.get('error'):
                 return dec_did, 400
             
-            if dec_did and dec_did != hashlib.md5(did.encode()).hexdigest():
+            if dec_did and dec_did != hashlib.sha256(did.encode()).hexdigest():
                 return {
                 'status' : 'error',
                 'error_description':'Invalid device id provided.'

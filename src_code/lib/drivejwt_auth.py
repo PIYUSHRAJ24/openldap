@@ -98,8 +98,9 @@ class DriveJwt:
                 did_sign = self.aes_decryption(did_sign_enc.replace('---', '+'), self.aes_secret)
             device_security_id = self.device_security_id
             if device_security_id:
-                result = hashlib.md5(device_security_id.encode())
+                result = hashlib.sha256(device_security_id.encode())
                 did = result.hexdigest()
+
             if did_sign and (did is None or did_sign.find(did) == -1):
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path

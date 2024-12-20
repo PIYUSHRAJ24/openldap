@@ -89,8 +89,9 @@ class DriveJwt:
             #check if invlid token 
             token = self.jwt_token    
             device_security_id = self.device_security_id
-            hash_jwt = hashlib.md5(token.encode()).hexdigest()       
-            hash_did = hashlib.md5(device_security_id.encode()).hexdigest()       
+            hash_jwt = hashlib.sha256(token.encode()).hexdigest()
+            hash_did = hashlib.sha256(device_security_id.encode()).hexdigest()
+      
             key = 'INVALID_JWT_'+hash_did+'_'+hash_jwt 
             self.rs.set(key, 'Invalid', 2592000)
             return {STATUS: "success"}, 401
@@ -185,8 +186,9 @@ class DriveJwt:
                 did_sign = self.aes_decryption(did_sign_enc.replace('---', '+'), self.aes_secret)
             device_security_id = self.device_security_id
             if device_security_id:
-                result = hashlib.md5(device_security_id.encode())
+                result = hashlib.sha256(device_security_id.encode())
                 did = result.hexdigest()
+
             if did_sign != did:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path
