@@ -1,3 +1,14 @@
+------------- v6.6.1 ------------------
+Version: v6.6.1
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 0cc3a81
+- Author: jenkins
+- Date: 2024-12-19 13:38:07
+- Message: Bump version to v6.6.0
+
+Previous Versions:
 ------------- v6.6.0 ------------------
 Version: v6.6.0
 Merge Commit: Yes
