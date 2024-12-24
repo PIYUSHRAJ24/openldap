@@ -195,8 +195,6 @@ class DriveJwt:
                 if did_sign and (did_sign.find(sha256_result) == -1 and did_sign.find(md5_result) == -1):
                     return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
 
-            if did_sign != did:
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path
             path = self.org_id + '/files/'  # this has been done as to create path based on org_id
             if folder:
