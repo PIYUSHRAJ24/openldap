@@ -1,3 +1,14 @@
+------------- v6.6.3 ------------------
+Version: v6.6.3
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 04772fd
+- Author: jenkins
+- Date: 2024-12-24 10:45:30
+- Message: Bump version to v6.6.2
+
+Previous Versions:
 ------------- v6.6.2 ------------------
 Version: v6.6.2
 Merge Commit: Yes
