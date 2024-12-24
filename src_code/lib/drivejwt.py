@@ -186,8 +186,14 @@ class DriveJwt:
                 did_sign = self.aes_decryption(did_sign_enc.replace('---', '+'), self.aes_secret)
             device_security_id = self.device_security_id
             if device_security_id:
-                result = hashlib.sha256(device_security_id.encode())
-                did = result.hexdigest()
+                # Calculate the sha256 hash
+                sha256_result = hashlib.sha256(device_security_id.encode()).hexdigest()
+                # Calculate the md5 hash
+                md5_result = hashlib.md5(device_security_id.encode()).hexdigest()
+
+                # Check if did_sign contains either sha256 or md5 hash
+                if did_sign and (did_sign.find(sha256_result) == -1 and did_sign.find(md5_result) == -1):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
 
             if did_sign != did:
                 return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
