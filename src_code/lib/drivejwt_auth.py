@@ -98,11 +98,13 @@ class DriveJwt:
                 did_sign = self.aes_decryption(did_sign_enc.replace('---', '+'), self.aes_secret)
             device_security_id = self.device_security_id
             if device_security_id:
-                result = hashlib.sha256(device_security_id.encode())
-                did = result.hexdigest()
+                # Calculate the hash for both SHA256 and MD5
+                sha256_result = hashlib.sha256(device_security_id.encode()).hexdigest()
+                md5_result = hashlib.md5(device_security_id.encode()).hexdigest()
 
-            if did_sign and (did is None or did_sign.find(did) == -1):
-                return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
+                # Check if the did_sign matches either the SHA256 or MD5 hash
+                if did_sign and (did_sign.find(sha256_result) == -1 and did_sign.find(md5_result) == -1):
+                    return {STATUS: ERROR, ERROR_DES: Errors.error("ERR_MSG_108")}, 401
             folder = self.path
             path = self.org_id + '/files/' #this has been done as to create path based on org_id
             if folder:

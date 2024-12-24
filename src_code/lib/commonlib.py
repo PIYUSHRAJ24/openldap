@@ -390,10 +390,16 @@ class CommonLib:
             if type(dec_did) == type({}) and dec_did.get('error'):
                 return dec_did, 400
             
-            if dec_did and dec_did != hashlib.sha256(did.encode()).hexdigest():
-                return {
-                'status' : 'error',
-                'error_description':'Invalid device id provided.'
+            if dec_did:
+                # Generate both SHA-256 and MD5 hashes of the `did`
+                sha256_did = hashlib.sha256(did.encode()).hexdigest()
+                md5_did = hashlib.md5(did.encode()).hexdigest()
+
+                # Check if `dec_did` matches neither SHA-256 nor MD5 hash
+                if dec_did != sha256_did and dec_did != md5_did:
+                    return {
+                        'status': 'error',
+                        'error_description': 'Invalid device id provided.'
                     }, 401
             
             digilockerid = data.get('digilockerid')

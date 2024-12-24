@@ -111,8 +111,13 @@ class ValidateUser:
             if data["didsign"] and len(data["didsign"]) > 20:
                 dec_did= self.aes_decryption(data['didsign'], bytes(self.aes_secret, 'utf-8'))
             
-            if dec_did and dec_did != hashlib.sha256(device_security_id.encode()).hexdigest():
-                self.status_code = 401
+            if dec_did:
+                sha256_did = hashlib.sha256(device_security_id.encode()).hexdigest()
+                md5_did = hashlib.md5(device_security_id.encode()).hexdigest()
+
+                # Check if dec_did matches either SHA-256 or MD5 hash
+                if dec_did != sha256_did and dec_did != md5_did:
+                    self.status_code = 401
         except Exception as e:
             self.status_code = 401
     
