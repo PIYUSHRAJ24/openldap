@@ -412,7 +412,7 @@ def create():
             return result, status_code
 
         path =  access_post_data['dept_id']
-        url = CONFIG['org_drive_api']['url'] + 'upload'
+        url = CONFIG['org_drive_api']['url'] + '/' + 'upload'
         headers = {
             'device-security-id': g.did,
             'Authorization': 'Bearer '+ g.jwt_token,
