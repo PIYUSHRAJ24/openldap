@@ -2112,16 +2112,16 @@ def validation_partner_request(data):
         if not data.get('transactionid'):
             data['transactionid'] = str(uuid.uuid5(uuid.NAMESPACE_DNS, data['org_name']))
         
-        if 'pan' in data:
+        if data.get('pan'):
             org_type = "pan"
             cin = data['pan']
-        if 'udyam' in data:
+        if data.get('udyam'):
             org_type = "msme"
             cin = data['udyam']
-        if 'cin' in data:
+        if data.get('cin'):
             org_type = "llp"    
             cin = data['cin'] 
-        if 'gstin' in data:
+        if data.get('gstin'):
             org_type = "gstin"    
             cin = data['gstin']        
         return {STATUS: SUCCESS,"org_type":org_type,"cin":cin}     
