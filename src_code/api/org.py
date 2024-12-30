@@ -2088,23 +2088,23 @@ def validation_partner_request(data):
         # if 'cin' in data and not data.get('din'):
         #     return {STATUS: ERROR, ERROR_DES:"DIN is required when CIN is provided"}
         
-        if 'udyam' in data and not data.get('udyam_mobile'):
+        if data.get('udyam') and not data.get('udyam_mobile'):
             return {STATUS: ERROR, ERROR_DES:"UDYAM registered mobile is required when UDYAM is provided"}
         
-        if ('pan' in data or 'gstin' in data) and not data.get('d_incorporation'):
+        if (data.get('pan') or data.get('gstin')) and not data.get('d_incorporation'):
             {STATUS: ERROR, ERROR_DES:"Date of incorporation is required"}
 
         # Validate specific formats
         if not re.match(schema['pan']['regex'], data['pan']):
             {STATUS: ERROR, ERROR_DES:"Invalid PAN format"}
         
-        if 'udyam_mobile' in data and not re.match(schema['udyam_mobile']['regex'], data['udyam_mobile']):
+        if data.get('udyam_mobile') and not re.match(schema['udyam_mobile']['regex'], data['udyam_mobile']):
             {STATUS: ERROR, ERROR_DES:"Invalid UDYAM mobile format"}
 
-        if 'gstin' in data and not re.match(schema['gstin']['regex'], data['gstin']):
+        if data.get('gstin') and not re.match(schema['gstin']['regex'], data['gstin']):
             {STATUS: ERROR, ERROR_DES:"Invalid GSTIN format"}
 
-        if 'd_incorporation' in data:
+        if data.get('d_incorporation'):
             try:
                 datetime.datetime.strptime(data['d_incorporation'], '%Y-%m-%d')
             except ValueError:
