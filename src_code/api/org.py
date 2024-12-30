@@ -2107,6 +2107,7 @@ def validation_partner_request(data):
         if data.get('d_incorporation'):
             try:
                 datetime.datetime.strptime(data['d_incorporation'], '%Y-%m-%d')
+                data['d_incorporation'] = data['d_incorporation'] + 'T00:00:00.000Z'
             except ValueError:
                 {STATUS: ERROR, ERROR_DES:"Invalid date format for d_incorporation, should be YYYY-MM-DD"}
         if not data.get('transactionid'):
