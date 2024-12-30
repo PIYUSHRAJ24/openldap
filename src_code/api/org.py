@@ -2095,13 +2095,13 @@ def validation_partner_request(data):
             {STATUS: ERROR, ERROR_DES:"Date of incorporation is required"}
 
         # Validate specific formats
-        if not re.match(schema['pan']['regex'], data['pan']):
+        if data.get('pan') and not re.match(schema['pan']['regex'], str(data['pan'])):
             {STATUS: ERROR, ERROR_DES:"Invalid PAN format"}
         
-        if data.get('udyam_mobile') and not re.match(schema['udyam_mobile']['regex'], data['udyam_mobile']):
+        if data.get('udyam_mobile') and not re.match(schema['udyam_mobile']['regex'], str(data['udyam_mobile'])):
             {STATUS: ERROR, ERROR_DES:"Invalid UDYAM mobile format"}
 
-        if data.get('gstin') and not re.match(schema['gstin']['regex'], data['gstin']):
+        if data.get('gstin') and not re.match(schema['gstin']['regex'], str(data['gstin'])):
             {STATUS: ERROR, ERROR_DES:"Invalid GSTIN format"}
 
         if data.get('d_incorporation'):
@@ -2127,7 +2127,7 @@ def validation_partner_request(data):
             cin = data['gstin']        
         return {STATUS: SUCCESS,"org_type":org_type,"cin":cin}     
     except Exception as e:
-        return {STATUS: ERROR, ERROR_DES: "Internal server error"+str(e)}       
+        return {STATUS: ERROR, ERROR_DES: "Failed to validate data", RESPONSE: str(e)}       
 
 def send_attempt(data):
     CLIENT_ID = CONFIG['org_signin_api']['client_id']
@@ -2151,7 +2151,7 @@ def send_attempt(data):
         elif status_code == 422:
             return {STATUS: ERROR, ERROR_DES: "Data is not valid."}, 422
         else:
-            return {STATUS: ERROR, ERROR_DES: response_data}, status_code
+            return {STATUS: ERROR, ERROR_DES: response_data.get('error_description', "Failed to store attempt.")}, status_code
 
     except Exception as e:
         return {STATUS: ERROR, ERROR_DES: "Failed to store attempt.", RESPONSE: str(e)}, 400
@@ -2180,7 +2180,7 @@ def create_organization_partners():
                 "din": data.get('din', ''),
                 "ccin": data.get('cin', ''),
                 "udyam": data.get('udyam', ''),
-                "udyam_mobile": data.get('udyam_mobile', ''),
+                "udyam_mobile": str(data.get('udyam_mobile', '')),
                 "gstin": data.get('gstin', '') ,
                 "d_incorporation": data.get('d_incorporation', ''),
                 "entity_partner_org_id": data.get('entity_partner_org_id', ''),
@@ -2204,7 +2204,7 @@ def create_organization_partners():
                     "digilockerid" : data.get('created_by', ''),
                     "email_id" : userinfo.get('email',''),
                     "full_name" : userinfo.get('full_name',''),
-                    "mobile_no" : userinfo.get('mobile',''),
+                    "mobile_no" : str(userinfo.get('mobile','')),
                     "dob" : userinfo.get('date_of_birth',''),
                     "gender" : userinfo.get('gender',''),
                 },
@@ -2223,4 +2223,4 @@ def create_organization_partners():
         return {"status": "error", "error_description": str(e)}, 400
 
     except Exception as e:
-        return {"status": "error", "error_description": "Internal server error"}, 400
+        return {"status": "error", "error_description": "Some Technical Error Occured", "response": str(e)}, 400
