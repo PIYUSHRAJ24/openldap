@@ -2082,7 +2082,7 @@ def validation_partner_request(data):
         ccin = ''
         required_fields = ['org_name', 'created_by', 'entity_partner_org_id', 'request_partner_name']
         for field in required_fields:
-            if field not in data or not data[field]:
+            if field not in data or not data.get(field):
                 return {STATUS: ERROR, ERROR_DES:f"Field {field} is required"}
             
         # if 'cin' in data and not data.get('din'):
