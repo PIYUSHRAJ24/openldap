@@ -1,3 +1,14 @@
+------------- v6.6.5 ------------------
+Version: v6.6.5
+Merge Commit: Yes
+
+Commit Details:
+- Revision: 526c25c
+- Author: Kshitiz Singh
+- Date: 2024-12-30 10:04:11
+- Message: Signup correction.
+
+Previous Versions:
 ------------- v6.6.4 ------------------
 Version: v6.6.4
 Merge Commit: Yes
