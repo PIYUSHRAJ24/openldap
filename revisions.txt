@@ -1,3 +1,14 @@
+------------- v6.6.6 ------------------
+Version: v6.6.6
+Merge Commit: Yes
+
+Commit Details:
+- Revision: a2d901f
+- Author: Kshitiz Singh
+- Date: 2024-12-30 11:39:45
+- Message: Merge branch 'develop' of https://openforge.gov.in/plugins/git/digitallocker/entity_auth into feature/userChangeNRemoveActivity@364945
+
+Previous Versions:
 ------------- v6.6.5 ------------------
 Version: v6.6.5
 Merge Commit: Yes
